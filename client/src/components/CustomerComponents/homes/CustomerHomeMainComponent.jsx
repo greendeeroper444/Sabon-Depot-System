@@ -17,7 +17,7 @@ function CustomerHomeMainComponent() {
   return (
     <div className='customer-home-main-container' style={{ backgroundImage: `url(${backgroundHome})` }}>
         
-        {
+        {/* {
             !!customer && (
                 <motion.div
                 className='customer-home-main-overlay'
@@ -44,7 +44,7 @@ function CustomerHomeMainComponent() {
                     </Draggable>
                 </motion.div>
             )
-        }
+        } */}
         <div className='customer-home-content'>
             <h6>New Arrival</h6>
             <h1>Discover Our</h1>
