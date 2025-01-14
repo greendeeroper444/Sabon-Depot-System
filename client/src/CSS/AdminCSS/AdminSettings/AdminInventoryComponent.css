@@ -1,0 +1,182 @@
+.admin-inventory-container{
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+  
+  .admin-inventory-container  h2{
+    margin-bottom: 15px;
+    color: #333;
+}
+  
+.admin-inventory-container .inventory-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+  
+.admin-inventory-container .inventory-table th,
+.admin-inventory-container .inventory-table td{
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+  
+.admin-inventory-container .inventory-table th{
+    background-color: #077A37;
+    color: #fff;
+}
+  
+.admin-inventory-container .inventory-table tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+  
+.admin-inventory-container .inventory-table tr:hover{
+    background-color: #ddd;
+}
+.admin-inventory-container .product-size-buttons{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+  
+.admin-inventory-container .filter-buttons{
+    margin-bottom: 15px;
+}
+  
+.admin-inventory-container .filter-btn{
+    padding: 8px 15px;
+    margin-right: 10px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+  
+.admin-inventory-container .filter-btn.active{
+    background-color: #077A37;
+    color: #fff;
+    border-color: #077A37;
+}
+  
+.admin-inventory-container .filter-btn:hover{
+    background-color: #ddd;
+}
+  
+.admin-inventory-container .add-category-btn,
+.admin-inventory-container .add-size-btn,
+.admin-inventory-container .edit-btn,
+.admin-inventory-container .delete-btn{
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+  
+.admin-inventory-container .add-category-btn,
+.admin-inventory-container .add-size-btn{
+    background-color: #077A37;
+    color: #fff;
+    margin-top: 10px;
+}
+  
+.admin-inventory-container .edit-btn{
+    background-color: #2196F3;
+    color: #fff;
+    margin-right: 5px;
+}
+  
+.admin-inventory-container .delete-btn{
+    background-color: #f44336;
+    color: #fff;
+}
+  
+
+
+.admin-inventory-container .modal-overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.admin-inventory-container .modal-content{
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-inventory-container .modal-content h2{
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.admin-inventory-container .modal-body{
+    margin-bottom: 15px;
+}
+
+.admin-inventory-container .date-input,
+.admin-inventory-container .category-input{
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.admin-inventory-container .add-time-button{
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.admin-inventory-container .add-time-button:hover{
+    background-color: #0056b3;
+}
+
+.admin-inventory-container .modal-footer{
+    display: flex;
+    justify-content: space-between;
+}
+
+.admin-inventory-container .submit-button{
+    padding: 10px 20px;
+    background-color: #077A37;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.admin-inventory-container .submit-button:hover{
+    background-color: #218838;
+}
+
+.admin-inventory-container .close-button{
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.admin-inventory-container .close-button:hover{
+    background-color: #c82333;
+}

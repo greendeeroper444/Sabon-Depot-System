@@ -1,0 +1,261 @@
+.admin-dashboard-container{
+    padding: 50px 0;
+    overflow-y: hidden;
+}
+.admin-dashboard-first{
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: center;
+}
+  
+.admin-top-sales{
+    flex: 1;
+}
+  
+.admin-top-sales h3{
+    margin-bottom: 1rem;
+}
+  
+.admin-top-sales-list{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+  
+.admin-top-sales-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    transition: box-shadow 0.3s;
+}
+  
+.admin-top-sales-item:hover{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+  
+.admin-top-sales-item img{
+    max-width: 50px;
+    margin-right: 10px;
+}
+  
+.admin-price,
+.admin-inventory,
+.admin-sale{
+    margin-left: 1rem;
+}
+  
+.admin-chart-container{
+    width: 200px;
+}
+  
+.admin-no-data{
+    color: #888;
+    font-style: italic;
+}
+  
+
+.admin-dashboard-second{
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: center;
+}
+  
+.chart-container{
+    flex: 1;
+    min-width: 400px;
+    height: 300px;
+}
+  
+.admin-sales-chart{
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    height: 400px;
+}
+
+
+.admin-dashboard-container .search-container{
+    display: flex;
+    align-items: center;
+}
+
+.admin-dashboard-container .search-input{
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.admin-dashboard-container .filter-button{
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.admin-dashboard-container .filter-button .fas.fa-filter{
+    font-size: 18px;
+}
+
+@keyframes low-stock-animation{
+    0%{
+        background-color: #fff4d2;
+    }
+    50%{
+        background-color: #ffddd3;
+    }
+    100%{
+        background-color: #fff4d4;
+    }
+}
+.admin-dashboard-container .low-stock-tr{
+    animation: low-stock-animation 1.5s infinite;
+    cursor: pointer;
+}
+
+@keyframes out-stock-animation{
+    0%{
+        background-color: #db2727;
+    }
+    50%{
+        background-color: #ffd3d3;
+    }
+    100%{
+        background-color: #da0d0d;
+    }
+}
+.admin-dashboard-container .out-of-stock-tr{
+    animation: out-stock-animation 1.5s infinite;
+    cursor: pointer;
+}
+
+@keyframes showFromTop{
+    from{
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to{
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.admin-dashboard-container .alert-message
+.admin-dashboard-container .product-table,
+.admin-dashboard-container .notification-table{
+    animation: showFromTop 0.6s ease-out;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.admin-dashboard-container .alert-message .close-alert{
+    border: none;
+    background: none;
+    font-size: 1.5rem;
+    float: right;
+}
+/* Rest of your CSS remains unchanged */
+.admin-dashboard-container .product-table th, .product-table td{
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ccc;
+}
+
+.admin-dashboard-container .product-table th{
+    background-color: #EBEBEB;
+    font-weight: bold;
+}
+
+.admin-dashboard-container .product-table td{
+    background-color: #fff;
+}
+
+.admin-dashboard-container .notification-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fdfdfd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.admin-dashboard-container .notification-table th,
+.admin-dashboard-container .notification-table td{
+    text-align: left;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-dashboard-container .notification-table th{
+    background-color: #f5f5f5;
+    color: #333;
+    font-weight: bold;
+}
+
+.admin-dashboard-container .notification-table td{
+    vertical-align: middle;
+}
+
+.admin-dashboard-container .notification-table .product-name{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-dashboard-container .notification-table .notification-image{
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.admin-dashboard-container .notification-table .low-stock{
+    color: #d9534f;
+    font-weight: bold;
+}
+
+.admin-dashboard-container .notification-table .actions{
+    display: flex;
+    gap: 10px;
+}
+
+.admin-dashboard-container .notification-table .edit-btn,
+.admin-dashboard-container .notification-table .delete-btn{
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.admin-dashboard-container .notification-table .edit-btn:hover{
+    color: #5cb85c;
+}
+
+.admin-dashboard-container .notification-table .delete-btn:hover{
+    color: #d9534f;
+}
+
+
+@keyframes slideDown{
+    from{
+        transform: translateY(-100%);
+    }
+    to{
+        transform: translateY(0);
+    }
+}
+
+
+
+@media (max-width: 768px){
+    .admin-sales-chart{
+        height: 300px;
+    }
+}

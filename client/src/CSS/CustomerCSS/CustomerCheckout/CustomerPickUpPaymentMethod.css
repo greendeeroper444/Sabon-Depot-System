@@ -1,0 +1,126 @@
+.customer-pickup-payment-container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.customer-pickup-payment-container select option:disabled{
+    color: grey;
+}
+.react-datepicker__day--disabled{
+    color: #ccc;
+    pointer-events: none;
+}
+
+
+.customer-pickup-payment-container .date-picker{
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9em;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+}
+.customer-pickup-payment-container .date-picker:hover{
+    border-color: #077A37;
+    box-shadow: 0 0 5px rgba(7, 122, 55, 0.5);
+    outline: none;
+}
+
+.customer-pickup-payment-container .customer-pickup-payment-content{
+    background: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    height: 400px;
+    overflow-y: auto;
+}
+
+.customer-pickup-payment-container h2{
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.customer-pickup-payment-container select{
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9em;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.customer-pickup-payment-container select:focus{
+    border-color: #077A37;
+    box-shadow: 0 0 5px rgba(7, 122, 55, 0.5);
+    outline: none;
+}
+
+.customer-pickup-payment-container .time-display{
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 0.85em;
+    color: #077A37;
+    font-weight: 500;
+    border: 1px solid #077A37;
+    border-radius: 8px;
+    background-color: #f9fff9;
+    box-shadow: 0 2px 6px rgba(7, 122, 55, 0.1);
+    display: inline-block;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.customer-pickup-payment-container .time-display:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(7, 122, 55, 0.2);
+}
+
+.customer-pickup-payment-container .modal-buttons{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 50px;
+}
+
+.customer-pickup-payment-container .modal-buttons button{
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.customer-pickup-payment-container .cancel-button{
+    background-color: #ccc;
+    color: #fff;
+}
+
+.customer-pickup-payment-container .cancel-button:hover{
+    background-color: #bbb;
+    transform: translateY(-2px);
+}
+
+.customer-pickup-payment-container .submit-button{
+    background-color: #077A37;
+    color: #fff;
+}
+
+.customer-pickup-payment-container .submit-button:hover{
+    background-color: #065a29;
+    transform: translateY(-2px);
+}

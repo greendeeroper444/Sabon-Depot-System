@@ -1,0 +1,89 @@
+.settings-content{
+    flex: 1;
+    padding: 20px;
+    overflow-x: auto;
+    border-radius: 8px;
+}
+
+.settings-content h2{
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    color: #333;
+}
+
+.admin-promotions-container{
+}
+
+.admin-promotions-header-table,
+.admin-promotions-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff;
+}
+
+.admin-promotions-header-table th,
+.admin-promotions-table th{
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #555;
+    background-color: #f2f2f2;
+}
+
+.admin-promotions-header-table td,
+.admin-promotions-table td{
+    padding: 15px;
+    border: 1px solid #eaeaea;
+    color: #333;
+    vertical-align: middle;
+}
+
+.admin-promotions-table .product-image-name{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-promotions-table .product-image-name img{
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.admin-promotions-container .admin-promotions-controls{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.admin-promotions-container .admin-promotions-controls button{
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.admin-promotions-container .admin-promotions-controls button:nth-child(2){
+    background-color: #077a37;
+    color: white;
+}
+
+.admin-promotions-container .admin-promotions-controls button:nth-child(2):hover{
+    background-color: #065a2a;
+}
+
+.admin-promotions-container .admin-promotions-controls button:nth-child(3){
+    background-color: transparent;
+    color: #5d6679;
+    border: 1px solid #d0d3d9;
+}
+
+.admin-promotions-container .admin-promotions-controls button:nth-child(3):hover{
+    background-color: #077a37;
+    color: white;
+}

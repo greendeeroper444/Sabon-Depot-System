@@ -1,0 +1,157 @@
+.admin-inventory-report-container{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 0;
+}
+
+.admin-inventory-report-container .admin-inventory-report-header{
+    text-align: start;
+    margin-bottom: 20px;
+}
+.admin-inventory-report-container .input-with-icons{
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.admin-inventory-report-container .input-line{
+    width: 100%;
+    padding-right: 60px;
+}
+
+.admin-inventory-report-container .icon{
+    position: absolute;
+    right: 0;
+    margin-right: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #007bff;
+    transition: color 0.3s;
+    margin-top: 10px;
+}
+
+.admin-inventory-report-container .check-icon{
+    right: 32px;
+}
+
+.admin-inventory-report-container .times-icon{
+    right: 8px;
+}
+
+.admin-inventory-report-container .icon:hover{
+    color: #0056b3;
+}
+
+.admin-inventory-report-container .logo-inventory-report{
+    width: 160px;
+    object-fit: contain;
+}
+
+.admin-inventory-report-container .admin-inventory-report-header button{
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #077A37;
+    color: #077A37;
+    background: none;
+    border-radius: 10px;
+}
+
+.admin-inventory-report-container .admin-inventory-report-header button:hover{
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #077A37;
+    color: #fff;
+    background-color: #077A37;
+    border-radius: 10px;
+}
+
+.admin-inventory-report-container .admin-inventory-report-content{
+    padding: 20px;
+}
+
+.admin-inventory-report-container .report-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.admin-inventory-report-container .report-logo{
+    width: 100px;
+    height: 100px;
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.admin-inventory-report-container .report-title{
+    text-align: start;
+}
+
+.admin-inventory-report-container .report-title h1{
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.admin-inventory-report-container .admin-inventory-report-details{
+    text-align: start;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.admin-inventory-report-container .admin-inventory-report-details h2{
+    font-size: 1rem;
+}
+
+.admin-inventory-report-container .admin-inventory-report-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.admin-inventory-report-container .admin-inventory-report-table th,
+.admin-inventory-report-container .admin-inventory-report-table td{
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+.admin-inventory-report-container .admin-inventory-report-footer{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.admin-inventory-report-container .admin-inventory-report-footer p{
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+.admin-inventory-report-container .admin-inventory-report-footer div{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.admin-inventory-report-container .admin-inventory-report-footer .input-line{
+    border: none;
+    border-bottom: 1px solid #000;
+    width: 200px;
+    margin-top: 5px;
+    padding: 5px;
+    outline: none;
+}
+
+
+.admin-inventory-report-container .production-staff{
+    text-align: start;
+    margin-top: 20px;
+}
+
+.admin-inventory-report-container .production-staff p{
+    margin: 0;
+}
