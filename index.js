@@ -8,7 +8,7 @@ dotenv.config({ path: './.env' });
 const app = express();
 
 app.use(middleware);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // mongoose.connect(process.env.MONGO_URL)
 // .then(() => console.log('Database connected'))
