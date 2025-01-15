@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import '../../CSS/CustomerCSS/CustomerRegister.css'
 import googleIcon from '../../assets/icons/google-icon.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,6 +10,12 @@ import { CustomerContext } from '../../../contexts/CustomerContexts/CustomerAuth
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import {
+    regions,
+    provinces,
+    cities,
+    barangays,
+  } from 'select-philippines-address';
 
 
 function CustomerRegisterPage() {
@@ -32,6 +38,105 @@ function CustomerRegisterPage() {
         clientType: ''
     });
     const [step, setStep] = useState(1);
+
+    const [regionList, setRegionList] = useState([]);
+    const [provinceList, setProvinceList] = useState([]);
+    const [cityList, setCityList] = useState([]);
+    const [barangayList, setBarangayList] = useState([]);
+
+    const [selectedRegion, setSelectedRegion] = useState('');
+    const [selectedProvince, setSelectedProvince] = useState('');
+    const [selectedCity, setSelectedCity] = useState('');
+    const [selectedBarangay, setSelectedBarangay] = useState('');
+
+    //fetch regions on mount
+    useEffect(() => {
+        const fetchRegions = async() => {
+            try {
+                const data = await regions();
+                setRegionList(data);
+            } catch (error) {
+                console.error('Error fetching regions:', error);
+            }
+        };
+        fetchRegions();
+    }, []);
+
+    //handle region change
+    const handleRegionChange = async(e) => {
+        const regionCode = e.target.value;
+        const selectedRegion = regionList.find((region) => region.region_code === regionCode);
+        setSelectedRegion(selectedRegion);
+        setData((prevData) => ({ ...prevData, region: selectedRegion.region_name }));
+        resetSelections(['province', 'city', 'barangay']);
+        if(regionCode){
+            try {
+                const data = await provinces(regionCode);
+                setProvinceList(data);
+            } catch (error) {
+                console.error('Error fetching provinces:', error);
+            }
+        }
+    };
+
+    //handle province change
+    const handleProvinceChange = async(e) => {
+        const provinceCode = e.target.value;
+        const selectedProvince = provinceList.find((province) => province.province_code === provinceCode);
+        setSelectedProvince(selectedProvince);
+        setData((prevData) => ({...prevData, province: selectedProvince.province_name}));
+        resetSelections(['city', 'barangay']);
+        if(provinceCode){
+            try {
+                const data = await cities(provinceCode);
+                setCityList(data);
+            } catch (error) {
+                console.error('Error fetching cities:', error);
+            }
+        }
+    };
+
+    //handle city change
+    const handleCityChange = async (e) => {
+        const cityCode = e.target.value;
+        const selectedCity = cityList.find((city) => city.city_code === cityCode);
+        setSelectedCity(selectedCity);
+        setData((prevData) => ({ ...prevData, city: selectedCity.city_name }));
+        resetSelections(['barangay']);
+        if(cityCode){
+            try {
+                const data = await barangays(cityCode);
+                setBarangayList(data);
+            } catch (error) {
+                console.error('Error fetching barangays:', error);
+            }
+        }
+    };
+
+    //handle barangay change
+    const handleBarangayChange = (e) => {
+        const barangayCode = e.target.value;
+        const selectedBarangay = barangayList.find((barangay) => barangay.brgy_code === barangayCode);
+        setSelectedBarangay(selectedBarangay);
+        setData((prevData) => ({...prevData, barangay: selectedBarangay.brgy_name}));
+    };
+
+    //reset dependent selections
+    const resetSelections = (fields) => {
+        if(fields.includes('province')){
+            setSelectedProvince('');
+            setProvinceList([]);
+        }
+        if(fields.includes('city')){
+            setSelectedCity('');
+            setCityList([]);
+        }
+        if(fields.includes('barangay')){
+            setSelectedBarangay('');
+            setBarangayList([]);
+        }
+    };
+  
 
     const handleNextStep = (e) => {
         e.preventDefault();
@@ -205,26 +310,79 @@ function CustomerRegisterPage() {
                                     />
                                 </div>
 
-                                <div className='form-group'>
-                                    <label htmlFor="province">Province</label>
-                                    <input type="text" className='form-input' id='province'
-                                        value={data.province} 
-                                        onChange={(e) => setData({ ...data, province: e.target.value })}
-                                    />
+                                <div className='form-group full-width'>
+                                    <label htmlFor="region">Region:</label>
+                                    <select
+                                    id='region'
+                                    value={selectedRegion ? selectedRegion.region_code : ''}
+                                    onChange={handleRegionChange}
+                                    >
+                                    <option value="">Select Region</option>
+                                    {
+                                        regionList.map((region) => (
+                                            <option key={region.region_code} value={region.region_code}>
+                                            {region.region_name}
+                                            </option>
+                                        ))
+                                    }
+                                    </select>
                                 </div>
+
                                 <div className='form-group'>
-                                    <label htmlFor="city">City</label>
-                                    <input type="text" className='form-input' id='city'
-                                        value={data.city} 
-                                        onChange={(e) => setData({ ...data, city: e.target.value })}
-                                    />
+                                    <label htmlFor="province">Province:</label>
+                                    <select
+                                    id='province'
+                                    value={selectedProvince ? selectedProvince.province_code : ''}
+                                    onChange={handleProvinceChange}
+                                    disabled={!selectedRegion}
+                                    >
+                                    <option value="">Select Province</option>
+                                    {
+                                        provinceList.map((province) => (
+                                            <option key={province.province_code} value={province.province_code}>
+                                            {province.province_name}
+                                            </option>
+                                        ))
+                                    }
+                                    </select>
                                 </div>
+
                                 <div className='form-group'>
-                                    <label htmlFor="barangay">Barangay</label>
-                                    <input type="text" className='form-input' id='barangay'
-                                        value={data.barangay} 
-                                        onChange={(e) => setData({ ...data, barangay: e.target.value })}
-                                    />
+                                    <label htmlFor="city">City:</label>
+                                    <select
+                                    id='city'
+                                    value={selectedCity ? selectedCity.city_code : ''}
+                                    onChange={handleCityChange}
+                                    disabled={!selectedProvince}
+                                    >
+                                    <option value="">Select City</option>
+                                    {
+                                        cityList.map((city) => (
+                                            <option key={city.city_code} value={city.city_code}>
+                                            {city.city_name}
+                                            </option>
+                                        ))
+                                    }
+                                    </select>
+                                </div>
+
+                                <div className='form-group'>
+                                    <label htmlFor="barangay">Barangay:</label>
+                                    <select
+                                    id='barangay'
+                                    value={selectedBarangay ? selectedBarangay.brgy_code : ''}
+                                    onChange={handleBarangayChange}
+                                    disabled={!selectedCity}
+                                    >
+                                    <option value="">Select Barangay</option>
+                                    {
+                                        barangayList.map((barangay) => (
+                                            <option key={barangay.brgy_code} value={barangay.brgy_code}>
+                                            {barangay.brgy_name}
+                                            </option>
+                                        ))
+                                    }
+                                    </select>
                                 </div>
                                 
                                 <div className='form-group full-width'>

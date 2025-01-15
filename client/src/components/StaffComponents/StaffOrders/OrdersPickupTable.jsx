@@ -43,7 +43,7 @@ function OrdersPickupTable({ orders, handleRowClick, orderDate, noOrdersMessage 
                         >
                             <td>
                                 <div>
-                                    <span style={{ fontSize: '12px', color: 'black' }}>#ID{order._id}</span>
+                                    <span style={{ fontSize: '12px', color: 'black' }}>#ID {order.orderNumber}</span>
                                 </div>
                             </td>
                             <td>{orderDate(order.createdAt)}</td>

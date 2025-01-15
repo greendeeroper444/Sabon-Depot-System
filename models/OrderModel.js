@@ -1,10 +1,21 @@
 const mongoose = require('mongoose');
 
+const CounterSchema = new mongoose.Schema({
+    name: {type: String, required: true, unique: true},
+    value: {type: Number, default: 0},
+});
+
+const CounterModel = mongoose.model('Counter', CounterSchema);
+
 const OrderSchema = new mongoose.Schema({
     customerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Customer',
         required: true,
+    },
+    orderNumber: {
+        type: Number,
+        unique: true,
     },
     items: [
         {
@@ -145,7 +156,23 @@ const OrderSchema = new mongoose.Schema({
     },
 });
 
-OrderSchema.pre('save', function(next){
+OrderSchema.pre('save', async function(next){
+
+    if(!this.orderNumber){
+        try {
+            const counter = await CounterModel.findOneAndUpdate(
+                {name: 'orderNumber'},
+                {$inc: {value: 1}},
+                {new: true, upsert: true}
+            );
+            this.orderNumber = counter.value;
+            next();
+        } catch (error) {
+            next(error);
+        }
+    } else{
+        next();
+    }
 
     if(this.isModified('isPending') && !this.isPending && this.orderStatus === 'Pending'){
         this.pendingDate = Date.now();

@@ -61,6 +61,11 @@
     margin-bottom: 5px;
     font-weight: 500;
 }
+
+/* .customer-register-container .form-group select{
+    width: 100%;
+}
+   */
   
 .customer-register-container .form-group .form-input{
     padding: 10px;
@@ -71,6 +76,14 @@
     outline: none;
 }
 
+.customer-register-container .form-group select{
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%; 
+    padding-right: 30px;
+    outline: none;
+}
   
 .customer-register-container .form-group .form-input:focus,
 .customer-register-container .form-group .form-input:hover{
