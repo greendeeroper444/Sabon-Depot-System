@@ -8,19 +8,19 @@ dotenv.config({ path: './.env' });
 const app = express();
 
 app.use(middleware);
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// mongoose.connect(process.env.MONGO_URL)
-// .then(() => console.log('Database connected'))
-// .catch((error) => console.log('Database not connected', error));
-mongoose.connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
-})
+mongoose.connect(process.env.MONGO_URL)
 .then(() => console.log('Database connected'))
-.catch((error) => console.error('Database connection error:', error));
+.catch((error) => console.log('Database not connected', error));
+// mongoose.connect(process.env.MONGO_URL, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//     serverSelectionTimeoutMS: 5000,
+//     socketTimeoutMS: 45000,
+// })
+// .then(() => console.log('Database connected'))
+// .catch((error) => console.error('Database connection error:', error));
 
 
 require('./jobs/resetDiscountsJob');

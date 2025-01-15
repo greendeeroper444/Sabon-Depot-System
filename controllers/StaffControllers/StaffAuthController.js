@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 //set up storage engine
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
-        cb(null, '/uploads/profilePictures/staffs');
+        cb(null, 'uploads/profilePictures/staffs');
     },
     filename: function(req, file, cb){
         const uniqueSuffix = '-' + Date.now() + path.extname(file.originalname);
