@@ -187,7 +187,10 @@ function AdminOrdersPickupDetailsPage() {
                     {
                         order.items.map(item => (
                             <tr key={item._id}>
-                                <td style={{ display: 'flex', alignItems: 'center' }}><img src={`${import.meta.env.VITE_BASE_URL}${item.imageUrl}`} alt='' />{item.productName}</td>
+                                <td style={{ display: 'flex', alignItems: 'center' }}>
+                                    <img src={`${import.meta.env.VITE_BASE_URL}${item.imageUrl}`} alt='' />{item.productName}
+                                    {item.imageUrl}
+                                </td>
                                 <td>{item.sku}</td>
                                 <td>{item.location}</td>
                                 <td>{item.quantity ?? 'N/A'}</td>
