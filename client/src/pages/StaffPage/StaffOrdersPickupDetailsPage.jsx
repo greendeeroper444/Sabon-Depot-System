@@ -90,7 +90,7 @@ function StaffOrdersPickupDetailsPage() {
 
         <div className='order-header'>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <h1>Order # {order._id}</h1>
+                <h1>Order # {order.orderNumber}</h1>
                 <div className='order-status'>
                 {
                     order.isPickedUp ? (

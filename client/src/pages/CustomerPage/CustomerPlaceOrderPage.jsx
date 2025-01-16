@@ -45,9 +45,9 @@ function CustomerPlaceOrderPage() {
   return (
     <div className='customer-place-order-container'>
         <div className='customer-place-order-header'>
-            <div className='breadcrumb'>Home &gt; Orders &gt; ID {order._id}</div>
+            <div className='breadcrumb'>Home &gt; Orders &gt; ID {order.orderNumber}</div>
             <div className='order-id'>
-                <h2>Order ID: {order._id}</h2>
+                <h2>Order ID: {order.orderNumber}</h2>
                 <button className='invoice-button' onClick={() => setInvoiceModalOpen(true)}>
                     <img src={invoiceIcon} alt="" />
                     <span>Invoice</span>

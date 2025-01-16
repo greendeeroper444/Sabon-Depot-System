@@ -13,7 +13,7 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
         doc.addImage(Logo3, 'PNG', 10, 10, 50, 50);
     
         doc.setFontSize(18);
-        doc.text(`Invoice ID# ${order._id}`, 70, 20);
+        doc.text(`Invoice ID# ${order.orderNumber}`, 70, 20);
    
         doc.setFontSize(12);
         let y = 80;
@@ -49,7 +49,7 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
         doc.text(`Shipping: Php ${shippingCost.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, 10, y + 20);
         doc.text(`Total: Php ${total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, 10, y + 30);
         
-        doc.save(`Invoice_${order._id}.pdf`);
+        doc.save(`Invoice_${order.orderNumber}.pdf`);
     };
 
   return (
@@ -57,7 +57,7 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
         <div className='invoice-modal'>
             <button className='close-button' onClick={onClose}>✖</button>
             <div className='invoice-header'>
-                <h2>Invoice ID# {order._id}</h2>
+                <h2>Invoice ID# {order.orderNumber}</h2>
                 <div className='invoice-logo'>
                     <img src={Logo3} alt='Sabon Depot' />
                 </div>

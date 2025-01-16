@@ -53,7 +53,7 @@ function CustomerOrdersPage() {
                             <span>{orderDate(order.createdAt)}</span>
                             <span>${order.totalAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                             <span>{customer.firstName}</span>
-                            <span>#{order._id}</span>
+                            <span>#{order.orderNumber}</span>
                             {/* <span>
                                 <a href='#'>View order details</a> | <a href='#'>View invoice</a>
                             </span> */}
