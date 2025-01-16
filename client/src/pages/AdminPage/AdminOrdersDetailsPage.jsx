@@ -101,7 +101,26 @@ function AdminOrdersDetailsPage() {
 
         <div className='order-dates'>
             <p><strong>Placed on:</strong> {orderDate(order.createdAt)}</p>
-            <p><strong>Paid on:</strong> {orderDate(order.deliveredDate ? new Date(order.deliveredDate).toLocaleDateString() : 'N/A')}</p>
+            {
+                order.shippedDate && (
+                    <p><strong>Shipped on:</strong> {orderDate(new Date(order.shippedDate).toLocaleDateString())}</p>
+                )
+            }
+            {
+                order.outForDeliveryDate && (
+                    <p><strong>Out For Delivery on:</strong> {orderDate(new Date(order.outForDeliveryDate).toLocaleDateString())}</p>
+                )
+            }
+            {
+                order.deliveredDate && (
+                    <p><strong>Paid on:</strong> {orderDate(new Date(order.deliveredDate).toLocaleDateString())}</p>
+                )
+            }
+            {
+                !order.deliveredDate && (
+                    <p><strong>Status:</strong> Not paid yet</p>
+                )
+            }
         </div>
 
         <div className='order-info'>

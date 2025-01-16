@@ -163,7 +163,21 @@ function StaffOrdersPickupDetailsPage() {
         <div className='order-dates'>
             <p><strong>Placed on:</strong> {orderDate(order.createdAt)}</p>
             {/* <p><strong>Updated:</strong> {new Date(order.updatedAt).toLocaleDateString()}</p> */}
-            <p><strong>Paid on:</strong> {orderDate(order.pickedUpDate ? new Date(order.pickedUpDate).toLocaleDateString() : 'N/A')}</p>
+            {
+                order.readyDate && (
+                    <p><strong>Ready on:</strong> {orderDate(new Date(order.readyDate).toLocaleDateString())}</p>
+                )
+            }
+            {
+                order.pickedUpDate && (
+                    <p><strong>Paid on:</strong> {orderDate(new Date(order.pickedUpDate).toLocaleDateString())}</p>
+                )
+            }
+            {
+                !order.pickedUpDate && (
+                    <p><strong>Status:</strong> Not paid yet</p>
+                )
+            }
         </div>
 
         <div className='order-info'>

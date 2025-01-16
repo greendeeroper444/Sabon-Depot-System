@@ -60,7 +60,7 @@ function CustomerPayablePage() {
             orders.length > 0 ? (
                 orders.map((order) => (
                     <div key={order._id} className='order-table'>
-                        <h3>Order ID: {order._id} - Date: {new Date(order.createdAt).toLocaleDateString()}</h3>
+                        <h3>Order ID: {order.orderNumber} - Date: {new Date(order.createdAt).toLocaleDateString()}</h3>
                         <table className='payable-table'>
                             <thead>
                                 <tr>

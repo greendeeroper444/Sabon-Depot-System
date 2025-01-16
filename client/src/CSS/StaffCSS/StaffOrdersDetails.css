@@ -45,8 +45,8 @@
 
   
 .staff-order-details-container .order-dates{
-    display: flex;
-    justify-content: space-between;
+    /* display: flex;
+    justify-content: space-between; */
     margin-bottom: 20px;
     font-size: 13px;
 }
