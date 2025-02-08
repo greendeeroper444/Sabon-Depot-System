@@ -15,7 +15,7 @@ export const adminRoutes = [
     '/admin/accounts/:id',
     '/admin/quick-sales',
     '/admin/order-summary/:orderId',
-    '/admin/settings'
+    '/admin/settings/:adminId'
 ];
   
 export const isAdminRoute = (path) => {

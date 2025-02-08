@@ -49,7 +49,7 @@ function StaffInvoiceModal({isOpen, onClose, order}) {
         <div className='invoice-modal'>
             <button className='close-button' onClick={onClose}>✖</button>
             <div className='invoice-header'>
-                <h2>Invoice ID# {order._id || 'N/A'}</h2>
+                <h2>Invoice ID# {order.orderNumber || 'N/A'}</h2>
                 <div className='invoice-logo'>
                     <img src={Logo3} alt='Sabon Depot' />
                 </div>

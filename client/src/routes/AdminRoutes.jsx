@@ -57,7 +57,7 @@
 
 import React from 'react'
 import { AdminContextProvider } from '../../contexts/AdminContexts/AdminAuthContext'
-import { useLocation } from 'react-router-dom'
+import { matchPath, useLocation } from 'react-router-dom'
 import AdminNavbarComponent from '../components/AdminComponents/AdminNavbarComponent'
 import AdminSidebarComponent from '../components/AdminComponents/AdminSidebarComponent'
 import AdminSidebarResponsiveComponent from '../components/AdminComponents/AdminSidebarResponsiveComponent'
@@ -80,16 +80,23 @@ import AdminSettingsPage from '../pages/AdminPage/AdminSettingsPage'
 import AdminOrdersPickupDetailsPage from '../pages/AdminPage/AdminOrdersPickupDetails'
 
 function AdminRoutes({adminToggleSidebar, adminCloseSidebar, adminSidebarVisible}) {
-  const location = useLocation()
+    const location = useLocation()
 
-  //list of routes where the AdminNavbarComponent should be hidden
-  const noNavbarRoutes = ['/admin/settings']
+    //list of routes where the AdminNavbarComponent should be hidden
+    //   const noNavbarRoutes = ['/admin/settings/:adminId']
+    //check if the current route matches the dynamic admin settings route
+    const isSettingsPage = matchPath('/admin/settings/:adminId', location.pathname)
 
   return (
     <AdminContextProvider>
         {/* conditionally render AdminNavbarComponent */}
-        {
+        {/* {
             !noNavbarRoutes.includes(location.pathname) && (
+                <AdminNavbarComponent adminToggleSidebar={adminToggleSidebar} />
+            )
+        } */}
+        {
+            !isSettingsPage && (
                 <AdminNavbarComponent adminToggleSidebar={adminToggleSidebar} />
             )
         }
@@ -114,7 +121,7 @@ function AdminRoutes({adminToggleSidebar, adminCloseSidebar, adminSidebarVisible
                 <Route path='/admin/accounts/:id' element={<AdminAccountDetails />} />
                 <Route path='/admin/quick-sales' element={<AdminQuickSalesPage />} />
                 <Route path='/admin/order-summary/:orderId' element={<AdminOrderSummaryPage />} />
-                <Route path='/admin/settings' element={<AdminSettingsPage />} />
+                <Route path='/admin/settings/:adminId' element={<AdminSettingsPage />} />
             </Routes>
         </div>
     </AdminContextProvider>

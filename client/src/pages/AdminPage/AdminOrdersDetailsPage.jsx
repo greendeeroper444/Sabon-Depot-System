@@ -37,18 +37,22 @@ function AdminOrdersDetailsPage() {
         }
     };
 
-    useEffect(() => {
-        const fetchOrderDetails = async() => {
-            try {
-                const response = await axios.get(`/staffOrders/getOrderDetailsStaff/${orderId}`);
-                setOrder(response.data);
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchOrderDetails = async() => {
+        try {
+            const response = await axios.get(`/staffOrders/getOrderDetailsStaff/${orderId}`);
+            setOrder(response.data);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
+        fetchOrderDetails();
+    }, [order?.orderStatus]);
+
+    useEffect(() => {
         fetchOrderDetails();
     }, [orderId]);
 
@@ -81,46 +85,25 @@ function AdminOrdersDetailsPage() {
                 <button
                 className={`order-actions-button shipped ${getStatusClass('isShipped', order) === 'isShipped' ? 'active' : ''}`}
                 onClick={() => handleStatusUpdate('isShipped')}
+                disabled={order.orderStatus === 'Out For Delivery' || order.orderStatus === 'Delivered'}
                 >
                     Shipped
                 </button>
                 <button
                 className={`order-actions-button outForDelivery ${getStatusClass('isOutForDelivery', order) === 'isOutForDelivery' ? 'active' : ''}`}
                 onClick={() => handleStatusUpdate('isOutForDelivery')}
+                disabled={order.orderStatus === 'Delivered' || order.orderStatus === 'Pending'}
                 >
                     Out For Delivery
                 </button>
                 <button
                 className={`order-actions-button delivered ${getStatusClass('isDelivered', order) === 'isDelivered' ? 'active' : ''}`}
                 onClick={() => handleStatusUpdate('isDelivered')}
+                disabled={order.orderStatus === 'Pending' || order.orderStatus === 'Shipped'}
                 >
                     Delivered
                 </button>
             </div>
-        </div>
-
-        <div className='order-dates'>
-            <p><strong>Placed on:</strong> {orderDate(order.createdAt)}</p>
-            {
-                order.shippedDate && (
-                    <p><strong>Shipped on:</strong> {orderDate(new Date(order.shippedDate).toLocaleDateString())}</p>
-                )
-            }
-            {
-                order.outForDeliveryDate && (
-                    <p><strong>Out For Delivery on:</strong> {orderDate(new Date(order.outForDeliveryDate).toLocaleDateString())}</p>
-                )
-            }
-            {
-                order.deliveredDate && (
-                    <p><strong>Paid on:</strong> {orderDate(new Date(order.deliveredDate).toLocaleDateString())}</p>
-                )
-            }
-            {
-                !order.deliveredDate && (
-                    <p><strong>Status:</strong> Not paid yet</p>
-                )
-            }
         </div>
 
         <div className='order-info'>
@@ -137,8 +120,8 @@ function AdminOrdersDetailsPage() {
                 </p>
                 <p><strong>Email:</strong> {order.billingDetails.emailAddress}</p>
                 <p><strong>Phone:</strong> {order.billingDetails.contactNumber}</p>
-                <p><strong>PO:</strong> {order.poNumber}</p>
-                <p><strong>Payment terms:</strong> {order.paymentTerms}</p>
+                <p style={{ fontSize: '16px' }}><strong>Status:</strong> {order.orderStatus}</p>
+                {/* <p><strong>Payment terms:</strong> {order.paymentTerms}</p> */}
                 <p><strong>Delivery method:</strong> {order.paymentMethod}</p>
             </div>
             <div className='order-section'>
@@ -146,17 +129,35 @@ function AdminOrdersDetailsPage() {
                     <span>Shipping Address</span> 
                     {/* <img src={editIcon} alt='Edit Icon' className='edit-icon' /> */}
                 </h3>
-                <p>{order.billingDetails.province}</p>
-                <p>{order.billingDetails.city}</p>
-                <p>{order.billingDetails.barangay}</p>
-                <p>{order.billingDetails.purokStreetSubdivision}</p>
+                <p>
+                    {order.billingDetails.province},{' '} 
+                    {order.billingDetails.city}, {' '}
+                    {order.billingDetails.barangay}, { ''}
+                    {order.billingDetails.purokStreetSubdivision}
+                </p>
             </div>
             <div className='order-section'>
                 <h3 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span>Billing Address</span> 
+                    <span>Date Tracker</span> 
                     {/* <img src={editIcon} alt='Edit Icon' className='edit-icon' /> */}
                 </h3>
-                <p>{order.billingDetails.city}</p>
+                <p><strong>Placed on:</strong> {orderDate(order.createdAt)}</p>
+                {/* <p><strong>Updated:</strong> {new Date(order.updatedAt).toLocaleDateString()}</p> */}
+                {
+                    order.shippedDate && (
+                        <p><strong>Shipped on:</strong> {orderDate(new Date(order.shippedDate).toLocaleDateString())}</p>
+                    )
+                }
+                 {
+                    order.outForDeliveryDate && (
+                        <p><strong>Out For Delivery on:</strong> {orderDate(new Date(order.outForDeliveryDate).toLocaleDateString())}</p>
+                    )
+                }
+                {
+                    order.deliveredDate && (
+                        <p><strong>Paid on:</strong> {orderDate(new Date(order.deliveredDate).toLocaleDateString())}</p>
+                    )
+                }
             </div>
         </div>
 
@@ -166,8 +167,8 @@ function AdminOrdersDetailsPage() {
                 <thead>
                     <tr>
                         <th>Items Name</th>
-                        <th>SKU</th>
-                        <th>Location</th>
+                        {/* <th>SKU</th>
+                        <th>Location</th> */}
                         <th>Quantity</th>
                         <th>Price</th>
                         <th>Total</th>
@@ -178,8 +179,8 @@ function AdminOrdersDetailsPage() {
                         order.items.map(item => (
                             <tr key={item._id}>
                                 <td style={{ display: 'flex', alignItems: 'center' }}><img src={`${import.meta.env.VITE_BASE_URL}${item.imageUrl}`} alt='' />{item.productName}</td>
-                                <td>{item.sku}</td>
-                                <td>{item.location}</td>
+                                {/* <td>{item.sku}</td>
+                                <td>{item.location}</td> */}
                                 <td>{item.quantity ?? 'N/A'}</td>
                                 <td>₱{item.price?.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) ?? 'N/A'}</td>
                                 <td>₱{(item.price * item.quantity).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>

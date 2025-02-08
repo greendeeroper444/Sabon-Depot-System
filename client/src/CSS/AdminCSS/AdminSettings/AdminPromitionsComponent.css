@@ -1,16 +1,4 @@
-.settings-content{
-    flex: 1;
-    padding: 20px;
-    overflow-x: auto;
-    border-radius: 8px;
-}
 
-.settings-content h2{
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.8em;
-    color: #333;
-}
 
 .admin-promotions-container{
 }
@@ -86,4 +74,10 @@
 .admin-promotions-container .admin-promotions-controls button:nth-child(3):hover{
     background-color: #077a37;
     color: white;
+}
+
+.button-edit-icon{
+    border: none;
+    background: none;
+    cursor: pointer;
 }

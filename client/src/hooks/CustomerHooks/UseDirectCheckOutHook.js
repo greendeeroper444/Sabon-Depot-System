@@ -291,7 +291,7 @@ export default function UseDirectCheckOutHook(customerId, selectedItems = [], na
                 billingDetails,
                 pickupDate: selectedDate || undefined,
                 pickupTime: selectedTime || undefined,
-                productDetails: { _id: selectedItems[0].productId._id }, //correctly access _id
+                productDetails: {_id: selectedItems[0].productId._id}, //correctly access _id
                 quantity: selectedItems[0]?.quantity, //pass quantity
             };
     

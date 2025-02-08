@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import '../../CSS/AdminCSS/AdminSidebar.css';
 import { NavLink } from 'react-router-dom';
 import logoDepot from '../../assets/icons/logo-depot.png';
@@ -16,8 +16,10 @@ import settingsIcon from '../../assets/admin/adminicons/settings.png';
 import settingsIconWhite from '../../assets/admin/adminicons/settings-white.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
+import { AdminContext } from '../../../contexts/AdminContexts/AdminAuthContext';
 
 function AdminSidebarComponent() {
+    const {admin} = useContext(AdminContext);
     const [isDropdownOpenInventory, setIsDropdownOpenInventory] = useState(false);
     const [isDropdownOpenReports, setIsDropdownOpenReports] = useState(false);
     const [isDropdownTransaction, setIsDropdownTransaction] = useState(false);
@@ -78,7 +80,7 @@ function AdminSidebarComponent() {
                     <span>Orders</span>
                 </NavLink>
             </li> */}
-            <li>
+            {/* <li>
                 <div className='admin-sidebar-item' onClick={toggleDropdownInventory}>
                     <img src={inventoryIcon} alt="Inventory" className='sidebar-icon' />
                     <span>Inventory</span>
@@ -96,6 +98,13 @@ function AdminSidebarComponent() {
                         </div>
                     )
                 }
+            </li> */}
+            <li>
+                <NavLink to='/admin/inventory/finished-product' className='admin-sidebar-item' activeClassName='active'>
+                    <img src={inventoryIcon} alt="Inventory" className='sidebar-icon' />
+                    <img src={inventoryIcon} alt="Inventory" className='sidebar-icon-active' />
+                    <span>Inventory</span>
+                </NavLink>
             </li>
             <li>
                 <NavLink to='/admin/quick-sales' className='admin-sidebar-item' activeClassName='active'>
@@ -131,7 +140,7 @@ function AdminSidebarComponent() {
                 }
             </li>
             <li>
-                <NavLink to='/admin/settings' className='admin-sidebar-item' activeClassName='active'>
+                <NavLink to={`/admin/settings/${admin?._id}`} className='admin-sidebar-item' activeClassName='active'>
                     <img src={settingsIcon} alt="Accounts" className='sidebar-icon' />
                     <img src={settingsIconWhite} alt="Acounts" className='sidebar-icon-active' />
                     <span>Settings</span>

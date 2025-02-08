@@ -17,7 +17,7 @@ import accountsIconGreen from '../../assets/admin/adminicons/admin-sidebar-accou
 
 
 function StaffSidebarComponent() {
-    const { staff } = useContext(StaffContext);
+    const {staff} = useContext(StaffContext);
     const [isTransactionOpen, setTransactionOpen] = useState(false);
     const [activeItem, setActiveItem] = useState('');
     const menuRef = useRef(null);

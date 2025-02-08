@@ -18,9 +18,6 @@ function AdminPromotionsComponent() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [productIdToDelete, setProductIdToDelete] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [summaryData, setSummaryData] = useState({
@@ -39,9 +36,15 @@ function AdminPromotionsComponent() {
         setSelectedCategory(event.target.value);
     };
 
+    // const filteredProducts = selectedCategory
+    // ? products.filter((product) => product.category === selectedCategory)
+    // : products;
     const filteredProducts = selectedCategory
-    ? products.filter((product) => product.category === selectedCategory)
-    : products;
+    ? products
+        .filter((product) => product.category === selectedCategory)
+        .filter((product) => product.discountPercentage && product.discountPercentage > 0)
+    : products.filter((product) => product.discountPercentage && product.discountPercentage > 0);
+
 
     //display/get product data
     const fetchProducts = async() => {
@@ -98,53 +101,6 @@ function AdminPromotionsComponent() {
     }, []);
 
 
-    //generate PDF report
-    const handleGenerateReport = () => {
-        const doc = new jsPDF();
-    
-        //title
-        doc.setFontSize(18);
-        doc.setTextColor(34, 31, 197);
-        doc.setFont(undefined, 'bold');
-        doc.text('CLEAN-UP SOLUTIONS ENTERPRISES, INC.', 14, 16);
-    
-        //subtitle
-        doc.setFontSize(14);
-        doc.setTextColor(197, 31, 41);
-        doc.setFont(undefined, 'bold');
-        doc.text('PRICE MONITORING SHEET', 14, 24);
-    
-        //date
-        const now = new Date();
-        const formattedDate = new Intl.DateTimeFormat('en-US', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        }).format(now);
-        const upperCaseDate = formattedDate.toUpperCase();
-        doc.setFontSize(8);
-        doc.setTextColor(0, 0, 0);
-        doc.setFont(undefined, 'bold');
-        doc.text(`AS OF ${upperCaseDate}`, 14, 32);
-    
-        //table
-        doc.autoTable({
-            startY: 40,
-            head: [['Product Code', 'Product', 'Category', 'Price']],
-            body: products.map(product => [
-                product.productCode,
-                product.productName,
-                product.category,
-                product.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})
-            ]),
-            styles: {fontSize: 12, halign: 'center'},
-            headStyles: {fillColor: [0, 0, 139]},
-        });
-    
-        //save the PDF
-        doc.save('product_report.pdf');
-    };
-
     //edit function
     const handleEditProductClick = async(productId) => {
         try {
@@ -160,18 +116,6 @@ function AdminPromotionsComponent() {
         setIsEditModalOpen(false);
         setSelectedProduct(null);
     };
-
-    
-
-    
-    const handleDeleteProductClick = (productId) => {
-        setProductIdToDelete(productId);
-        setIsDeleteModalOpen(true);
-    };
-    const handleAddProductClick = () => {
-        setIsModalOpen(true);
-    };
-
 
     
     if(loading){
@@ -268,8 +212,8 @@ function AdminPromotionsComponent() {
                             <th>Product Name</th>
                             <th>Category</th>
                             <th>Size</th>
-                            <th>Price</th>
-                            <th>Expiration</th>
+                            {/* <th>Price</th>
+                            <th>Expiration</th> */}
                             <th>Discount (%)</th>
                             <th>Discounted Price</th>
                             <th>Discount End</th>
@@ -291,8 +235,8 @@ function AdminPromotionsComponent() {
                                     </td>
                                     <td>{product.category}</td>
                                     <td>{product.sizeUnit.slice(0, 1)} - {product.productSize}</td>
-                                    <td>{product.price}</td>
-                                    <td>{`${orderDate(product.expirationDate)}`}</td>
+                                    {/* <td>{product.price}</td>
+                                    <td>{`${orderDate(product.expirationDate)}`}</td> */}
                                     <td>{product.discountPercentage ? `${product.discountPercentage}%` : 'No Discount'}</td>
                                     <td>{product.discountedPrice}</td>
                                     <td>{product.discountedDate ? `${orderDate(product.discountedDate)}` : 'No Discount Date'}</td>

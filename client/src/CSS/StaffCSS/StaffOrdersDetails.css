@@ -42,6 +42,13 @@
     color: #fff;
     border-color: #10B981;
 }
+.staff-order-details-container .order-actions button:disabled{
+    background-color: #e5e7eb;
+    color: #9ca3af;
+    border-color: #d1d5db;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
 
   
 .staff-order-details-container .order-dates{

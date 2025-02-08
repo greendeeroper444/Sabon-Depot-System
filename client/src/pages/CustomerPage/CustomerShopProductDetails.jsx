@@ -101,12 +101,15 @@ function CustomerShopProductDetails() {
         // setQuantity(value);
 
         //updated
-        const value = Math.max(1, parseInt(e.target.value, 10) || 1);
+        const value = e.target.value;
         //ensure the quantity does not exceed available stock
-        if(value <= product.quantity){
-            setQuantity(value);
-        } else{
-            alert('Cannot exceed available stock');
+        // if(value <= product.quantity){
+        //     setQuantity(value);
+        // } else{
+        //     alert('Cannot exceed available stock');
+        // }
+        if(value === "" || /^[1-9][0-9]*$/.test(value)){
+            setQuantity(value === "" ? "" : Math.min(Number(value), product.quantity));
         }
     };
 

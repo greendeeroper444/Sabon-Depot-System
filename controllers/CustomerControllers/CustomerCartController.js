@@ -279,11 +279,45 @@ const updateProductQuantity = async(req, res) => {
     });
 };
 
+//part 2
+const updateProductQuantityCustomer = async(req, res) => {
+    const {cartItemId, quantity} = req.body;
+
+    try {
+        //find the cart item and update the quantity
+        const updatedItem = await CartModel.findByIdAndUpdate(
+            cartItemId,
+            {quantity},
+            {new: true}
+        );
+
+        if(!updatedItem){
+            return res.status(404).json({ 
+                success: false,
+                message: 'Cart item not found'
+            });
+        }
+
+        res.json({ 
+            success: true, 
+            message: 'Quantity updated successfully', 
+            item: updatedItem 
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Internal server error' 
+        });
+    }
+};
+
 module.exports = {
     addProductToCartCustomer,
     getProductCartCustomer,
     removeProductFromCartCustomer,
-    updateProductQuantity
+    updateProductQuantity,
+    updateProductQuantityCustomer
 }
 
 

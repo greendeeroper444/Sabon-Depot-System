@@ -14,7 +14,7 @@ const OrderSchema = new mongoose.Schema({
         required: true,
     },
     orderNumber: {
-        type: Number,
+        type: String,
         unique: true,
     },
     items: [
@@ -25,6 +25,7 @@ const OrderSchema = new mongoose.Schema({
                 required: true,
             },
             productCode: String,
+            imageUrl: String,
             productName: String,
             category: String,
             price: Number,
@@ -158,19 +159,46 @@ const OrderSchema = new mongoose.Schema({
 
 OrderSchema.pre('save', async function(next){
 
+    // if(!this.orderNumber){
+    //     try {
+    //         const counter = await CounterModel.findOneAndUpdate(
+    //             {name: 'orderNumber'},
+    //             {$inc: {value: 1}},
+    //             {new: true, upsert: true}
+    //         );
+    //         this.orderNumber = counter.value;
+    //         next();
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // } else{
+    //     next();
+    // }
     if(!this.orderNumber){
         try {
+            //get current date in YYYY-MM-DD format
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const formattedDate = `${year}-${month}${day}`;
+
+            //find or create a counter for the current date
             const counter = await CounterModel.findOneAndUpdate(
-                {name: 'orderNumber'},
+                {name: formattedDate},
                 {$inc: {value: 1}},
                 {new: true, upsert: true}
             );
-            this.orderNumber = counter.value;
+
+            //generate orderNumber in the required format
+            const count = String(counter.value).padStart(3, '0');
+            this.orderNumber = `${formattedDate}${count}`;
+
             next();
         } catch (error) {
             next(error);
         }
-    } else{
+    } else {
         next();
     }
 

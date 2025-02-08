@@ -50,7 +50,17 @@ export const getStatusClass = (status, order) => {
     if(order.isDelivered) return 'isDelivered';
     if(order.isOutForDelivery) return 'isOutForDelivery';
     if(order.isShipped) return 'isShipped';
-    if(order.isPickedUp) return 'isPickedUp';
-    if(order.isReady) return 'isReady';
+    if (status === 'isReady' && order.isReady) return 'isReady';
+    if (status === 'isPickedUp' && order.isPickedUp) return 'isPickedUp';
     return 'isPending';
+};
+
+export const getStatusClassCustomer = (statusKey, order) => {
+    if(statusKey === 'isPickedUp' && order.isPickedUp) return 'active';
+    if(statusKey === 'isReady' && order.isReady && !order.isPickedUp) return 'active';
+    if(statusKey === 'isDelivered' && order.isDelivered && !order.isOutForDelivery) return 'active';
+    if(statusKey === 'isOutForDelivery' && order.isOutForDelivery && !order.isDelivered) return 'active';
+    if(statusKey === 'isShipped' && order.isShipped && !order.isOutForDelivery) return 'active';
+    if(statusKey === 'isPending' && !order.isReady) return 'active';
+    return '';
 };

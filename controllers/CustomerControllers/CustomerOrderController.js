@@ -178,6 +178,7 @@ const createOrderCustomer = async(req, res) => {
                 items: cartItems.map(item => ({
                     productId: item.productId._id,
                     productCode: item.productId.productCode,
+                    imageUrl: product.imageUrl,
                     productName: item.productId.productName,
                     category: item.productId.category,
                     price: item.productId.price,
@@ -207,8 +208,93 @@ const createOrderCustomer = async(req, res) => {
 
         await order.save();
 
+         //update product quantities based on the order
+         await Promise.all(cartItems.map(async (item) => {
+            await ProductModel.findByIdAndUpdate(item.productId._id, {
+                $inc: {quantity: -item.quantity} //decrease product quantity
+            });
+
+            const today = new Date();
+            today.setUTCHours(0, 0, 0, 0); //set time to midnight for the day field
+            const existingRecord = await TotalSaleModel.findOne({
+                productName: item.productId.productName,
+                day: today,
+            });
+
+            if(existingRecord){
+                //update existing record
+                await TotalSaleModel.updateOne(
+                    {_id: existingRecord._id},
+                    {
+                        $inc: {
+                            totalProduct: 1,
+                            totalSales: item.productId.price * item.quantity,
+                            quantitySold: item.quantity,
+                        },
+                    }
+                );
+            } else{
+                //create a new record
+                await TotalSaleModel.create({
+                    productName: item.productId.productName,
+                    totalProduct: 1,
+                    price: item.productId.price,
+                    imageUrl: item.productId.imageUrl,
+                    totalSales: item.productId.price * item.quantity,
+                    quantitySold: item.quantity,
+                    day: today,
+                });
+            }
+
+            //get all best selling
+            //update bestSellingRecord model
+            const bestSellingRecord = await BestSellingModel.findOne({productId: item.productId._id});
+            if(bestSellingRecord){
+                //update existing record
+                bestSellingRecord.totalProduct += 1;
+                bestSellingRecord.totalSales += item.finalPrice * item.quantity;
+                bestSellingRecord.quantitySold += item.quantity;
+                bestSellingRecord.lastSoldAt = Date.now();
+                await bestSellingRecord.save();
+            } else{
+                //create a new record
+                await BestSellingModel.create({
+                    productId: item.productId._id,
+                    productName: item.productId.productName,
+                    imageUrl: item.productId.imageUrl,
+                    price: item.productId.price,
+                    totalSales: item.finalPrice * item.quantity,
+                    quantitySold: item.quantity,
+                    sizeUnit: item.productId.sizeUnit,
+                    productSize: item.productId.productSize,
+                    lastSoldAt: Date.now(),
+                });
+            }
+
+
+            await getInventoryReport(
+                item.productId._id,
+                item.productId.productName,
+                item.productId.sizeUnit,
+                item.productId.productSize,
+                item.productId.category,
+                item.quantity,
+                true
+            );
+
+            await getSalesReport(
+                item.productId._id,
+                item.productId.productName,
+                item.productId.sizeUnit,
+                item.productId.productSize,
+                item.productId.category,
+                item.productId.price,
+                item.quantity,
+                true
+            );
         
-        
+        }));
+
         //remove selected items from the cart
         await CartModel.deleteMany({
             _id: {$in: selectedItems},
@@ -297,6 +383,7 @@ const directCheckoutCustomer = async(req, res) => {
             items: [
                 {
                     productId: product._id,
+                    imageUrl: product.imageUrl,
                     productName: product.productName,
                     price: product.price,
                     discountedPrice,
@@ -315,26 +402,25 @@ const directCheckoutCustomer = async(req, res) => {
 
         await order.save();
 
-        //update product quantities and handle related models
         await Promise.all(
             order.items.map(async (item) => {
-                const {productId, quantity, productName, price, finalPrice} = item;
-
+                const {productId, quantity, productName, price, finalPrice, imageUrl} = item;
+        
                 try {
                     //update product stock
                     await ProductModel.findByIdAndUpdate(productId, {
                         $inc: { quantity: -quantity },
                     });
-
+        
                     //handle total sales
                     const today = new Date();
                     today.setUTCHours(0, 0, 0, 0);
-
+        
                     const existingTotalSale = await TotalSaleModel.findOne({
                         productName,
                         day: today,
                     });
-
+        
                     if(existingTotalSale){
                         await TotalSaleModel.updateOne(
                             {_id: existingTotalSale._id},
@@ -349,6 +435,7 @@ const directCheckoutCustomer = async(req, res) => {
                     } else {
                         await TotalSaleModel.create({
                             productName,
+                            imageUrl,
                             price,
                             totalProduct: 1,
                             totalSales: price * quantity,
@@ -356,7 +443,7 @@ const directCheckoutCustomer = async(req, res) => {
                             day: today,
                         });
                     }
-
+        
                     //handle best-selling records
                     const bestSelling = await BestSellingModel.findOne({productId});
                     if(bestSelling){
@@ -369,21 +456,48 @@ const directCheckoutCustomer = async(req, res) => {
                         await BestSellingModel.create({
                             productId,
                             productName,
+                            imageUrl,
                             price,
                             totalSales: finalPrice * quantity,
                             quantitySold: quantity,
                             lastSoldAt: Date.now(),
                         });
                     }
-
+        
+                    //get product details for inventory and sales reports
+                    const product = await ProductModel.findById(productId);
+                    if(!product){
+                        console.error(`Product not found for ID: ${productId}`);
+                        return;
+                    }
+        
                     //generate inventory and sales reports
-                    await getInventoryReport(productId, productName, '', '', '', quantity, true);
-                    await getSalesReport(productId, productName, '', '', price, quantity, true);
+                    await getInventoryReport(
+                        productId,
+                        productName,
+                        product.category,
+                        product.sizeUnit,
+                        product.productSize,
+                        quantity,
+                        true
+                    );
+        
+                    await getSalesReport(
+                        productId,
+                        productName,
+                        product.category,
+                        product.sizeUnit,
+                        price,
+                        quantity,
+                        true
+                    );
+        
                 } catch (err) {
                     console.error(`Error updating product data for ${productId}:`, err.message);
                 }
             })
         );
+        
 
         //create notifications
         const notifications = order.items.map((item) => ({

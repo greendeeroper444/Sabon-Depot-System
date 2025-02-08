@@ -67,7 +67,7 @@ function StaffOrderSummaryPage() {
             orders.map((order) => (
                 <div key={order._id} className='order-summary'>
                     <div className='order-buttons'>
-                        <h2>Order ID: {order._id}</h2>
+                        <h2>Order ID: {order.orderNumber}</h2>
                         <button className='invoice-button' onClick={() => handleInvoiceClick(order)}>
                             <img src={invoiceIcon} alt='' />
                             <span>Invoice</span>

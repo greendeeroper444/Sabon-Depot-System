@@ -124,7 +124,7 @@ function AdminInventoryComponent() {
             <table className='inventory-table'>
                 <thead>
                     <tr>
-                        <th>Category ID</th>
+                        {/* <th>Category ID</th> */}
                         <th>Category Name</th>
                         <th>Actions</th>
                     </tr>
@@ -133,7 +133,7 @@ function AdminInventoryComponent() {
                     {
                         categories.map((category) => (
                             <tr key={category._id}>
-                                <td>{category._id}</td>
+                                {/* <td>{category._id}</td> */}
                                 <td>{category.categoryName}</td>
                                 <td>
                                     <button onClick={() => handleEditCategory(category._id, category.categoryName)} className='edit-btn'>
@@ -222,7 +222,7 @@ function AdminInventoryComponent() {
             <table className='inventory-table'>
                 <thead>
                     <tr>
-                        <th>Size ID</th>
+                        {/* <th>Size ID</th> */}
                         <th>Size Name</th>
                         <th>Size Unit</th>
                         <th>Actions</th>
@@ -232,7 +232,7 @@ function AdminInventoryComponent() {
                     {
                         filteredSizes.map((size) => (
                             <tr key={size._id}>
-                                <td>{size._id}</td>
+                                {/* <td>{size._id}</td> */}
                                 <td>{size.productSize}</td>
                                 <td>{size.sizeUnit}</td>
                                 <td>

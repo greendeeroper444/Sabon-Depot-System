@@ -14,6 +14,30 @@ function CustomerModalShopDetailsComponent({isOpen, onClose, cartItems, setCartI
     const navigate = useNavigate();
     const {customer} = useContext(CustomerContext);
 
+     //handle quantity change
+     const handleQuantityChange = async(cartItemId, newQuantity) => {
+        if(newQuantity < 1) return;
+
+        try {
+            const response = await axios.put('/customerCart/updateProductQuantityCustomer', {
+                cartItemId,
+                quantity: newQuantity,
+            });
+
+            if(response.data.success){
+                const updatedCartItems = cartItems.map(item =>
+                    item._id === cartItemId ? {...item, quantity: newQuantity} : item
+                );
+                setCartItems(updatedCartItems);
+            } else {
+                toast.error(response.data.message || 'Failed to update quantity.');
+            }
+        } catch (error) {
+            console.error('Error updating quantity:', error);
+            toast.error('Failed to update quantity. Please try again.');
+        }
+    };
+
     //handle checkout
     const handleCheckout = () => {
         navigate(`/checkout/${customerId}`, {state: {cartItems}});
@@ -86,7 +110,13 @@ function CustomerModalShopDetailsComponent({isOpen, onClose, cartItems, setCartI
                                     <div className='customer-modal-product-items-content'>
                                         <span>{cartItem.productId.productName}</span>
                                         <p>
-                                            <span>{cartItem.quantity}</span>
+                                            <input
+                                            type='number'
+                                            value={cartItem.quantity}
+                                            min='1'
+                                            onChange={(e) => handleQuantityChange(cartItem._id, parseInt(e.target.value))}
+                                            className='input-quantity-update'
+                                            />
                                             <span>X</span> 
                                             <span>{`₱ ${calculateFinalPriceModal(cartItem, customer)}`}</span>
                                             {/* <span>=</span>

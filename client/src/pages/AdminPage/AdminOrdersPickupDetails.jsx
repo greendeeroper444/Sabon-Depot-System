@@ -14,35 +14,32 @@ function AdminOrdersPickupDetailsPage() {
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // //update order status function
-    // const handleStatusUpdate = async(status) => {
-    //     try {
-    //         const response = await axios.put(`/staffOrders/updateOrderStatusStaff/${orderId}`, {status});
-    //         setOrder(response.data);
-    //     } catch (error) {
-    //         setError(error.message);
-    //     }
-    // };
+    const fetchOrderDetails = async() => {
+        try {
+            const response = await axios.get(`/staffOrders/getOrderDetailsStaff/${orderId}`);
+            setOrder(response.data);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    // //approve order fucntion
-    // const handleApprove = async() => {
-    //     try {
-    //         const response = await axios.put(`/staffOrders/approveOrderStaff/${orderId}`);
-    //         setOrder(response.data);
-    //         setIsModalOpen(false);
-
-    //         toast.success('Your order has been confirmed.');
-    //     } catch (error) {
-    //         setError(error.message);
-    //     }
-    // };
     const handleStatusUpdate = async(status) => {
         if(status === 'isPickedUp'){
             setIsModalOpen(true);
             return; 
         }
         //other statuses
-        await axios.put(`/staffOrders/updateOrderStatusStaff/${orderId}`, {status});
+        // await axios.put(`/staffOrders/updateOrderStatusStaff/${orderId}`, {status});
+        try {
+            const response = await axios.put(`/staffOrders/updateOrderStatusStaff/${orderId}`, {status});
+            setOrder(response.data);
+            toast.success(`Order status updated to ${status === 'isReady' ? 'Ready to Pick Up' : 'Picked Up'}`);
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to update order status.');
+        }
     };
     
     const handleApprove = async(cashReceived, changeTotal) => {
@@ -61,18 +58,12 @@ function AdminOrdersPickupDetailsPage() {
         }
     };
 
-    useEffect(() => {
-        const fetchOrderDetails = async() => {
-            try {
-                const response = await axios.get(`/staffOrders/getOrderDetailsStaff/${orderId}`);
-                setOrder(response.data);
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
 
+    useEffect(() => {
+        fetchOrderDetails();
+    }, [order?.orderStatus]);
+
+    useEffect(() => {
         fetchOrderDetails();
     }, [orderId]);
 
@@ -87,7 +78,7 @@ function AdminOrdersPickupDetailsPage() {
         handleApprove={handleApprove}
         order={order}
         />
-
+ 
         <div className='order-header'>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <h1>Order # {order.orderNumber}</h1>
@@ -105,22 +96,25 @@ function AdminOrdersPickupDetailsPage() {
                 <button
                 className={`order-actions-button ready ${getStatusClass('isReady', order) === 'isReady' ? 'active' : ''}`}
                 onClick={() => handleStatusUpdate('isReady')}
+                disabled={order.orderStatus === 'Picked Up'}
                 >
-                    Ready
+                Ready To Pick Up
                 </button>
+
                 <button
                 className={`order-actions-button pickedup ${getStatusClass('isPickedUp', order) === 'isPickedUp' ? 'active' : ''}`}
                 onClick={() => handleStatusUpdate('isPickedUp')}
+                disabled={order.orderStatus === 'Pending'}
                 >
-                    Picked Up
+                Picked Up
                 </button>
             </div>
         </div>
 
         <div className='order-dates'>
-            <p><strong>Placed on:</strong> {orderDate(order.createdAt)}</p>
+            {/* <p><strong>Placed on:</strong> {orderDate(order.createdAt)}</p> */}
             {/* <p><strong>Updated:</strong> {new Date(order.updatedAt).toLocaleDateString()}</p> */}
-            {
+            {/* {
                 order.readyDate && (
                     <p><strong>Ready on:</strong> {orderDate(new Date(order.readyDate).toLocaleDateString())}</p>
                 )
@@ -134,7 +128,7 @@ function AdminOrdersPickupDetailsPage() {
                 !order.pickedUpDate && (
                     <p><strong>Status:</strong> Not paid yet</p>
                 )
-            }
+            } */}
         </div>
 
         <div className='order-info'>
@@ -163,24 +157,38 @@ function AdminOrdersPickupDetailsPage() {
                     <strong>Change:</strong> ₱
                     {order.changeTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                 </p>
-                <p><strong>Delivery method:</strong> {order.paymentMethod}</p>
+                {/* <p><strong>Delivery method:</strong> {order.paymentMethod}</p> */}
             </div>
             <div className='order-section'>
                 <h3 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span>Shipping Address</span> 
+                    <span>Status</span> 
                     {/* <img src={editIcon} alt='Edit Icon' className='edit-icon' /> */}
                 </h3>
-                <p>{order.billingDetails.province}</p>
-                <p>{order.billingDetails.city}</p>
-                <p>{order.billingDetails.barangay}</p>
-                <p>{order.billingDetails.purokStreetSubdivision}</p>
+                <p style={{ fontSize: '16px' }}><strong>Order Status:</strong> {order.orderStatus}</p>
+                {/* {
+                    !order.pickedUpDate && (
+                        <p><strong>Status:</strong> Not paid yet</p>
+                    )
+                } */}
+                <p><strong>Payment Status:</strong> {order.paymentStatus}</p>
             </div>
             <div className='order-section'>
                 <h3 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span>Billing Address</span> 
+                    <span>Date Tracker</span> 
                     {/* <img src={editIcon} alt='Edit Icon' className='edit-icon' /> */}
                 </h3>
-                <p>{order.billingDetails.city}</p>
+                <p><strong>Placed on:</strong> {orderDate(order.createdAt)}</p>
+                {/* <p><strong>Updated:</strong> {new Date(order.updatedAt).toLocaleDateString()}</p> */}
+                {
+                    order.readyDate && (
+                        <p><strong>Ready on:</strong> {orderDate(new Date(order.readyDate).toLocaleDateString())}</p>
+                    )
+                }
+                {
+                    order.pickedUpDate && (
+                        <p><strong>Paid on:</strong> {orderDate(new Date(order.pickedUpDate).toLocaleDateString())}</p>
+                    )
+                }
             </div>
         </div>
 
@@ -190,8 +198,8 @@ function AdminOrdersPickupDetailsPage() {
                 <thead>
                     <tr>
                         <th>Items Name</th>
-                        <th>SKU</th>
-                        <th>Location</th>
+                        {/* <th>SKU</th>
+                        <th>Location</th> */}
                         <th>Quantity</th>
                         <th>Price</th>
                         <th>Total</th>
@@ -201,12 +209,9 @@ function AdminOrdersPickupDetailsPage() {
                     {
                         order.items.map(item => (
                             <tr key={item._id}>
-                                <td style={{ display: 'flex', alignItems: 'center' }}>
-                                    <img src={`${import.meta.env.VITE_BASE_URL}${item.productId.imageUrl}`} alt='' />
-                                    {item.productName}
-                                </td>
-                                <td>{item.sku}</td>
-                                <td>{item.location}</td>
+                                <td style={{ display: 'flex', alignItems: 'center' }}><img src={`${import.meta.env.VITE_BASE_URL}${item.imageUrl}`} alt='' />{item.productName}</td>
+                                {/* <td>{item.sku}</td>
+                                <td>{item.location}</td> */}
                                 <td>{item.quantity ?? 'N/A'}</td>
                                 <td>₱{item.price?.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) ?? 'N/A'}</td>
                                 <td>₱{(item.price * item.quantity).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>

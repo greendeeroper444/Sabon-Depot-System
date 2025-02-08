@@ -1,16 +1,15 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import '../../../CSS/AdminCSS/AdminSettings/AdminGeneralComponent.css';
+import '../../../CSS/StaffCSS/StaffSettings/StaffGeneralComponent.css'
 import { useParams } from 'react-router-dom';
+import { StaffContext } from '../../../../contexts/StaffContexts/StaffAuthContext';
 import customerDefaultProfilePicture from '../../../assets/icons/customer-default-profile-pciture.png';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { AdminContext } from '../../../../contexts/AdminContexts/AdminAuthContext';
 
 
-
-function AdminGeneralComponent() {
-    const {adminId} = useParams();
-    const {admin, setAdmin} = useContext(AdminContext);
+function StaffGeneralComponent() {
+    const {staffId} = useParams();
+    const {staff, setStaff} = useContext(StaffContext);
     const [formData, setFormData] = useState({
         fullName: '',
         nickName: '',
@@ -18,7 +17,7 @@ function AdminGeneralComponent() {
         contactNumber: '',
         address: ''
     });
-    const [profilePicture, setProfilePicture] = useState(admin?.profilePicture || '');
+    const [profilePicture, setProfilePicture] = useState(staff?.profilePicture || '');
     const [previewImage, setPreviewImage] = useState('');
     const fileInputRef = useRef(null);
 
@@ -49,25 +48,25 @@ function AdminGeneralComponent() {
 
     //display profile
     useEffect(() => {
-        if(!adminId) return;
+        if(!staffId) return;
 
-        axios.get(`/adminAuth/getDataUpdateAdmin/${adminId}`)
+        axios.get(`/staffAuth/getDataUpdateStaff/${staffId}`)
             .then(response => {
-                const adminData = response.data.admin;
+                const staffData = response.data.staff;
 
-                setProfilePicture(adminData.profilePicture || '');
+                setProfilePicture(staffData.profilePicture || '');
 
                 setFormData({
-                    fullName: adminData.fullName || '',
-                    nickName: adminData.nickName || '',
-                    gender: adminData.gender || 'Other',
-                    contactNumber: adminData.contactNumber || '',
-                    address: adminData.address || ''
+                    fullName: staffData.fullName || '',
+                    nickName: staffData.nickName || '',
+                    gender: staffData.gender || 'Other',
+                    contactNumber: staffData.contactNumber || '',
+                    address: staffData.address || ''
                 });
-                setAdmin(adminData);
+                setStaff(staffData);
             })
             .catch(error => console.error(error));
-    }, [adminId, setAdmin]);
+    }, [staffId, setStaff]);
 
    
 
@@ -84,22 +83,22 @@ function AdminGeneralComponent() {
         }
 
         try {
-            const response = await axios.post(`/adminAuth/updateProfileAdmin/${adminId}`, formDataToSend, {
+            const response = await axios.post(`/staffAuth/updateProfileStaff/${staffId}`, formDataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            const updatedAdmin = response.data.admin;
+            const updatedStaff = response.data.staff;
 
-            setAdmin(updatedAdmin);
+            setStaff(updatedStaff);
             setFormData({
-                fullName: updatedAdmin.fullName,
-                nickName: updatedAdmin.nickName,
-                gender: updatedAdmin.gender,
-                contactNumber: updatedAdmin.contactNumber,
-                address: updatedAdmin.address
+                fullName: updatedStaff.fullName,
+                nickName: updatedStaff.nickName,
+                gender: updatedStaff.gender,
+                contactNumber: updatedStaff.contactNumber,
+                address: updatedStaff.address
             });
-            setProfilePicture(updatedAdmin.profilePicture);
+            setProfilePicture(updatedStaff.profilePicture);
             setPreviewImage('');
             toast.success(response.data.message);
         } catch (error) {
@@ -139,14 +138,14 @@ function AdminGeneralComponent() {
 
   return (
     <div>
-        <div className='admin-profile-container'>
-            <div className='admin-profile-header'></div>
-            <div className='admin-profile-content'>
-                <div className='admin-profile-info'>
+        <div className='staff-profile-container'>
+            <div className='staff-profile-header'></div>
+            <div className='staff-profile-content'>
+                <div className='staff-profile-info'>
                     <img
                     src={previewImage || (profilePicture ? `${import.meta.env.VITE_BASE_URL}${profilePicture}` : customerDefaultProfilePicture)}
                     alt="Profile"
-                    className='admin-profile-picture'
+                    className='staff-profile-picture'
                     onClick={handleImageClick}
                     />
                     <input
@@ -155,12 +154,12 @@ function AdminGeneralComponent() {
                     style={{ display: 'none' }}
                     onChange={handleFileChange}
                     />
-                    <div className='admin-profile-details'>
+                    <div className='staff-profile-details'>
                         {
-                            !!admin && (
+                            !!staff && (
                                 <>
-                                    <h2>{admin.fullName}</h2>
-                                    <p>{admin.emailAddress}</p>
+                                    <h2>{staff.fullName}</h2>
+                                    <p>{staff.emailAddress}</p>
                                 </>
                             )
                         }
@@ -169,7 +168,7 @@ function AdminGeneralComponent() {
                 <button className='save-button-update-profile' onClick={handleUpdateProfile}>Save</button>
             </div>
             
-            <div className='admin-profile-fields'>
+            <div className='staff-profile-fields'>
 
                 <div className='field-group'>
                     <div className='field'>
@@ -234,10 +233,10 @@ function AdminGeneralComponent() {
                     <div className='email-info'>
                         <span className='email-icon'></span>
                         {
-                            !!admin && (
+                            !!staff && (
                                 <div>
-                                    <p>{admin.emailAddress}</p>
-                                    <small>{formatRelativeTime(admin.date)}</small>
+                                    <p>{staff.emailAddress}</p>
+                                    <small>{formatRelativeTime(staff.date)}</small>
                                 </div>
                             )
                         }
@@ -253,4 +252,4 @@ function AdminGeneralComponent() {
   )
 }
 
-export default AdminGeneralComponent
+export default StaffGeneralComponent

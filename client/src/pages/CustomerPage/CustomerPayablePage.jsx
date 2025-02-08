@@ -79,24 +79,24 @@ function CustomerPayablePage() {
                             <tbody>
                                 {
                                     order.items.map((item) => (
-                                        <tr key={item.productId._id}>
+                                        <tr key={item._id}>
                                             <td>
                                                 <img
-                                                src={item.productId?.imageUrl
-                                                    ? `${import.meta.env.VITE_BASE_URL}${item.productId.imageUrl}`
+                                                src={item.imageUrl
+                                                    ? `${import.meta.env.VITE_BASE_URL}${item.imageUrl}`
                                                     : 'https://via.placeholder.com/50'}
-                                                alt={item.productId.productName}
+                                                alt={item.productName}
                                                 className='product-image'
                                                 />
-                                                {item.productId.productName}
+                                                {item.productName}
                                             </td>
                                             <td>
                                                 <span className={`status ${order.paymentStatus.toLowerCase()}`}>
                                                     {
-                                                        order.paymentStatus === 'Paid' ? (
-                                                            <><span className='status-icon'>✔</span> Paid</>
+                                                        order.paymentStatus === 'Unpaid' ? (
+                                                            <><span className='status-icon'>X</span> Unpaid</>
                                                         ) : (
-                                                            <><span className='status-icon'>-</span> Partial</>
+                                                            <><span className='status-icon'>✔</span> Paid</>
                                                         )
                                                     }
                                                 </span>

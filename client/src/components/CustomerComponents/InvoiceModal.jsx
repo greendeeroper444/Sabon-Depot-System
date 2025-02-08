@@ -38,7 +38,7 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
 
     
         order.items.forEach(item => {
-            doc.text(item.productId.productName, 10, y);
+            doc.text(item.productName, 10, y);
             doc.text(item.quantity.toString(), 100, y);
             doc.text(`Php  ${item.finalPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 140, y);
             doc.text(`Php  ${(item.finalPrice * item.quantity).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 180, y);
@@ -90,14 +90,14 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
                 <tbody>
                     {
                         order.items.map(item => (
-                            <tr key={item.productId._id}>
+                            <tr key={item._id}>
                                 <td>
                                     <div className='product-info'>
                                         <img
-                                            src={`${import.meta.env.VITE_BASE_URL}${item.productId.imageUrl}`}
-                                            alt={item.productId.productName}
+                                            src={`${import.meta.env.VITE_BASE_URL}${item.imageUrl}`}
+                                            alt={item.productName}
                                         />
-                                        <span>{item.productId.productName}</span>
+                                        <span>{item.productName}</span>
                                     </div>
                                 </td>
                                 <td>{item.quantity}</td>
