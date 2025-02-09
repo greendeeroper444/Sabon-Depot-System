@@ -54,7 +54,7 @@ function AdminDirectOrdersRefillContentComponent({
                         <li key={product._id}>
                             <div>
                                 <div className='product-image-container'>
-                                    <img src={`${import.meta.env.VITE_BASE_URL}${product.imageUrl}`} alt={product.productName} />
+                                    <img src={`${product.imageUrl}`} alt={product.productName} />
                                     {index === products.length - 1 && <div className='new-badge'>New</div>}
                                     {shouldShowDiscount && <div className='discount-badge'>{product.discountPercentage}% OFF</div>}
                                 </div>

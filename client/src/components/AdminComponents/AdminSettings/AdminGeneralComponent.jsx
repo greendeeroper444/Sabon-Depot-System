@@ -144,7 +144,7 @@ function AdminGeneralComponent() {
             <div className='admin-profile-content'>
                 <div className='admin-profile-info'>
                     <img
-                    src={previewImage || (profilePicture ? `${import.meta.env.VITE_BASE_URL}${profilePicture}` : customerDefaultProfilePicture)}
+                    src={previewImage || (profilePicture ? `${profilePicture}` : customerDefaultProfilePicture)}
                     alt="Profile"
                     className='admin-profile-picture'
                     onClick={handleImageClick}

@@ -200,7 +200,7 @@ function StaffDashboardPage() {
                                         <td>{notification.productCode || 'N/A'}</td>
                                         <td className='product-name'>
                                             <img
-                                                src={`${import.meta.env.VITE_BASE_URL}${notification.imageUrl}`}
+                                                src={`${notification.imageUrl}`}
                                                 alt={notification.productName || 'Product'}
                                                 className='notification-image'
                                             />

@@ -5,155 +5,44 @@ const jwt = require('jsonwebtoken');
 const AdminAuthModel = require('../../models/AdminModels/AdminAuthModel');
 const { getInventoryReport } = require('./AdminReportController');
 const WorkinProgressProductModel = require('../../models/WorkinProgressProductModel');
+const upload = require('../../helpers/UserMulter');
 
-//set up storage engine
-const storage = multer.diskStorage({
-    destination: function(req, file, cb){
-        cb(null, 'uploads/products');
-    },
-    // filename: function(req, file, cb){
-    //     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    // }
-    filename: function(req, file, cb){
-        const uniqueSuffix = '-' + Date.now() + path.extname(file.originalname);
-        cb(null, file.originalname.replace(path.extname(file.originalname), '') + uniqueSuffix);
-    }
-});
+// //set up storage engine
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb){
+//         cb(null, 'uploads/products');
+//     },
+//     // filename: function(req, file, cb){
+//     //     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+//     // }
+//     filename: function(req, file, cb){
+//         const uniqueSuffix = '-' + Date.now() + path.extname(file.originalname);
+//         cb(null, file.originalname.replace(path.extname(file.originalname), '') + uniqueSuffix);
+//     }
+// });
 
-//initialize upload
-const upload = multer({
-    storage: storage,
-    limits: {fileSize: 5 * 1024 * 1024},
-    fileFilter: function(req, file, cb){
-        checkFileType(file, cb);
-    }
-}).single('image');
+// //initialize upload
+// const upload = multer({
+//     storage: storage,
+//     limits: {fileSize: 5 * 1024 * 1024},
+//     fileFilter: function(req, file, cb){
+//         checkFileType(file, cb);
+//     }
+// }).single('image');
 
-//check file type
-function checkFileType(file, cb){
-    const filetypes = /jpeg|jpg|png/;
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
+// //check file type
+// function checkFileType(file, cb){
+//     const filetypes = /jpeg|jpg|png/;
+//     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+//     const mimetype = filetypes.test(file.mimetype);
 
-    if(mimetype && extname){
-        return cb(null, true);
-    } else{
-        cb('Error: Images Only!');
-    }
-}
+//     if(mimetype && extname){
+//         return cb(null, true);
+//     } else{
+//         cb('Error: Images Only!');
+//     }
+// }
 
-
-// const uploadProductAdmin = async(req, res) => {
-//     upload(req, res, async(err) => {
-//         if(err){
-//             return res.json({error: err});
-//         }
-
-//         try {
-//             const {
-//                 productCode, 
-//                 productName, 
-//                 category, 
-//                 price, 
-//                 quantity, 
-//                 stockLevel, 
-//                 discountPercentage = 0, 
-//                 discountedDate, 
-//                 sizeUnit, 
-//                 productSize, 
-//                 expirationDate,
-//                 description,
-//                 refillPrice
-//             } = req.body;
-//             const imageUrl = req.file ? req.file.path : '';
-
-//             if(!productCode || !productName || !category || !price || !quantity || !stockLevel || !imageUrl || !productSize || !expirationDate){
-//                 return res.json({
-//                     error: 'Please provide all required fields'
-//                 });
-//             }
-//             //check if the discountedDate is valid
-//             if(discountedDate && new Date(discountedDate) < new Date()){
-//                 return res.json({
-//                     error: 'Discounted date must be today or a future date.',
-//                 });
-//             }
-
-            
-//              //calculate discountedPrice
-//             // const discountedPrice = price - (price * discountPercentage / 100);
-//             const discountedPrice =
-//                 discountPercentage > 0
-//                     ? price - (price * discountPercentage) / 100
-//                     : price;
-
-//             const token = req.cookies.token;
-//             if(!token){
-//                 return res.json({
-//                     error: 'Unauthorized - Missing token'
-//                 });
-//             }
-//             jwt.verify(token, process.env.JWT_SECRET, {}, async(err, decodedToken) => {
-//                 if(err){
-//                     return res.json({
-//                         error: 'Unauthorized - Invalid token'
-//                     });
-//                 }
-
-//                 const adminId = decodedToken.id;
-//                 const adminExists = await AdminAuthModel.findById(adminId);
-//                 if(!adminExists){
-//                     return res.json({
-//                         error: 'Admin does not exist'
-//                     });
-//                 }
-
-//                 // const generateProductCode = () => {
-//                 //     const code1 = Math.floor(Math.random() * 10).toString();
-//                 //     const code2 = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-//                 //     const code3 = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-//                 //     return `${code1} ${code2} ${code3}`;
-//                 // };
-//                 const today = new Date();
-//                 const discountEnds = new Date(discountedDate);
-//                 const isDiscountEnd = discountEnds.toDateString() === today.toDateString();
-
-//                 const newProduct = await ProductModel.create({
-//                     productCode,
-//                     productName,
-//                     category,
-//                     price,
-//                     discountedPrice: isDiscountEnd ? price : discountedPrice,
-//                     discountPercentage: isDiscountEnd ? 0 : discountPercentage,
-//                     quantity,
-//                     stockLevel,
-//                     discountedDate,
-//                     imageUrl,
-//                     sizeUnit: sizeUnit || null,
-//                     productSize: productSize || null,
-//                     uploaderId: adminId,
-//                     uploaderType: 'Admin',
-//                     expirationDate,
-//                     description,
-//                     refillPrice,
-//                     createdBy: adminExists.fullName
-//                 });
-
-//                 await getInventoryReport(newProduct._id, productName, sizeUnit, productSize, category, quantity)
-
-//                 return res.json({
-//                     message: 'Product added successfully!',
-//                     newProduct
-//                 });
-//             });
-//         } catch (error) {
-//             console.error(error);
-//             return res.status(500).json({
-//                 message: 'Server error'
-//             });
-//         }
-//     });
-// };
 
 const uploadProductAdmin = async(req, res) => {
     upload(req, res, async (err) => {

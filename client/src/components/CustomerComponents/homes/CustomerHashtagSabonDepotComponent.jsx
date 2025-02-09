@@ -48,7 +48,7 @@ function CustomerHashtagSabonDepotComponent() {
                 products.map((product, index) => (
                     <img
                         key={index}
-                        src={`${import.meta.env.VITE_BASE_URL}${product.imageUrl}`}
+                        src={`${product.imageUrl}`}
                         alt={product.name}
                         className={`product-image product-${index + 1}`}
                     />

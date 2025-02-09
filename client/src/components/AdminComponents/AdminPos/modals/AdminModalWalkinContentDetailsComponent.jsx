@@ -153,7 +153,7 @@ function AdminModalWalkinContentDetailsComponent({isOpen, onClose, cartItems, se
                                 cartItem.productId ? (
                                     <div key={cartItem._id} className='customer-modal-content-group'>
                                         <img
-                                            src={`${import.meta.env.VITE_BASE_URL}${cartItem.productId.imageUrl}`}
+                                            src={`${cartItem.productId.imageUrl}`}
                                             alt=''
                                             className='customer-modal-product-items'
                                         />

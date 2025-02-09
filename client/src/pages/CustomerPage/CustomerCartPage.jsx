@@ -143,7 +143,7 @@ function CustomerCartPage() {
                                                 />
                                             </td>
                                             <td className='product-info'>
-                                                <img src={`${import.meta.env.VITE_BASE_URL}${cartItem.productId.imageUrl}`} alt="Product" className='product-image' />
+                                                <img src={`${cartItem.productId.imageUrl}`} alt="Product" className='product-image' />
                                                 <div className='product-description'>
                                                     <p>{cartItem.productId.productName}</p>
                                                 </div>

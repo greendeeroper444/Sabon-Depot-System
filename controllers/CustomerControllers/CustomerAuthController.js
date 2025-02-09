@@ -8,40 +8,41 @@ const multer = require('multer');
 const path = require('path');
 const mongoose = require('mongoose');
 const { SendPasswordResetEmail } = require('../../helpers/SendPasswordResetEmail');
-const crypto = require('crypto')
+const crypto = require('crypto');
+const uploadUser = require('../../helpers/UserMulter');
 
-//set up storage engine
-const storage = multer.diskStorage({
-    destination: function(req, file, cb){
-        cb(null, 'uploads/profilePictures/customers');
-    },
-    filename: function(req, file, cb){
-        const uniqueSuffix = '-' + Date.now() + path.extname(file.originalname);
-        cb(null, file.originalname.replace(path.extname(file.originalname), '') + uniqueSuffix);
-    }
-});
+// //set up storage engine
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb){
+//         cb(null, 'uploads/profilePictures/customers');
+//     },
+//     filename: function(req, file, cb){
+//         const uniqueSuffix = '-' + Date.now() + path.extname(file.originalname);
+//         cb(null, file.originalname.replace(path.extname(file.originalname), '') + uniqueSuffix);
+//     }
+// });
 
-//initialize upload
-const upload = multer({
-    storage: storage,
-    limits: {fileSize: 5 * 1024 * 1024},
-    fileFilter: function(req, file, cb){
-        checkFileType(file, cb);
-    }
-}).single('profilePicture');
+// //initialize upload
+// const upload = multer({
+//     storage: storage,
+//     limits: {fileSize: 5 * 1024 * 1024},
+//     fileFilter: function(req, file, cb){
+//         checkFileType(file, cb);
+//     }
+// }).single('profilePicture');
 
-//check file type
-function checkFileType(file, cb){
-    const filetypes = /jpeg|jpg|png/;
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
+// //check file type
+// function checkFileType(file, cb){
+//     const filetypes = /jpeg|jpg|png/;
+//     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+//     const mimetype = filetypes.test(file.mimetype);
 
-    if(mimetype && extname){
-        return cb(null, true);
-    } else{
-        cb('Error: Images Only!');
-    }
-}
+//     if(mimetype && extname){
+//         return cb(null, true);
+//     } else{
+//         cb('Error: Images Only!');
+//     }
+// }
 
 
 const registerCustomer = async(req, res) => {
@@ -373,7 +374,7 @@ const getDataCustomer = (req, res) => {
 
 //update profile
 const updateProfileCustomer = async(req, res) => {
-    upload(req, res, async(err) => {
+    uploadUser(req, res, async(err) => {
         if(err){
             return res.status(400).json({error: err.message});
         }

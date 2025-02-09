@@ -84,7 +84,7 @@ function StaffOrderSummaryPage() {
                         {
                             order.items.map((item) => (
                                 <div key={item.productId._id} className='order-item'>
-                                    <img src={`${import.meta.env.VITE_BASE_URL}${item.imageUrl}`} alt={item.productName} />
+                                    <img src={`${item.imageUrl}`} alt={item.productName} />
                                     <div>
                                         <h3>{item.productName}</h3>
                                         <p>Price: ₱ {item.price}</p>

@@ -215,7 +215,7 @@ function CustomerNavbarComponent({customerToggleSidebar}) {
                             <li className='customer-navbar-dropdown-container'>
                                 <div className='customer-navbar-dropdown-trigger' onClick={toggleDropdown}>
                                     <img
-                                    src={(customer.profilePicture ? `${import.meta.env.VITE_BASE_URL}${customer.profilePicture}` : customerDefaultProfilePicture)}
+                                    src={(customer.profilePicture ? `${customer.profilePicture}` : customerDefaultProfilePicture)}
                                     className='profile-picture'
                                     alt={customer.fullName}
                                     />

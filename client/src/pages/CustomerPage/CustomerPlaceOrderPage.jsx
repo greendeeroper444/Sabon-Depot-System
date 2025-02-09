@@ -90,7 +90,7 @@
 //             order.items.map(item => (
 //                 <div key={item.productId._id} className='customer-place-order-item'>
 //                     <div className='item-image'>
-//                         <img src={`${import.meta.env.VITE_BASE_URL}${item.productId.imageUrl}`} alt={item.productId.productName} />
+//                         <img src={`${item.productId.imageUrl}`} alt={item.productId.productName} />
 //                     </div>
 //                     <div className='item-details'>
 //                         <h3>{item.productId.productName}</h3>
@@ -238,7 +238,7 @@ function CustomerPlaceOrderPage() {
             order.items.map((item) => (
                 <div key={item._id} className='customer-place-order-item'>
                     <div className='item-image'>
-                        <img src={`${import.meta.env.VITE_BASE_URL}${item.imageUrl}`} alt={item.productName} />
+                        <img src={`${item.imageUrl}`} alt={item.productName} />
                     </div>
                     <div className='item-details'>
                         <h3>{item.productName}</h3>

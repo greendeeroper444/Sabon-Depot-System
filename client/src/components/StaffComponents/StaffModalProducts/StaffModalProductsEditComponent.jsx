@@ -185,7 +185,7 @@ function StaffModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
                     <label htmlFor="file-input">
                         <img
                         src={selectedImage ? (typeof selectedImage === 'string' 
-                            ? `${import.meta.env.VITE_BASE_URL}${selectedImage}` 
+                            ? `${selectedImage}` 
                             : URL.createObjectURL(selectedImage)) 
                             : uploadIcon}
                         alt="upload placeholder"

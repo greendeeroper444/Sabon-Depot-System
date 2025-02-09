@@ -165,7 +165,7 @@ function CustomerProfilePage() {
             <div className='customer-profile-content'>
                 <div className='customer-profile-info'>
                     <img
-                    src={previewImage || (profilePicture ? `${import.meta.env.VITE_BASE_URL}${profilePicture}` : customerDefaultProfilePicture)}
+                    src={previewImage || (profilePicture ? `${profilePicture}` : customerDefaultProfilePicture)}
                     alt="Profile"
                     className='customer-profile-picture'
                     onClick={handleImageClick}

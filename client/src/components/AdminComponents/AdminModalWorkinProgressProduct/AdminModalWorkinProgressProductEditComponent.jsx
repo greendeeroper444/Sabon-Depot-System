@@ -97,7 +97,7 @@ function AdminModalWorkinProgressProductEditComponent({isOpen, onClose, selected
                     <label htmlFor="file-input">
                         <img
                         src={selectedImage ? (typeof selectedImage === 'string' 
-                            ? `${import.meta.env.VITE_BASE_URL}${selectedImage}` 
+                            ? `${selectedImage}` 
                             : URL.createObjectURL(selectedImage)) 
                             : uploadIcon}
                         alt="upload placeholder"

@@ -85,7 +85,7 @@ function AdminRoutes({adminToggleSidebar, adminCloseSidebar, adminSidebarVisible
     //list of routes where the AdminNavbarComponent should be hidden
     //   const noNavbarRoutes = ['/admin/settings/:adminId']
     //check if the current route matches the dynamic admin settings route
-    const isSettingsPage = matchPath('/admin/settings/:adminId', location.pathname)
+    const isSettingsPage = matchPath('/admin/settings', location.pathname)
 
   return (
     <AdminContextProvider>
@@ -104,6 +104,7 @@ function AdminRoutes({adminToggleSidebar, adminCloseSidebar, adminSidebarVisible
         <div className={`${adminSidebarVisible ? '' : 'admin-sidebar-hide'}`}>
             <AdminSidebarResponsiveComponent adminCloseSidebar={adminCloseSidebar} />
         </div>
+        <br />
         <div className='admin-main-container'>
             <Routes>
                 <Route path='/admin/dashboard' element={<AdminDashboardPage />} />

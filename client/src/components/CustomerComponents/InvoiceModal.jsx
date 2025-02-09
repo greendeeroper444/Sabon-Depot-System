@@ -94,7 +94,7 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
                                 <td>
                                     <div className='product-info'>
                                         <img
-                                            src={`${import.meta.env.VITE_BASE_URL}${item.imageUrl}`}
+                                            src={`${item.imageUrl}`}
                                             alt={item.productName}
                                         />
                                         <span>{item.productName}</span>

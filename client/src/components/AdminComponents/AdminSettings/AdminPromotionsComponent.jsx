@@ -231,7 +231,7 @@ function AdminPromotionsComponent() {
                                 ${product.isArchived && product.quantity < product.stockLevel ? 'low-quantity archived-product' : ''}`}
                                 >
                                     <td className='product-image-name'>
-                                        <img src={`${import.meta.env.VITE_BASE_URL}${product.imageUrl}`} alt={product.productName} />{' '}{product.productName}
+                                        <img src={`${product.imageUrl}`} alt={product.productName} />{' '}{product.productName}
                                     </td>
                                     <td>{product.category}</td>
                                     <td>{product.sizeUnit.slice(0, 1)} - {product.productSize}</td>

@@ -179,7 +179,7 @@ function CustomerShopProductDetails() {
                                         style={{ cursor: 'pointer' }}
                                         >
                                             <img 
-                                            src={`${import.meta.env.VITE_BASE_URL}${relatedProduct.imageUrl}`} 
+                                            src={`${relatedProduct.imageUrl}`} 
                                             alt={relatedProduct.productName} 
                                             />
                                         </li>
@@ -190,7 +190,7 @@ function CustomerShopProductDetails() {
 
                         <div className='shop-products-right'>
                             <div className='product-image-container'>
-                                <img src={`${import.meta.env.VITE_BASE_URL}${product.imageUrl}`} alt={product.productName} />
+                                <img src={`${product.imageUrl}`} alt={product.productName} />
                                 {
                                     shouldShowDiscount && (
                                         <div className='discount-badge'>
