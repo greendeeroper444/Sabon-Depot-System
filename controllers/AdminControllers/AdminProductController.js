@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const AdminAuthModel = require('../../models/AdminModels/AdminAuthModel');
 const { getInventoryReport } = require('./AdminReportController');
 const WorkinProgressProductModel = require('../../models/WorkinProgressProductModel');
-const upload = require('../../helpers/UserMulter');
+const upload = require('../../helpers/MulterConfig');
 
 // //set up storage engine
 // const storage = multer.diskStorage({
