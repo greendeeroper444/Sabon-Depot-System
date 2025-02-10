@@ -149,6 +149,8 @@ const addOrderWalkinStaff = async(req, res) => {
                     await TotalSaleModel.create({
                         productName: item.productId.productName,
                         totalProduct: 1,
+                        price: item.productId.price,
+                        imageUrl: item.productId.imageUrl,
                         totalSales: item.productId.price * item.quantity,
                         quantitySold: item.quantity,
                         day: today,
@@ -170,6 +172,8 @@ const addOrderWalkinStaff = async(req, res) => {
                     await BestSellingModel.create({
                         productId: item.productId._id,
                         productName: item.productId.productName,
+                        imageUrl: item.productId.imageUrl,
+                        price: item.productId.price,
                         totalSales: item.finalPrice * item.quantity,
                         quantitySold: item.quantity,
                         sizeUnit: item.productId.sizeUnit,
@@ -177,6 +181,7 @@ const addOrderWalkinStaff = async(req, res) => {
                         lastSoldAt: Date.now(),
                     });
                 }
+
 
 
                 await getInventoryReport(

@@ -139,10 +139,10 @@ const addOrderWalkinAdmin = async(req, res) => {
                 } else{
                     //create a new record
                     await TotalSaleModel.create({
-                        imageUrl: item.productId.imageUrl,
                         productName: item.productId.productName,
-                        price: item.productId.price,
                         totalProduct: 1,
+                        price: item.productId.price,
+                        imageUrl: item.productId.imageUrl,
                         totalSales: item.productId.price * item.quantity,
                         quantitySold: item.quantity,
                         day: today,
@@ -163,11 +163,11 @@ const addOrderWalkinAdmin = async(req, res) => {
                     //create a new record
                     await BestSellingModel.create({
                         productId: item.productId._id,
-                        imageUrl: item.productId.imageUrl,
                         productName: item.productId.productName,
+                        imageUrl: item.productId.imageUrl,
+                        price: item.productId.price,
                         totalSales: item.finalPrice * item.quantity,
                         quantitySold: item.quantity,
-                        price: item.productId.price,
                         sizeUnit: item.productId.sizeUnit,
                         productSize: item.productId.productSize,
                         lastSoldAt: Date.now(),
@@ -184,12 +184,12 @@ const addOrderWalkinAdmin = async(req, res) => {
                     item.quantity,
                     true
                 );
-                
+    
                 await getSalesReport(
                     item.productId._id,
                     item.productId.productName,
                     item.productId.sizeUnit,
-                    // item.productId.productSize,
+                    item.productId.productSize,
                     item.productId.category,
                     item.productId.price,
                     item.quantity,
