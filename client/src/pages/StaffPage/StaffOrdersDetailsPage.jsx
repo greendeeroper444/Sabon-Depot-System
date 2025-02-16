@@ -6,6 +6,7 @@ import editIcon from '../../assets/staff/stafficons/staff-orders-edit-icon.png'
 import StaffPaymentMethodModal from '../../components/StaffComponents/StaffOrdersDetails/StaffPaymentMethodModal';
 import { getStatusClass, orderDate } from '../../utils/OrderUtils';
 import toast from 'react-hot-toast';
+import InvoiceModal from '../../components/CustomerComponents/InvoiceModal';
 
 function StaffOrdersDetailsPage() {
     const {orderId} = useParams(); 
@@ -13,6 +14,7 @@ function StaffOrdersDetailsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isInvoiceModalOpen, setInvoiceModalOpen] = useState(false);
 
     //update order status function
     const handleStatusUpdate = async(status) => {
@@ -56,16 +58,31 @@ function StaffOrdersDetailsPage() {
         fetchOrderDetails();
     }, [orderId]);
 
+    const subtotal = order?.items?.reduce((acc, item) => acc + item.finalPrice * item.quantity, 0);
+    const shippingCost = 50;
+
     if(loading) return <div>Loading...</div>;
     if(error) return <div>Error: {error}</div>;
 
   return (
     <div className='staff-order-details-container'>
+        <button className='invoice-button' onClick={() => setInvoiceModalOpen(true)}>
+            <span>Invoice</span>
+        </button>
+
         <StaffPaymentMethodModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         handleApprove={handleApprove}
         order={order}
+        />
+
+        <InvoiceModal
+        isOpen={isInvoiceModalOpen}
+        onClose={() => setInvoiceModalOpen(false)}
+        order={order}
+        subtotal={subtotal}
+        shippingCost={shippingCost}
         />
 
         <div className='order-header'>
