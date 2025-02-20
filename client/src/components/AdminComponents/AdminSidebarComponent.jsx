@@ -5,7 +5,6 @@ import logoDepot from '../../assets/icons/logo-depot.png';
 import dashboardIcon from '../../assets/admin/adminicons/admin-sidebar-dashboard-icon.png';
 import dashboardIconWhite from '../../assets/admin/adminicons/admin-sidebar-dashboard-icon-white.png';
 import ordersIcon from '../../assets/admin/adminicons/admin-sidebar-orders-icon.png';
-import ordersIconWhite from '../../assets/admin/adminicons/admin-sidebar-orders-icon-white.png';
 import inventoryIcon from '../../assets/admin/adminicons/admin-sidebar-inventory-report-icon.png';
 import accountsIcon from '../../assets/admin/adminicons/admin-sidebar-accounts-icon.png';
 import accountsIconWhite from '../../assets/admin/adminicons/admin-sidebar-accounts-icon-white.png';

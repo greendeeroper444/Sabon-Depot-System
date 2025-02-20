@@ -36,44 +36,6 @@ const schedule = require('node-schedule');
 const ProductModel = require('../models/ProductModel');
 const AdminNotificationModel = require('../models/AdminModels/AdminNotificationModel');
 
-//schedule the job to run every day at midnight
-// schedule.scheduleJob('0 0 * * *', async() => {
-//     try {
-//         const currentDate = new Date();
-
-//         //loop through the next 3 days (3 days, 2 days, 1 day before expiration)
-//         for(let i = 1; i <= 3; i++){
-//             const notifyDate = new Date(currentDate);
-//             notifyDate.setDate(currentDate.getDate() + i); //move forward 1 day, 2 days, or 3 days
-
-//             //find products with expirationDate matching the notifyDate
-//             const expiringProducts = await ProductModel.find({
-//                 expirationDate: {
-//                     $eq: notifyDate.toISOString().split('T')[0] //compare date only, not time
-//                 }
-//             });
-
-//             if(expiringProducts.length > 0){
-//                 //create notification for expiring products
-//                 for (let product of expiringProducts) {
-//                     const notificationMessage = `${i} day(s) left before expiration for product: ${product.productName}`;
-//                     const notification = new AdminNotificationModel({
-//                         message: notificationMessage,
-//                         productId: product._id,
-//                         expirationDate: product.expirationDate,
-//                         productName: product.productName,
-//                         createdAt: new Date()
-//                     });
-//                     await notification.save();
-//                 }
-
-//                 console.log(`Sent notification for ${expiringProducts.length} product(s) expiring in ${i} day(s).`);
-//             }
-//         }
-//     } catch (error) {
-//         console.error('Error sending product expiration notifications:', error);
-//     }
-// });
 schedule.scheduleJob('0 0 * * *', async() => {
     try {
         const currentDate = new Date();
@@ -124,6 +86,46 @@ schedule.scheduleJob('0 0 * * *', async() => {
         console.error('Error handling product expiration:', error);
     }
 });
+
+//schedule the job to run every day at midnight
+// schedule.scheduleJob('0 0 * * *', async() => {
+//     try {
+//         const currentDate = new Date();
+
+//         //loop through the next 3 days (3 days, 2 days, 1 day before expiration)
+//         for(let i = 1; i <= 3; i++){
+//             const notifyDate = new Date(currentDate);
+//             notifyDate.setDate(currentDate.getDate() + i); //move forward 1 day, 2 days, or 3 days
+
+//             //find products with expirationDate matching the notifyDate
+//             const expiringProducts = await ProductModel.find({
+//                 expirationDate: {
+//                     $eq: notifyDate.toISOString().split('T')[0] //compare date only, not time
+//                 }
+//             });
+
+//             if(expiringProducts.length > 0){
+//                 //create notification for expiring products
+//                 for (let product of expiringProducts) {
+//                     const notificationMessage = `${i} day(s) left before expiration for product: ${product.productName}`;
+//                     const notification = new AdminNotificationModel({
+//                         message: notificationMessage,
+//                         productId: product._id,
+//                         expirationDate: product.expirationDate,
+//                         productName: product.productName,
+//                         createdAt: new Date()
+//                     });
+//                     await notification.save();
+//                 }
+
+//                 console.log(`Sent notification for ${expiringProducts.length} product(s) expiring in ${i} day(s).`);
+//             }
+//         }
+//     } catch (error) {
+//         console.error('Error sending product expiration notifications:', error);
+//     }
+// });
+
 
 // schedule.scheduleJob('0 0 * * *', async() => {
 //     try {

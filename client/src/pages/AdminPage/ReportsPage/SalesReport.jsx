@@ -360,141 +360,79 @@ function SalesReportPage() {
 
     const handleGenerateReport = () => {
         const doc = new jsPDF();
+    
+        //add logos
         doc.addImage(leftLogoBase64, 'PNG', 14, 10, 30, 30);
-        doc.setFontSize(14).setTextColor(0, 0, 0).setFont(undefined, 'bold');
+    
+        //report Header
+        doc.setFontSize(14).setFont(undefined, 'bold').setTextColor(0, 0, 0);
         doc.text('CLEAN UP SOLUTIONS ENTERPRISES, INC.', 50, 16);
         doc.setFontSize(10).setFont(undefined, 'normal');
         doc.text('Prk. Ubas, Brgy. Sto. Nino, Panabo City, Davao del Norte', 50, 22);
         doc.text('Tel: (084) 309-2454 / 0909-8970769', 50, 26);
         doc.text('FB Page: Sabon Depot-Mindanao', 50, 30);
         doc.setFontSize(12).setFont(undefined, 'bold');
-        doc.text('SALES REPORT', 14, 47);
-        
-        //add date
-        const now = new Date();
-        const formattedDate = new Intl.DateTimeFormat('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-        }).format(now);
-        doc.setFontSize(10).setFont(undefined, 'normal');
-        doc.text(`DATE: ${formattedDate}`, 14, 52);
+        doc.text('FINISHED GOODS PRODUCTION REPORT', 14, 47);
     
-        //generate report table
-        doc.autoTable({
-            startY: 60,
-            head: [['PRODUCT NAME', 'CODE', 'SIZE UNIT', 'CATEGORY', 'PRICE', 'UNITS SOLD', 'TOTAL REVENUE', 'DATE']],
-            body: reports.map((report) => [
+        let startY = 60;
+    
+        //iterate through grouped reports by date
+        Object.keys(groupedReports).forEach((date) => {
+            doc.setFontSize(12).setFont(undefined, 'bold');
+            doc.text(`Date: ${date}`, 14, startY);
+            startY += 5;
+    
+            //table Headers
+            const tableHeaders = [['PRODUCTS', 'UCM', 'QTY', 'REMARKS']];
+    
+            //table Data
+            const tableData = groupedReports[date].map((report) => [
                 report.productName,
-                report.productCode,
                 report.sizeUnit,
-                report.category,
-                report.price,
-                report.unitsSold,
-                report.totalRevenue.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                }),
-                new Date(report.reportDate).toLocaleDateString()
-            ]),
-            styles: { fontSize: 10, halign: 'center' },
-            headStyles: {
-                fillColor: [255, 255, 255],
-                textColor: [0, 0, 0],
-                lineWidth: 0.1,
-                lineColor: [0, 0, 0],
-            },
-            bodyStyles: {
-                fillColor: [255, 255, 255],
-                textColor: [0, 0, 0],
-                lineWidth: 0.1,
-                lineColor: [0, 0, 0],
-            },
+                report.quantity,
+                report.remarks,
+            ]);
+    
+            //generate Table
+            doc.autoTable({
+                startY,
+                head: tableHeaders,
+                body: tableData,
+                styles: {fontSize: 10, halign: 'center'},
+                headStyles: {
+                    fillColor: [240, 240, 240],
+                    textColor: [0, 0, 0],
+                    lineWidth: 0.1,
+                    lineColor: [0, 0, 0],
+                },
+                bodyStyles: {
+                    fillColor: [255, 255, 255],
+                    textColor: [0, 0, 0],
+                    lineWidth: 0.1,
+                    lineColor: [0, 0, 0],
+                },
+            });
+    
+            startY = doc.autoTable.previous.finalY + 10;
+    
+            //add signature section
+            doc.setFontSize(10).setFont(undefined, 'normal');
+            doc.text('Prepared by:', 14, startY);
+            doc.text('Checked by:', 80, startY);
+            doc.text('Received by:', 150, startY);
+    
+            const firstReport = groupedReports[date][0]; //use first report for names
+            doc.text(inputFields[firstReport._id]?.preparedBy || '_____________', 14, startY + 6);
+            doc.text(inputFields[firstReport._id]?.checkedBy || '_____________', 80, startY + 6);
+            doc.text(inputFields[firstReport._id]?.receivedBy || '_____________', 150, startY + 6);
+    
+            startY += 15; //move down for the next section
         });
     
-        //add "prepared by", "checked by", and "received by" with inline icons
-        const finalY = doc.autoTable.previous.finalY + 10;
-        doc.setFontSize(10);
-    
-        reports.forEach((report, index) => {
-            const offset = finalY + index * 15; //adjust spacing for each report row
-            const preparedBy = inputFields[report._id]?.preparedBy || '_____________';
-            const checkedBy = inputFields[report._id]?.checkedBy || '_____________';
-            const receivedBy = inputFields[report._id]?.receivedBy || '_____________';
-        
-            //X-coordinates for each section
-            const preparedX = 14;
-            const checkedX = 80;
-            const receivedX = 150;
-        
-            //labels
-            doc.text('Prepared by:', preparedX, offset);
-            doc.text('Checked by:', checkedX, offset);
-            doc.text('Received by:', receivedX, offset);
-        
-            //names
-            doc.text(preparedBy, preparedX, offset + 6);
-            doc.text(checkedBy, checkedX, offset + 6);
-            doc.text(receivedBy, receivedX, offset + 6);
-        
-            //underscores for signature lines
-            doc.text('________________', preparedX, offset + 7);
-            doc.text('________________', checkedX, offset + 7);
-            doc.text('________________', receivedX, offset + 7);
-        });
-        
-        //save the PDF
-        doc.save('Sales_Report.pdf');
+        //save PDF
+        doc.save('Inventory_Report.pdf');
     };
-
-    // const handleGenerateReport = () => {
-    //     const doc = new jsPDF();
-    //     doc.addImage(leftLogoBase64, 'PNG', 14, 10, 30, 30);
-    //     doc.setFontSize(14).setTextColor(0, 0, 0).setFont(undefined, 'bold');
-    //     doc.text('CLEAN UP SOLUTIONS ENTERPRISES, INC.', 50, 16);
-    //     doc.setFontSize(10).setFont(undefined, 'normal');
-    //     doc.text('Prk. Ubas, Brgy. Sto. Nino, Panabo City, Davao del Norte', 50, 22);
-    //     doc.text('Tel: (084) 309-2454 / 0909-8970769', 50, 26);
-    //     doc.text('FB Page: Sabon Depot-Mindanao', 50, 30);
-    //     doc.setFontSize(12).setFont(undefined, 'bold');
-    //     doc.text('SALES REPORT', 14, 47);
-
-    //     const dateRange = getDateRange();
-    //     doc.setFontSize(10).setFont(undefined, 'normal');
-    //     doc.text(`DATE: ${dateRange}`, 14, 52);
-
-    //     doc.autoTable({
-    //         startY: 60,
-    //         head: [['PRODUCT NAME', 'CODE', 'SIZE UNIT', 'CATEGORY', 'PRICE', 'UNITS SOLD', 'TOTAL REVENUE', 'DATE']],
-    //         body: filteredReports.map(report => [
-    //             report.productName,
-    //             report.productCode,
-    //             report.sizeUnit,
-    //             report.category,
-    //             report.price,
-    //             report.unitsSold,
-    //             report.totalRevenue.toLocaleString('en-US', {
-    //                 minimumFractionDigits: 2,
-    //                 maximumFractionDigits: 2,
-    //             }),
-    //             new Date(report.reportDate).toLocaleDateString()
-    //         ]),
-    //         styles: {fontSize: 10, halign: 'center'},
-    //         headStyles: {fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0.1, lineColor: [0, 0, 0]},
-    //         bodyStyles: {fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0.1, lineColor: [0, 0, 0]},
-    //     });
-
-    //     doc.setFontSize(10);
-    //     doc.text('Prepared by:', 14, doc.autoTable.previous.finalY + 10);
-    //     doc.text('Checked by:', 80, doc.autoTable.previous.finalY + 10);
-    //     doc.text('Received by:', 150, doc.autoTable.previous.finalY + 10);
-
-    //     doc.text('___________________', 14, doc.autoTable.previous.finalY + 20);
-    //     doc.text('___________________', 80, doc.autoTable.previous.finalY + 20);
-    //     doc.text('___________________', 150, doc.autoTable.previous.finalY + 20);
-
-    //     doc.save('Sales_Report.pdf');
-    // };
+    
 
   return (
     <div className='sales-report-container'>
