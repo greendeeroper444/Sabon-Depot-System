@@ -3,8 +3,14 @@ const mongoose = require('mongoose');
 
 const TimePickerSchema = new mongoose.Schema({
     time: {
-        type: String,
-        required: true,
+        startTime: {
+            type: String,
+            required: true
+        },
+        endTime: {
+            type: String,
+            require: true
+        }
     },
 });
 

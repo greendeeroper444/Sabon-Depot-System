@@ -136,10 +136,10 @@ function StaffNavbarComponent() {
 
             <div className='staff-navbar-content'>
                 <form action="">
-                    <input type="text" placeholder='Search product or any order...' className='search-input' />
+                    {/* <input type="text" placeholder='Search product or any order...' className='search-input' />
                     <button type="submit" className='search-button'>
                         <img src={searchIcon} alt="" />
-                    </button>
+                    </button> */}
                 </form>
 
                 <div className='staff-navbar-profile'>

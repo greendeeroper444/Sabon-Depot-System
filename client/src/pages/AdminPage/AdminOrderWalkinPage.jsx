@@ -162,7 +162,7 @@ function AdminOrdersWalkinPage() {
                             onClick={() => navigate(`/admin/order-summary/${order._id}`)}
                             >
                                 {/* <td><input type='checkbox' onClick={handleCheckboxClick} /></td> */}
-                                <td>{order._id}</td>
+                                <td>{order.orderNumber}</td>
                                 <td>{item.productName || "N/A"}</td>
                                 <td>{item.productSize}</td>
                                 <td>{item.quantity || 0}</td>

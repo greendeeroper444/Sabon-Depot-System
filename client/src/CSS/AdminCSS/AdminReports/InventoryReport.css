@@ -45,7 +45,8 @@
 
 .admin-inventory-report-container .logo-inventory-report{
     width: 160px;
-    object-fit: contain;
+    height: 160px;
+    object-fit: cover;
 }
 
 .admin-inventory-report-container .admin-inventory-report-header button{

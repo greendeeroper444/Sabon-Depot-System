@@ -159,18 +159,20 @@ function StaffOrdersRefillPage() {
             </thead>
             <tbody>
                 {
-                    aggregatedOrders.length > 0 ? aggregatedOrders.map(order => (
-                        <tr key={order._id} className='clickable-row'
-                        onClick={() => navigate(`/staff/order-summary/${order._id}`)}
-                        >
-                            <td>#{order._id}</td>
-                            <td>{order.aggregatedItems || "N/A"}</td>
-                            <td>{order.totalQuantity || 0}</td>
-                            {/* <td>-</td> */}
-                            <td>{`₱${order.totalPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
-                            <td>{`₱${order.totalPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
-                            <td>{orderDate(order.createdAt)}</td>
-                        </tr>
+                    currentOrders.length > 0 ? currentOrders.map(order => (
+                        order.items.map(item => (
+                            <tr key={item.productId} className='clickable-row'
+                                onClick={() => navigate(`/staff/order-summary/${order._id}`)}>
+                                {/* <td><input type='checkbox' onClick={handleCheckboxClick} /></td> */}
+                                <td>{order.orderNumber}</td>
+                                <td>{item.productName || "N/A"}</td>
+                                <td>{item.quantity || 0}</td>
+                                <td>{item.productSize}</td>
+                                <td>{`₱${(item.price ?? 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
+                                <td>{`₱${((item.price ?? 0) * (item.quantity ?? 0)).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
+                                <td>{orderDate(order.createdAt)}</td>
+                            </tr>
+                        ))
                     )) : <tr><td colSpan="8">No results found</td></tr>
                 }
             </tbody>

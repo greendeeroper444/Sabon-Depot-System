@@ -156,6 +156,87 @@ const updateTime = async(req, res) => {
         });
     }
 };
+
+
+
+const createTimeSlot = async(req, res) => {
+    try {
+        const {startTime, endTime} = req.body;
+
+        if(!startTime || !endTime){
+            return res.status(400).json({ 
+                message: 'Start time and end time are required.' 
+            });
+        }
+
+        const newTimeSlot = new TimePickerModel({
+            time: {
+                startTime,
+                endTime
+            }
+        });
+
+        await newTimeSlot.save();
+        res.status(201).json({ 
+            message: 'Time slot created successfully.', 
+            newTimeSlot 
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ 
+            message: 'Server error' 
+        });
+    }
+};
+
+//update a time slot
+const updateTimeSlot = async(req, res) => {
+    try {
+        const {startTime, endTime} = req.body;
+        const {id} = req.params;
+
+        if(!startTime || !endTime){
+            return res.status(400).json({ 
+                message: 'Both start time and end time are required.' 
+            });
+        }
+
+        const updatedTimeSlot = await TimePickerModel.findByIdAndUpdate(
+            id,
+            {time: {startTime, endTime}},
+            {new: true}
+        );
+
+        if(!updatedTimeSlot){
+            return res.status(404).json({ 
+                message: 'Time slot not found.' 
+            });
+        }
+
+        res.status(200).json({ 
+            message: 'Time slot updated successfully.', 
+            updatedTimeSlot 
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ 
+            message: 'Server error' 
+        });
+    }
+};
+
+//fetch all time slots
+const getAllTimeSlots = async(req, res) => {
+    try {
+        const timeSlots = await TimePickerModel.find();
+        res.status(200).json(timeSlots);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ 
+            message: 'Server error' 
+        });
+    }
+};
 module.exports = {
     addDate,
     addTime,
@@ -165,4 +246,7 @@ module.exports = {
     updateDate,
     deleteTime,
     updateTime,
+    createTimeSlot,
+    updateTimeSlot,
+    getAllTimeSlots
 };

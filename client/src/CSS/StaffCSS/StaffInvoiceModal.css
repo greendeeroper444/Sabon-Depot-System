@@ -1,4 +1,4 @@
-.invoice-modal-backdrop{
+.staff-invoice-modal-backdrop{
     position: fixed;
     top: 0;
     left: 0;
@@ -11,7 +11,7 @@
     z-index: 1000;
 }
 
-.invoice-modal-backdrop .invoice-modal{
+.staff-invoice-modal-backdrop .invoice-modal{
     background: white;
     padding: 20px;
     border-radius: 8px;
@@ -24,7 +24,7 @@
     font-family: Arial, sans-serif;
 }
 
-.invoice-modal-backdrop .close-button{
+.staff-invoice-modal-backdrop .close-button{
     position: absolute;
     top: 10px;
     right: 10px;
@@ -35,7 +35,7 @@
 }
 
 
-.invoice-modal-backdrop .invoice-header{
+.staff-invoice-modal-backdrop .invoice-header{
     text-align: start;
     margin-bottom: 20px;
     justify-content: space-around;
@@ -43,7 +43,7 @@
     align-items: center;
 }
 
-.invoice-modal-backdrop .logo-inventory-invoice{
+.staff-invoice-modal-backdrop .logo-inventory-invoice{
     width: 100px;
     height: 100px;
     object-fit: cover;
@@ -117,7 +117,7 @@
 
 
 @media (max-width: 768px){
-    .invoice-modal-backdrop .invoice-modal{
+    .staff-invoice-modal-backdrop .invoice-modal{
         width: 95%;
     }
 
@@ -139,7 +139,7 @@
 }
 
 @media (max-width: 480px){
-    .invoice-modal-backdrop .invoice-modal{
+    .staff-invoice-modal-backdrop .invoice-modal{
         padding: 15px;
     }
 

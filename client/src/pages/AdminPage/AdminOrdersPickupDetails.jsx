@@ -119,7 +119,7 @@ function AdminOrdersPickupDetailsPage() {
                 <button
                 className={`order-actions-button pickedup ${getStatusClass('isPickedUp', order) === 'isPickedUp' ? 'active' : ''}`}
                 onClick={() => handleStatusUpdate('isPickedUp')}
-                disabled={order.orderStatus === 'Pending'}
+                disabled={order.orderStatus === 'Picked Up'}
                 >
                 Picked Up
                 </button>

@@ -35,6 +35,8 @@
 const schedule = require('node-schedule');
 const ProductModel = require('../models/ProductModel');
 const AdminNotificationModel = require('../models/AdminModels/AdminNotificationModel');
+const CartModel = require('../models/CartModel');
+const StaffCartModel = require('../models/StaffModels/StaffCartModel');
 
 schedule.scheduleJob('0 0 * * *', async() => {
     try {
@@ -78,6 +80,12 @@ schedule.scheduleJob('0 0 * * *', async() => {
 
         if(expiredProducts.length > 0){
             for (const product of expiredProducts) {
+
+                await CartModel.deleteMany({productId: product._id});
+                await StaffCartModel.deleteMany({productId: product._id});
+
+                console.log(`Removed product from carts: ${product.productName}`);
+
                 await ProductModel.findByIdAndDelete(product._id);
                 console.log(`Deleted expired product: ${product.productName}`);
             }

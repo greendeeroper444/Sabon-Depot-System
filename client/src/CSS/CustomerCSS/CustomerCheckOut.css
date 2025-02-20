@@ -153,11 +153,11 @@
 } */
   
   
-.customer-checkout-content form{
+/* .customer-checkout-content form{
     display: flex;
     flex-direction: column;
 }
-  
+   */
 .customer-checkout-content .form-group{
     display: flex;
     justify-content: space-between;
@@ -174,7 +174,6 @@
     border: 1px solid #ddd;
     padding: 20px;
     border-radius: 10px;
-    background-color: #f9f9f9;
 }
 
 .billing-display .class-p{
@@ -552,7 +551,21 @@
 @media (max-width: 900px){
     .customer-checkout-content{
         flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
+    .customer-checkout-content .order-summary{
+        box-sizing: border-box;
+    }
+    .customer-checkout-content .place-order-button{
+        width: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 40px;
+    }
+    
 }
 
 @media (max-width: 768px){

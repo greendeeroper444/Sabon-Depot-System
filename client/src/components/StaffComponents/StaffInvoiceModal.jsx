@@ -1,47 +1,98 @@
-import React from 'react'
-import { jsPDF } from 'jspdf';
+import React, { useEffect, useState } from 'react'
 import '../../CSS/CustomerCSS/InvoiceModal.css';
-import Logo3 from '../../assets/icons/logo-3.png';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
+
+import logoDepot2 from '../../assets/icons/logo-3.png';
+import cleanUp from '../../assets/icons/clean-up.png';
 
 function StaffInvoiceModal({isOpen, onClose, order}) {
-    if(!isOpen || !order) return null;
+    if (!isOpen) return null;
 
-    //function to generate and download PDF
-    const downloadInvoice = () => {
+    const [leftLogoBase64, setLeftLogoBase64] = useState('');
+    const [rightLogoBase64, setRightLogoBase64] = useState('');
+
+    //function to convert image to Base64
+    const fetchBase64 = (imgSrc) => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = 'Anonymous'; //avoid CORS issues
+            img.src = imgSrc;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                resolve(canvas.toDataURL('image/png'));
+            };
+            img.onerror = (error) => reject(error);
+        });
+    };
+
+    useEffect(() => {
+        const fetchLogos = async () => {
+            try {
+                const leftLogo = await fetchBase64(logoDepot2);
+                const rightLogo = await fetchBase64(cleanUp);
+                setLeftLogoBase64(leftLogo);
+                setRightLogoBase64(rightLogo);
+            } catch (error) {
+                console.error('Error fetching logos:', error);
+            }
+        };
+
+        fetchLogos();
+    }, []);
+
+    const handleDownload = () => {
         const doc = new jsPDF();
 
-        doc.setFont('helvetica', 'normal');
+        //add company logos
+        if(leftLogoBase64) doc.addImage(leftLogoBase64, 'PNG', 14, 10, 30, 30);
+        if(rightLogoBase64) doc.addImage(rightLogoBase64, 'PNG', 160, 10, 30, 30);
 
-        const logo = Logo3;
-        doc.addImage(logo, 'PNG', 10, 10, 30, 30);
+        //header
+        doc.setFontSize(14).setFont(undefined, 'bold');
+        doc.text('CLEAN UP SOLUTIONS ENTERPRISES, INC.', 50, 16);
+        doc.setFontSize(10).setFont(undefined, 'normal');
+        doc.text('Prk. Ubas, Brgy. Sto. Nino, Panabo City, Davao del Norte', 50, 22);
+        doc.text('Tel: (084) 309-2454 / 0909-8970769', 50, 26);
+        doc.text('FB Page: Sabon Depot-Mindanao', 50, 30);
 
-        doc.setFontSize(16);
-        doc.text(`Invoice ID# ${order._id || 'N/A'}`, 50, 20);
+        doc.setFontSize(12).setFont(undefined, 'bold');
+        doc.text('INVOICE', 14, 47);
+        doc.setFontSize(10).setFont(undefined, 'normal');
 
-        doc.setFontSize(12);
-        doc.text(`Due Date: ${new Date().toLocaleDateString()}`, 50, 30);
-
-        //table headers
-        doc.text('Description', 10, 50);
-        doc.text('QTY', 70, 50);
-        doc.text('Unit Price', 100, 50);
-        doc.text('Amount', 140, 50);
-
-        //table content
-        let yPosition = 60;
-        order.items.forEach(item => {
-            doc.text(item.productName, 10, yPosition);
-            doc.text(item.quantity.toString(), 70, yPosition);
-            doc.text(`Php ${item.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}`, 100, yPosition);
-            doc.text(`php ${(item.price * item.quantity)?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}`, 140, yPosition);
-            yPosition += 10;
+        //invoice Details
+        let y = 60;
+        doc.text(`Invoice ID: #${order.orderNumber}`, 14, y);
+        y += 5;
+        doc.text(`Due Date: ${new Date().toLocaleDateString()}`, 14, y);
+        y += 10;
+        
+        //table Header
+        doc.autoTable({
+            startY: y,
+            head: [['Product Name', 'QTY', 'Unit Price', 'Amount']],
+            body: order.items.map(item => [
+                item.productName,
+                item.quantity,
+                `Php ${item.price.toLocaleString('en-US', {minimumFractionDigits: 2})}`,
+                `Php ${(item.price * item.quantity).toLocaleString('en-US', {minimumFractionDigits: 2})}`
+            ]),
+            theme: 'grid',
+            styles: {fontSize: 10},
+            headStyles: {fillColor: [0, 102, 204]},
         });
 
-        //total
-        doc.text(`Total: Php ${order.totalAmount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}`, 10, yPosition + 10);
+        let finalY = doc.lastAutoTable.finalY + 10;
 
-        //save the document
-        doc.save(`Invoice_${order._id}.pdf`);
+        //summary
+        doc.text(`Total: Php ${order.totalAmount?.toLocaleString('en-US', {minimumFractionDigits: 2})}`, 14, finalY);
+
+        //save PDF
+        doc.save(`Staff_Invoice_${order.orderNumber}.pdf`);
     };
 
   return (
@@ -49,11 +100,20 @@ function StaffInvoiceModal({isOpen, onClose, order}) {
         <div className='invoice-modal'>
             <button className='close-button' onClick={onClose}>✖</button>
             <div className='invoice-header'>
-                <h2>Invoice ID# {order.orderNumber || 'N/A'}</h2>
-                <div className='invoice-logo'>
-                    <img src={Logo3} alt='Sabon Depot' />
+                <div>
+                    <img src={logoDepot2} alt='Logo' className='logo-inventory-invoice' />
+                </div>
+                <div className='invoice-title'>
+                    <h3>CLEAN UP SOLUTIONS ENTERPRISES, INC.</h3>
+                    <p>Prk. Ubas, Brgy. Sto. Nino, Panabo City, Davao del Norte</p>
+                    <p>(084) 309-2454 / 0930-8970769</p>
+                    <p>FB Page: Sabon Depot - Mindanao</p>
+                </div>
+                <div>
+                    <img src={cleanUp} alt='Clean Up' className='logo-inventory-invoice' />
                 </div>
             </div>
+            <h5>Invoice ID# {order.orderNumber}</h5>
             <div className='divider-line'></div>
             <div className='invoice-details'>
                 <div className='details-left'>
@@ -91,7 +151,7 @@ function StaffInvoiceModal({isOpen, onClose, order}) {
                     Total: ₱{order.totalAmount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                 </p>
             </div>
-            <button className='download-button' onClick={downloadInvoice}>Download Invoice</button>
+            <button onClick={handleDownload} className='download-button'>Download Invoice</button>
         </div>
     </div>
   )

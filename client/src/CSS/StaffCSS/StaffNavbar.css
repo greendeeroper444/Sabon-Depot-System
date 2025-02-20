@@ -60,7 +60,7 @@
 .staff-navbar .staff-navbar-container form{
     display: flex;
     align-items: center;
-    background-color: #f1f5f7;
+    /* background-color: #f1f5f7; */
     border-radius: 8px;
     padding: 5px 5px;
     width: 100%;

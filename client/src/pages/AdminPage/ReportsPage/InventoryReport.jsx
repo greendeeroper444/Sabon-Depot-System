@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import '../../../CSS/AdminCSS/AdminReports/InventoryReport.css';
 import axios from 'axios';
 import DatePicker from 'react-multi-date-picker';
-import logoDepot from '../../../assets/icons/logo-depot.png';
+import logoDepot2 from '../../../assets/icons/logo-3.png';
 import cleanUp from '../../../assets/icons/clean-up.png';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -38,7 +38,7 @@ function InventoryReport() {
     useEffect(() => {
         const fetchLogos = async() => {
             try {
-                const leftLogo = await fetchBase64('/baseLogo.txt');
+                const leftLogo = await fetchBase64('/baseLogo2.txt');
                 const rightLogo = await fetchBase64('/baseLogo3.txt');
                 setLeftLogoBase64(leftLogo);
                 setRightLogoBase64(rightLogo);
@@ -306,7 +306,7 @@ function InventoryReport() {
         </div>
         <div className='report-header'>
             <div>
-                <img src={logoDepot} alt="Logo" className='logo-inventory-report' />
+                <img src={logoDepot2} alt="Logo" className='logo-inventory-report' />
             </div>
             <div className='report-title'>
                 <h1>CLEAN UP SOLUTIONS ENTERPRISES, INC.</h1>
