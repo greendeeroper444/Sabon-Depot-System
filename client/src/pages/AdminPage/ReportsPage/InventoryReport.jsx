@@ -421,6 +421,8 @@ function InventoryReport() {
                             </div>
                         ))
                     }
+                   
+
                 </div>
             )
         }
