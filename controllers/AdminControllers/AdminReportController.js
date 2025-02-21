@@ -3,7 +3,64 @@ const AdminInventoryReportModel = require("../../models/AdminModels/AdminInvento
 const SalesReportModel = require("../../models/AdminModels/AdminSalesReportModel");
 const ProductModel = require("../../models/ProductModel");
 
-const getInventoryReport = async(productId, productName, sizeUnit, productSize, category, orderQuantity, isOrder = false) => {
+// const getInventoryReport = async(productId, productName, sizeUnit, productSize, category, orderQuantity, isOrder = false) => {
+//     const reportDate = new Date();
+//     reportDate.setHours(0, 0, 0, 0);
+
+//     //define today's date range for the query to limit to current day's records only
+//     const startOfDay = reportDate;
+//     const endOfDay = new Date(reportDate.getTime() + 24 * 60 * 60 * 1000);
+
+//     //check for an existing report for the same product on the current date
+//     let existingReport = await AdminInventoryReportModel.findOne({
+//         productId,
+//         reportDate: {
+//             $gte: startOfDay,
+//             $lt: endOfDay
+//         }
+//     });
+
+//     if(existingReport){
+//         //update existing report if it's already created for today
+//         existingReport.productName = productName;
+//         existingReport.sizeUnit = sizeUnit;
+//         existingReport.productSize = productSize;
+//         existingReport.category = category;
+
+//         if(isOrder){
+//             //subtract the ordered quantity from the current quantity
+//             existingReport.quantity -= orderQuantity;
+//         } else{
+//             //set quantity directly if not an order (e.g., inventory update)
+//             existingReport.quantity = orderQuantity;
+//         }
+
+//         await existingReport.save();
+//     } else{
+//         //if no report exists for today, create a new report
+//         const currentProduct = await ProductModel.findById(productId).select('quantity');
+//         const initialQuantity = isOrder 
+//             ? currentProduct.quantity - orderQuantity
+//             : orderQuantity;
+
+//         await AdminInventoryReportModel.create({
+//             productId,
+//             productName,
+//             sizeUnit,
+//             productSize,
+//             category,
+//             quantity: initialQuantity,
+//             reportDate: startOfDay
+//         });
+//     }
+// };
+
+
+
+
+//gey invnetory report
+
+const getInventoryReport = async(productId, productName, sizeUnit, productSize, category, quantity, isOrder = false) => {
     const reportDate = new Date();
     reportDate.setHours(0, 0, 0, 0);
 
@@ -26,22 +83,11 @@ const getInventoryReport = async(productId, productName, sizeUnit, productSize, 
         existingReport.sizeUnit = sizeUnit;
         existingReport.productSize = productSize;
         existingReport.category = category;
+        existingReport.quantity = quantity;
 
-        if(isOrder){
-            //subtract the ordered quantity from the current quantity
-            existingReport.quantity -= orderQuantity;
-        } else{
-            //set quantity directly if not an order (e.g., inventory update)
-            existingReport.quantity = orderQuantity;
-        }
-
+       
         await existingReport.save();
     } else{
-        //if no report exists for today, create a new report
-        const currentProduct = await ProductModel.findById(productId).select('quantity');
-        const initialQuantity = isOrder 
-            ? currentProduct.quantity - orderQuantity
-            : orderQuantity;
 
         await AdminInventoryReportModel.create({
             productId,
@@ -49,16 +95,12 @@ const getInventoryReport = async(productId, productName, sizeUnit, productSize, 
             sizeUnit,
             productSize,
             category,
-            quantity: initialQuantity,
+            quantity,
             reportDate: startOfDay
         });
     }
 };
 
-
-
-
-//gey invnetory report
 const getInventoryReportsAdmin = async(req, res) => {
     try {
         const adminInventoryReports = await AdminInventoryReportModel.find();
