@@ -339,8 +339,12 @@ function InventoryReport() {
                 <p>Error loading reports.</p>
             ) : (
                 <div className='admin-inventory-report-content'>
-                    {
-                        Object.keys(groupedReports).map((date) => (
+                {
+                    Object.keys(groupedReports).map((date) => {
+                        const reports = groupedReports[date]; //get all reports for this date
+                        const firstReport = reports.length > 0 ? reports[0] : null; //pick the first report for the footer
+
+                        return (
                             <div key={date} className='admin-inventory-report-date-section'>
                                 <h2>Date: {new Date(date).toLocaleDateString()}</h2>
                                 <table className='admin-inventory-report-table'>
@@ -354,8 +358,8 @@ function InventoryReport() {
                                     </thead>
                                     <tbody>
                                         {
-                                            groupedReports[date].length > 0 ? (
-                                                groupedReports[date].map((report) => (
+                                            reports.length > 0 ? (
+                                                reports.map((report) => (
                                                     <tr key={report._id}>
                                                         <td>{report.productName}</td>
                                                         <td>{report.sizeUnit || 'N/A'}</td>
@@ -371,40 +375,42 @@ function InventoryReport() {
                                         }
                                     </tbody>
                                 </table>
+
+                                {/* ahow the footer only once per date group */}
                                 {
-                                    groupedReports[date].map((report) => (
-                                        <div key={report._id} className='admin-inventory-report-footer'>
+                                    firstReport && (
+                                        <div key={firstReport._id} className='admin-inventory-report-footer'>
                                             {['preparedBy', 'checkedBy', 'receivedBy'].map((field) => (
                                                 <div key={field}>
                                                     <p>{field.replace(/By$/, ' by:')}</p>
                                                     <div className='input-with-icons'>
                                                         <input
-                                                        type="text"
-                                                        className='input-line'
-                                                        value={inputFields[report._id]?.[field] || ''}
-                                                        onChange={(e) => {
-                                                            handleInputChange(report._id, field, e.target.value);
-                                                        }}
-                                                        onFocus={() => setActiveInput({ id: report._id, field })}
-                                                        onBlur={() =>
-                                                            inputFields[report._id]?.[field]?.trim()
-                                                                ? null
-                                                                : setActiveInput(null)
-                                                        }
-                                                        placeholder="Enter name"
+                                                            type="text"
+                                                            className='input-line'
+                                                            value={inputFields[firstReport._id]?.[field] || ''}
+                                                            onChange={(e) => {
+                                                                handleInputChange(firstReport._id, field, e.target.value);
+                                                            }}
+                                                            onFocus={() => setActiveInput({ id: firstReport._id, field })}
+                                                            onBlur={() =>
+                                                                inputFields[firstReport._id]?.[field]?.trim()
+                                                                    ? null
+                                                                    : setActiveInput(null)
+                                                            }
+                                                            placeholder="Enter name"
                                                         />
                                                         {
-                                                            activeInput?.id === report._id && activeInput?.field === field && (
+                                                            activeInput?.id === firstReport._id && activeInput?.field === field && (
                                                                 <>
                                                                     <span
-                                                                    className='icon check-icon'
-                                                                    onClick={() => handleUpdateNames(report._id)}
+                                                                        className='icon check-icon'
+                                                                        onClick={() => handleUpdateNames(firstReport._id)}
                                                                     >
                                                                         ✔️
                                                                     </span>
                                                                     <span
-                                                                    className='icon times-icon'
-                                                                    onClick={() => resetInputField(report._id, field)}
+                                                                        className='icon times-icon'
+                                                                        onClick={() => resetInputField(firstReport._id, field)}
                                                                     >
                                                                         ❌
                                                                     </span>
@@ -415,13 +421,13 @@ function InventoryReport() {
                                                 </div>
                                             ))}
                                         </div>
-                                    ))
+                                    )
                                 }
-
                             </div>
-                        ))
-                    }
-                   
+                        );
+                    })
+                }
+
 
                 </div>
             )

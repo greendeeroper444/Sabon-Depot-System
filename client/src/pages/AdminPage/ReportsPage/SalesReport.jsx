@@ -280,149 +280,107 @@ function SalesReportPage() {
                 <p>{error}</p>
             ) : (
                 <div>
-                {
-                    Object.keys(groupedReports).map((date) => (
-                        <div key={date}>
-                            <table className='sales-report-table'>
-                                <thead>
-                                    <tr>
-                                        <th>Product Name</th>
-                                        <th>Product Code</th>
-                                        <th>Size Unit</th>
-                                        <th>Category</th>
-                                        <th>Price</th>
-                                        <th>Units Sold</th>
-                                        <th>Total Revenue</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                    groupedReports[date].length > 0 ? (
-                                        groupedReports[date].map((report) => (
-                                                <tr key={report.productId}>
-                                                    <td>{report.productName}</td>
-                                                    <td>{report.productCode}</td>
-                                                    <td>{report.sizeUnit}</td>
-                                                    <td>{report.category}</td>
-                                                    <td>{report.price}</td>
-                                                    <td>{report.unitsSold}</td>
-                                                    <td>
-                                                        {
-                                                            report.totalRevenue.toLocaleString('en-US', {
-                                                                minimumFractionDigits: 2,
-                                                                maximumFractionDigits: 2,
-                                                            })
-                                                        }
-                                                    </td>
-                                                    <td>{new Date(report.reportDate).toLocaleDateString()}</td>
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan="7">No sales reports for the selected dates.</td>
-                                            </tr>
-                                        )
-                                    }
-                                </tbody>
-                            </table>
-                             {
-                                    Object.keys(groupedReports).map((date) => (
-                                        <div key={date}>
-                                            <table className='sales-report-table'>
-                                                <thead>
-                                                    <tr>
-                                                        <th>Product Name</th>
-                                                        <th>Product Code</th>
-                                                        <th>Size Unit</th>
-                                                        <th>Category</th>
-                                                        <th>Price</th>
-                                                        <th>Units Sold</th>
-                                                        <th>Total Revenue</th>
-                                                        <th>Date</th>
+                    {
+                    Object.keys(groupedReports).map((date) => {
+                        const reports = groupedReports[date]; //get all reports for this date
+                        const firstReport = reports.length > 0 ? reports[0] : null; //pick the first report
+
+                        return (
+                            <div key={date}>
+                                <table className='sales-report-table'>
+                                    <thead>
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Product Code</th>
+                                            <th>Size Unit</th>
+                                            <th>Category</th>
+                                            <th>Price</th>
+                                            <th>Units Sold</th>
+                                            <th>Total Revenue</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            reports.length > 0 ? (
+                                                reports.map((report) => (
+                                                    <tr key={report.productId}>
+                                                        <td>{report.productName}</td>
+                                                        <td>{report.productCode}</td>
+                                                        <td>{report.sizeUnit}</td>
+                                                        <td>{report.category}</td>
+                                                        <td>{report.price}</td>
+                                                        <td>{report.unitsSold}</td>
+                                                        <td>
+                                                            {
+                                                                report.totalRevenue.toLocaleString('en-US', {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2,
+                                                                })
+                                                            }
+                                                        </td>
+                                                        <td>{new Date(report.reportDate).toLocaleDateString()}</td>
                                                     </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {
-                                                    groupedReports[date].length > 0 ? (
-                                                        groupedReports[date].map((report) => (
-                                                                <tr key={report.productId}>
-                                                                    <td>{report.productName}</td>
-                                                                    <td>{report.productCode}</td>
-                                                                    <td>{report.sizeUnit}</td>
-                                                                    <td>{report.category}</td>
-                                                                    <td>{report.price}</td>
-                                                                    <td>{report.unitsSold}</td>
-                                                                    <td>
-                                                                        {
-                                                                            report.totalRevenue.toLocaleString('en-US', {
-                                                                                minimumFractionDigits: 2,
-                                                                                maximumFractionDigits: 2,
-                                                                            })
-                                                                        }
-                                                                    </td>
-                                                                    <td>{new Date(report.reportDate).toLocaleDateString()}</td>
-                                                                </tr>
-                                                            ))
-                                                        ) : (
-                                                            <tr>
-                                                                <td colSpan="7">No sales reports for the selected dates.</td>
-                                                            </tr>
-                                                        )
-                                                    }
-                                                </tbody>
-                                            </table>
-                                            {
-                                                groupedReports[date].map((report) => (
-                                                    <div key={report._id} className='admin-sales-report-footer'>
-                                                        {['preparedBy', 'checkedBy', 'receivedBy'].map((field) => (
-                                                            <div key={field}>
-                                                                <p>{field.replace(/By$/, ' by:')}</p>
-                                                                <div className='input-with-icons'>
-                                                                    <input
-                                                                    type="text"
-                                                                    className='input-line'
-                                                                    value={inputFields[report._id]?.[field] || ''}
-                                                                    onChange={(e) => {
-                                                                        handleInputChange(report._id, field, e.target.value);
-                                                                    }}
-                                                                    onFocus={() => setActiveInput({ id: report._id, field })}
-                                                                    onBlur={() =>
-                                                                        inputFields[report._id]?.[field]?.trim()
-                                                                        ? null
-                                                                        : setActiveInput(null)
-                                                                    }
-                                                                    placeholder="Enter name"
-                                                                    />
-                                                                    {
-                                                                        activeInput?.id === report._id && activeInput?.field === field && (
-                                                                            <>
-                                                                                <span
-                                                                                className='icon check-icon'
-                                                                                onClick={() => handleUpdateNames(report._id)}
-                                                                                >
-                                                                                    ✔️
-                                                                                </span>
-                                                                                <span
-                                                                                className='icon times-icon'
-                                                                                onClick={() => resetInputField(report._id, field)}
-                                                                                >
-                                                                                    ❌
-                                                                                </span>
-                                                                            </>
-                                                                        )
-                                                                    }
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
                                                 ))
-                                            }
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan="8">No sales reports for the selected dates.</td>
+                                                </tr>
+                                            )
+                                        }
+                                    </tbody>
+                                </table>
+
+                                {/* show the footer only once per date group */}
+                                {
+                                    firstReport && (
+                                        <div key={firstReport._id} className='admin-sales-report-footer'>
+                                            {['preparedBy', 'checkedBy', 'receivedBy'].map((field) => (
+                                                <div key={field}>
+                                                    <p>{field.replace(/By$/, ' by:')}</p>
+                                                    <div className='input-with-icons'>
+                                                        <input
+                                                            type="text"
+                                                            className='input-line'
+                                                            value={inputFields[firstReport._id]?.[field] || ''}
+                                                            onChange={(e) => {
+                                                                handleInputChange(firstReport._id, field, e.target.value);
+                                                            }}
+                                                            onFocus={() => setActiveInput({ id: firstReport._id, field })}
+                                                            onBlur={() =>
+                                                                inputFields[firstReport._id]?.[field]?.trim()
+                                                                    ? null
+                                                                    : setActiveInput(null)
+                                                            }
+                                                            placeholder="Enter name"
+                                                        />
+                                                        {
+                                                            activeInput?.id === firstReport._id && activeInput?.field === field && (
+                                                                <>
+                                                                    <span
+                                                                        className='icon check-icon'
+                                                                        onClick={() => handleUpdateNames(firstReport._id)}
+                                                                    >
+                                                                        ✔️
+                                                                    </span>
+                                                                    <span
+                                                                        className='icon times-icon'
+                                                                        onClick={() => resetInputField(firstReport._id, field)}
+                                                                    >
+                                                                        ❌
+                                                                    </span>
+                                                                </>
+                                                            )
+                                                        }
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))
+                                    )
                                 }
-                        </div>
-                    ))
+                            </div>
+                        );
+                    })
                 }
                 
                 </div>
