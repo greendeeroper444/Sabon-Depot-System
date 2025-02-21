@@ -129,6 +129,17 @@ const uploadProductAdmin = async(req, res) => {
                     createdBy: adminExists.fullName,
                     batch,
                 });
+                
+                await getInventoryReport(
+                    newProduct._id,
+                    newProduct.productName,
+                    newProduct.sizeUnit,
+                    newProduct.productSize,
+                    newProduct.category,
+                    newProduct.quantity,
+                    true
+                );
+                
 
                 return res.json({
                     message: 'Product added successfully!',

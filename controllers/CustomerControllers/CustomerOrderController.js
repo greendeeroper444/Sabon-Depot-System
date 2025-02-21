@@ -472,15 +472,15 @@ const directCheckoutCustomer = async(req, res) => {
                     }
         
                     //generate inventory and sales reports
-                    await getInventoryReport(
-                        productId,
-                        productName,
-                        product.category,
-                        product.sizeUnit,
-                        product.productSize,
-                        quantity,
-                        true
-                    );
+                    // await getInventoryReport(
+                    //     productId,
+                    //     productName,
+                    //     product.category,
+                    //     product.sizeUnit,
+                    //     product.productSize,
+                    //     quantity,
+                    //     true
+                    // );
         
                     await getSalesReport(
                         productId,

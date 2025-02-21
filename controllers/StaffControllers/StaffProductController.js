@@ -95,6 +95,17 @@ const uploadProductStaff = async(req, res) => {
                     batch,
                 });
 
+
+                await getInventoryReport(
+                    newProduct._id,
+                    newProduct.productName,
+                    newProduct.sizeUnit,
+                    newProduct.productSize,
+                    newProduct.category,
+                    newProduct.quantity,
+                    true
+                );
+
                 return res.json({
                     message: 'Product added successfully!',
                     newProduct,
@@ -243,14 +254,15 @@ const editProductStaff = async(req, res) => {
 
             const updatedProduct = await product.save();
 
-            await getInventoryReport(
-                product._id, 
-                productName, 
-                expirationDate, 
-                productSize, 
-                category, 
-                quantity
-            )
+            // await getInventoryReport(
+            //     newProduct._id,
+            //     newProduct.productName,
+            //     newProduct.sizeUnit,
+            //     newProduct.productSize,
+            //     newProduct.category,
+            //     newProduct.quantity,
+            //     true
+            // );
 
             return res.json({
                 message: 'Product updated successfully!',

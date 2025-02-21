@@ -178,15 +178,15 @@ const addOrderRefillStaff = async(req, res) => {
                 }
 
 
-                await getInventoryReport(
-                    item.productId._id,
-                    item.productId.productName,
-                    item.productId.sizeUnit,
-                    item.productId.productSize,
-                    item.productId.category,
-                    item.quantity,
-                    true
-                );
+                // await getInventoryReport(
+                //     item.productId._id,
+                //     item.productId.productName,
+                //     item.productId.sizeUnit,
+                //     item.productId.productSize,
+                //     item.productId.category,
+                //     item.quantity,
+                //     true
+                // );
                 
                 await getSalesReport(
                     item.productId._id,
