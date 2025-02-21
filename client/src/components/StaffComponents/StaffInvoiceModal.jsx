@@ -78,8 +78,8 @@ function StaffInvoiceModal({isOpen, onClose, order}) {
             body: order.items.map(item => [
                 item.productName,
                 item.quantity,
-                `Php ${item.price.toLocaleString('en-US', {minimumFractionDigits: 2})}`,
-                `Php ${(item.price * item.quantity).toLocaleString('en-US', {minimumFractionDigits: 2})}`
+                `Php${item.price.toLocaleString('en-US', {minimumFractionDigits: 2})}`,
+                `Php${(item.price * item.quantity).toLocaleString('en-US', {minimumFractionDigits: 2})}`
             ]),
             theme: 'grid',
             styles: {fontSize: 10},
@@ -89,7 +89,7 @@ function StaffInvoiceModal({isOpen, onClose, order}) {
         let finalY = doc.lastAutoTable.finalY + 10;
 
         //summary
-        doc.text(`Total: Php ${order.totalAmount?.toLocaleString('en-US', {minimumFractionDigits: 2})}`, 14, finalY);
+        doc.text(`Total: Php${order.totalAmount?.toLocaleString('en-US', {minimumFractionDigits: 2})}`, 14, finalY);
 
         //save PDF
         doc.save(`Staff_Invoice_${order.orderNumber}.pdf`);
@@ -136,10 +136,10 @@ function StaffInvoiceModal({isOpen, onClose, order}) {
                                 <td>{item.productName}</td>
                                 <td>{item.quantity}</td>
                                 <td>
-                                    ₱ {item.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                                    Php{item.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                                 </td>
                                 <td>
-                                    ₱ {(item.price * item.quantity)?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                                    Php{(item.price * item.quantity)?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                                 </td>
                             </tr>
                         ))
@@ -148,7 +148,7 @@ function StaffInvoiceModal({isOpen, onClose, order}) {
             </table>
             <div className='invoice-summary'>
                 <p>
-                    Total: ₱{order.totalAmount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                    Total: Php{order.totalAmount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                 </p>
             </div>
             <button onClick={handleDownload} className='download-button'>Download Invoice</button>
