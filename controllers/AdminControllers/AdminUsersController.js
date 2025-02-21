@@ -8,7 +8,9 @@ const addUserAccount = async(req, res) => {
         const {userType, fullName, firstName, lastName, middleInitial, emailAddress, contactNumber, password, clientType, gender, address, province, city, barangay, purokStreetSubdivision} = req.body;
 
         if(!userType || !['Staff', 'Admin', 'Customer'].includes(userType)){
-            return res.status(400).json({ message: 'Invalid user type' });
+            return res.status(400).json({ 
+                message: 'Invalid user type' 
+            });
         }
 
         if(!password){
