@@ -320,7 +320,7 @@ function CustomerRegisterPage() {
                                     
                                     <div className='form-group'>
                                         <label htmlFor="middleInitial">Middle Name</label>
-                                        <input type="text" className='form-input' id='middleInitial'
+                                        <input type="text" placeholder='Optional' className='form-input' id='middleInitial'
                                         value={data.middleInitial} onChange={(e) =>setData({...data, middleInitial: e.target.value})} />
                                     </div>
                                     <div className='form-group'>
