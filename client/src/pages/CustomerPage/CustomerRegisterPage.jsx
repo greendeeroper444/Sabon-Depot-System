@@ -325,7 +325,7 @@ function CustomerRegisterPage() {
                                     </div>
                                     <div className='form-group'>
                                         <label htmlFor="clientType">Client Type</label>
-                                        <select className='form-input' id='clientType' value={data.clientType} 
+                                        <select id='clientType' value={data.clientType} 
                                             onChange={(e) => setData({...data, clientType: e.target.value})}>
                                             <option value=""> Select Client Type</option>
                                             <option value="Individual">Individual</option>

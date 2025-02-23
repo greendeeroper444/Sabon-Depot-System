@@ -254,9 +254,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import '../../CSS/CustomerCSS/CustomerCheckOut.css'
 import CustomerTopFooterComponent from '../../components/CustomerComponents/CustomerTopFooterComponent';
 import CustomerFooterComponent from '../../components/CustomerComponents/CustomerFooterComponent';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import UseCheckOutHook from '../../hooks/CustomerHooks/UseCheckOutHook';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { CustomerContext } from '../../../contexts/CustomerContexts/CustomerAuthContext';
 import CustomerPickUpPaymentMethod from '../../components/CustomerComponents/CustomerCheckout/CustomerPickUpPaymentMethod';
 import UseDirectCheckOutHook from '../../hooks/CustomerHooks/UseDirectCheckOutHook';
@@ -267,6 +267,7 @@ function CustomerDirectCheckOutPage() {
     const {customerId} = useParams();
     const location = useLocation();
     const selectedItems = location.state?.selectedItems || location.state?.cartItems || [];
+    const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
     const {
         billingDetails,
@@ -285,6 +286,9 @@ function CustomerDirectCheckOutPage() {
     } = UseDirectCheckOutHook(customerId, selectedItems, navigate);
     console.log('Selected Items:', selectedItems);
 
+    const handleTermsChange = (e) => {
+        setIsTermsAccepted(e.target.checked);
+    };
   return (
     <div>
         <div className='customer-checkout-header'>
@@ -489,22 +493,44 @@ function CustomerDirectCheckOutPage() {
                         )
                     }
                 </div>
+
+                <div className='payment-method'>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="terms"
+                            checked={isTermsAccepted}
+                            onChange={handleTermsChange}
+                        />
+                        <span>Terms and Conditions</span>
+                        <p>I have read and accept the 
+                            <Link style={{ color: 'black', fontWeight: 'bold' }} to="/terms-and-conditions"> Terms and Conditions</Link>.
+                        </p>
+                        
+                    </label>
+                </div>
+
+
                 <div className='place-order-button'>
                     
-                    <button
-                    className={`place-order ${
-                        (!paymentMethod || 
-                        (paymentMethod === 'Cash On Delivery' && total < 50000) || 
-                        (paymentMethod === 'Pick Up' && (!selectedDate || !selectedTime))) ? 'disabled' : ''
-                    }`}
-                    disabled={
-                        !paymentMethod || 
-                        (paymentMethod === 'Cash On Delivery' && total < 50000) || 
-                        (paymentMethod === 'Pick Up' && (!selectedDate || !selectedTime))
-                    }
-                    >
-                        Place order
-                    </button>
+                   <div className='place-order-button'>
+                        <button
+                            className={`place-order ${
+                                (!paymentMethod || 
+                                (paymentMethod === 'Cash On Delivery' && total < 50000) || 
+                                (paymentMethod === 'Pick Up' && (!selectedDate || !selectedTime)) ||
+                                !isTermsAccepted) ? 'disabled' : ''
+                            }`}
+                            disabled={
+                                !paymentMethod || 
+                                (paymentMethod === 'Cash On Delivery' && total < 50000) || 
+                                (paymentMethod === 'Pick Up' && (!selectedDate || !selectedTime)) ||
+                                !isTermsAccepted
+                            }
+                        >
+                            Place Order
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>
