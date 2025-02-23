@@ -242,7 +242,7 @@ function CustomerShopProductContentComponent() {
                                         </h5>
                                         <span>{product.category}</span>
                                         <br />
-                                        <span>{product.quantity} quantity</span>
+                                        <span>{product.quantity.toLocaleString('en-US')}</span> quantity
                                         <div className='price-container'>
                                             {
                                                 shouldShowDiscount && (

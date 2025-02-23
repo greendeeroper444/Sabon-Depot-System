@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import StaffModalArchivedProductComponent from '../../components/StaffComponents/StaffModalProducts/StaffModalArchivedProductComponent';
+import { orderDate } from '../../utils/OrderUtils';
 
 
 function StaffProductsPage() {
@@ -330,6 +331,7 @@ function StaffProductsPage() {
                             <th>Price</th>
                             <th>Quantity</th>
                             <th>Availability</th>
+                            <th>Expiration</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -355,6 +357,7 @@ function StaffProductsPage() {
                                     <td className={product.quantity > 0 ? (product.quantity > product.stockLevel ? 'in-stock' : 'low-stock') : 'out-of-stock'}>
                                         {product.quantity > 0 ? (product.quantity > product.stockLevel ? 'In stock' : 'Low stock') : 'Out of stock'}
                                     </td>
+                                    <td>{`${orderDate(product.expirationDate)}`}</td>
                                     <td className='actions-tbody'>
                                         <button className='button-edit-icon'
                                         onClick={() => handleEditProductClick(product._id)}

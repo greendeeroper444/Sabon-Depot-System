@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const TotalSaleSchema = new mongoose.Schema({
     imageUrl: {
         type: String,
-        required: true
     },
     productName: {
         type: String,
@@ -11,7 +10,9 @@ const TotalSaleSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        required: true
+    },
+    refillPrice: {
+        type: Number,
     },
     totalProduct: {
         type: Number,
@@ -30,7 +31,7 @@ const TotalSaleSchema = new mongoose.Schema({
         required: true,
         // remove unique here if you want to allow multiple records for the same day and product
     },
-}, { timestamps: true });
+}, {timestamps: true});
 
 
 const BestSellingSchema = new mongoose.Schema({
@@ -42,7 +43,6 @@ const BestSellingSchema = new mongoose.Schema({
     },
     imageUrl: {
         type: String,
-        required: true
     },
     productName: {
         type: String,
@@ -50,7 +50,9 @@ const BestSellingSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        required: true
+    },
+    refillPrice: {
+        type: Number,
     },
     totalProduct: {
         type: Number,

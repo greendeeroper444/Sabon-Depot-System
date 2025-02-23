@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import '../../CSS/AdminCSS/AdminSidebar.css';
 import { NavLink } from 'react-router-dom';
-import logoDepot from '../../assets/icons/logo-depot.png';
+import logoDepot from '../../assets/icons/logo-depot-3-circle.png';
 import dashboardIcon from '../../assets/admin/adminicons/admin-sidebar-dashboard-icon.png';
 import dashboardIconWhite from '../../assets/admin/adminicons/admin-sidebar-dashboard-icon-white.png';
 import ordersIcon from '../../assets/admin/adminicons/admin-sidebar-orders-icon.png';

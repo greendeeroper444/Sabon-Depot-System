@@ -85,6 +85,7 @@ export const customerRoutes = [
     '/direct-checkout/:customerId',
     '/place-order/:customerId/:orderId',
     '/payable/:customerId',
+    '/terms-and-conditions'
 ];
   
 export const isCustomerRoute = (path) => {

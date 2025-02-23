@@ -118,7 +118,7 @@ function CustomerModalShopDetailsComponent({isOpen, onClose, cartItems, setCartI
                                             className='input-quantity-update'
                                             />
                                             <span>X</span> 
-                                            <span>{`₱ ${calculateFinalPriceModal(cartItem, customer)}`}</span>
+                                            <span>{`₱ ${calculateFinalPriceModal(cartItem).toFixed(2)}`}</span>
                                             {/* <span>=</span>
                                             <span>{`₱ ${(item.productId.price * item.quantity).toFixed(2)}`}</span> */}
                                         </p>
@@ -136,6 +136,7 @@ function CustomerModalShopDetailsComponent({isOpen, onClose, cartItems, setCartI
                 <div className="products-subtotal">
                     <span>Subtotal</span>
                     <span>{`₱ ${calculateSubtotalModalCustomer(cartItems, customer)}`}</span>
+
                 </div>
 
                 </div>

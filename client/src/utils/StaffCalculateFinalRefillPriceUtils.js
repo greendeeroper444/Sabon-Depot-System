@@ -4,25 +4,25 @@ import IsDiscountValidUtils from "./IsDiscountValidUtils";
 
 export default function CalculateFinalRefillPriceUtils(customer, product) {
     const shouldShowDiscount = IsDiscountValidUtils(customer) && product.discountPercentage > 0;
-    const finalPrice = shouldShowDiscount ? product.discountedPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : product.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    const refillPrice = shouldShowDiscount ? product.discountedPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : product.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-    return {shouldShowDiscount, finalPrice};
+    return {shouldShowDiscount, refillPrice};
 }
 
 
 
 export function calculateFinalRefillPriceModal(cartItem) {
-    const refillPrice = cartItem.finalPrice 
-    ? cartItem.finalPrice 
+    const refillPrice = cartItem.refillPrice 
+    ? cartItem.refillPrice 
     : cartItem.productId.refillPrice;
 
     return refillPrice;
 }
 
 export function calculateFinalRefillPriceModalStaff(cartItem) {
-    const refillPrice = cartItem.finalPrice 
-    ? cartItem.finalPrice 
-    : cartItem.productId.finalPrice;
+    const refillPrice = cartItem.refillPrice 
+    ? cartItem.refillPrice 
+    : cartItem.productId.refillPrice;
 
     return refillPrice;
 }

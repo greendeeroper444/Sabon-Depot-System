@@ -61,7 +61,7 @@ function AdminDirectOrdersWalkinContentComponent({
                                     <h5>{product.productName} ({product.productSize})</h5>
                                     <span>{product.category}</span>
                                     <br />
-                                    <span>{product.quantity} quantity</span>
+                                    <span>{product.quantity.toLocaleString('en-US')}</span> quantity
                                     <h6>{`₱ ${finalPrice}`}</h6>
                                 </div>
                             </div>

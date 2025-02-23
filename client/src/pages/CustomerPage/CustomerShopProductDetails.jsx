@@ -5,12 +5,13 @@ import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import CustomerModalShopDetailsComponent from '../../components/CustomerComponents/CustomerModalShopDetailsComponent';
 import CustomerTopFooterComponent from '../../components/CustomerComponents/CustomerTopFooterComponent';
 import CustomerFooterComponent from '../../components/CustomerComponents/CustomerFooterComponent';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { CustomerContext } from '../../../contexts/CustomerContexts/CustomerAuthContext';
 import UseFetchProductDetailsHook from '../../hooks/CustomerHooks/UseFetchProductDetailsHook';
 import UseCartHook from '../../hooks/CustomerHooks/UseCartHook';
 import calculateFinalPriceUtils from '../../utils/CalculateFinalPriceUtils';
 import CalculateFinalPriceUtils from '../../utils/StaffCalculateFinalPriceUtils';
+import toast from 'react-hot-toast';
 
 
 const getDaysLeftMessage = (discountedDate) => {
@@ -51,6 +52,10 @@ function CustomerShopProductDetails() {
         : null;
 
         const handleCheckout = (product) => {
+            if (!quantity || quantity <= 0) {
+                toast.error('Please input a valid quantity.');
+                return;
+            }
             navigate(`/direct-checkout/${customer?._id}`, {
                 state: {
                     selectedItems: [
@@ -129,6 +134,11 @@ function CustomerShopProductDetails() {
     const handleCloseModal = () => setIsModalOpen(false);
 
     const handleAddToCart = async() => {
+        if (!quantity || quantity <= 0) {
+            toast.error('Please input a valid quantity.');
+            return;
+        }
+        
         const success = await handleAddToCartClick(customer?._id, productId, quantity);
         if(success){
             setIsModalOpen(true);
@@ -151,9 +161,9 @@ function CustomerShopProductDetails() {
         <div className='customer-shop-product-details-header'>
 
             <div className='customer-shop-product-details-header-content'>
-                <span>Home</span>
+                <span><Link to='/' style={{ textDecoration: 'none', color: 'grey' }}>Home</Link></span>
                 <FontAwesomeIcon icon={faAngleRight} />
-                <span>Shop</span>
+                <span><Link to='/shop' style={{ textDecoration: 'none', color: 'grey' }}>Shop</Link></span>
                 <FontAwesomeIcon icon={faAngleRight} />
                 <span>{product.productName}</span>
             </div>

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import '../../CSS/CustomerCSS/CustomerCheckOut.css'
 import CustomerTopFooterComponent from '../../components/CustomerComponents/CustomerTopFooterComponent';
 import CustomerFooterComponent from '../../components/CustomerComponents/CustomerFooterComponent';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import CustomerCashOnDeliveryPaymentMethod from '../../components/CustomerComponents/CustomerCheckout/CustomerCashOnDeliveryPaymentMethod';
 import UseCheckOutHook from '../../hooks/CustomerHooks/UseCheckOutHook';
 import { useContext, useState } from 'react';
@@ -16,6 +16,7 @@ function CustomerCheckOutPage() {
     const {customerId} = useParams();
     const location = useLocation();
     const selectedItems = location.state?.selectedItems || location.state?.cartItems || [];
+    const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
     const {
         billingDetails,
@@ -34,6 +35,11 @@ function CustomerCheckOutPage() {
         setSelectedDate,
         setSelectedTime,
     } = UseCheckOutHook(customerId, selectedItems, navigate);
+
+
+    const handleTermsChange = (e) => {
+        setIsTermsAccepted(e.target.checked);
+    };
 
   return (
     <div>
@@ -243,26 +249,47 @@ function CustomerCheckOutPage() {
                         )
                     }
                 </div>
+
+                <div className='payment-method'>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="terms"
+                            checked={isTermsAccepted}
+                            onChange={handleTermsChange}
+                        />
+                        <span>Terms and Conditions</span>
+                        <p>I have read and accept the 
+                            <Link style={{ color: 'black', fontWeight: 'bold' }} to="/terms-and-conditions"> Terms and Conditions</Link>.
+                        </p>
+                        
+                    </label>
+                </div>
+                                
                 <div className='place-order-button'>
                     {/* <button className={`place-order ${!paymentMethod ? 'disabled' : ''}`}
                     disabled={!paymentMethod} 
                     >
                         Place order
                     </button> */}
-                    <button
-                    className={`place-order ${
-                        (!paymentMethod || 
-                        (paymentMethod === 'Cash On Delivery' && total < 50000) || 
-                        (paymentMethod === 'Pick Up' && (!selectedDate || !selectedTime))) ? 'disabled' : ''
-                    }`}
-                    disabled={
-                        !paymentMethod || 
-                        (paymentMethod === 'Cash On Delivery' && total < 50000) || 
-                        (paymentMethod === 'Pick Up' && (!selectedDate || !selectedTime))
-                    }
-                    >
-                        Place order
-                    </button>
+                    <div className='place-order-button'>
+                        <button
+                            className={`place-order ${
+                                (!paymentMethod || 
+                                (paymentMethod === 'Cash On Delivery' && total < 50000) || 
+                                (paymentMethod === 'Pick Up' && (!selectedDate || !selectedTime)) ||
+                                !isTermsAccepted) ? 'disabled' : ''
+                            }`}
+                            disabled={
+                                !paymentMethod || 
+                                (paymentMethod === 'Cash On Delivery' && total < 50000) || 
+                                (paymentMethod === 'Pick Up' && (!selectedDate || !selectedTime)) ||
+                                !isTermsAccepted
+                            }
+                        >
+                            Place Order
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>

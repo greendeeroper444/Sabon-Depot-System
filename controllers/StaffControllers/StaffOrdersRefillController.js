@@ -1,6 +1,6 @@
 const StaffAuthModel = require("../../models/StaffModels/StaffAuthModel");
 const jwt = require('jsonwebtoken');
-const StaffCartModel = require("../../models/StaffModels/StaffCartModel");
+const StaffCartRefillModel = require("../../models/StaffModels/StaffCartRefillModel");
 const ProductModel = require("../../models/ProductModel");
 const { BestSellingModel, TotalSaleModel } = require("../../models/SalesOverviewModel");
 const ProductionReportModel = require("../../models/ProductionReportModel");
@@ -34,7 +34,7 @@ const addOrderRefillStaff = async(req, res) => {
             // }
     
             //fetch all items in the staff's cart
-            const cartItems = await StaffCartModel.find().populate('productId');
+            const cartItems = await StaffCartRefillModel.find().populate('productId');
     
             if(cartItems.length === 0){
                 return res.status(400).json({
@@ -48,7 +48,7 @@ const addOrderRefillStaff = async(req, res) => {
             // }, 0);
             //calculate raw total amount
             const rawTotalAmount = cartItems.reduce((acc, item) => {
-                return acc + item.productId.price * item.quantity;
+                return acc + item.productId.refillPrice * item.quantity;
             }, 0);
 
             //apply discount logic
@@ -138,7 +138,7 @@ const addOrderRefillStaff = async(req, res) => {
                         {
                             $inc: {
                                 totalProduct: 1,
-                                totalSales: item.productId.price * item.quantity,
+                                totalSales: item.productId.refillPrice * item.quantity,
                                 quantitySold: item.quantity,
                             },
                         }
@@ -148,7 +148,7 @@ const addOrderRefillStaff = async(req, res) => {
                     await TotalSaleModel.create({
                         productName: item.productId.productName,
                         totalProduct: 1,
-                        totalSales: item.productId.price * item.quantity,
+                        totalSales: item.productId.refillPrice * item.quantity,
                         quantitySold: item.quantity,
                         day: today,
                     });
@@ -160,7 +160,7 @@ const addOrderRefillStaff = async(req, res) => {
                 if(bestSellingRecord){
                     //update existing record
                     bestSellingRecord.totalProduct += 1;
-                    bestSellingRecord.totalSales += item.finalPrice * item.quantity;
+                    bestSellingRecord.totalSales += item.refillPrice * item.quantity;
                     bestSellingRecord.quantitySold += item.quantity;
                     bestSellingRecord.lastSoldAt = Date.now();
                     await bestSellingRecord.save();
@@ -169,7 +169,7 @@ const addOrderRefillStaff = async(req, res) => {
                     await BestSellingModel.create({
                         productId: item.productId._id,
                         productName: item.productId.productName,
-                        totalSales: item.finalPrice * item.quantity,
+                        totalSales: item.refillPrice * item.quantity,
                         quantitySold: item.quantity,
                         sizeUnit: item.productId.sizeUnit,
                         productSize: item.productId.productSize,
@@ -194,14 +194,14 @@ const addOrderRefillStaff = async(req, res) => {
                     item.productId.sizeUnit,
                     // item.productId.productSize,
                     item.productId.category,
-                    item.productId.price,
+                    item.productId.refillPrice,
                     item.quantity,
                     true
                 );
 
             }));
     
-            await StaffCartModel.deleteMany();
+            await StaffCartRefillModel.deleteMany();
     
             res.status(201).json({
                 message: 'Order created successfully',
@@ -266,9 +266,9 @@ const getAllOrderRefillStaff = async(req, res) => {
 const updateOrderRefillStaff = async(req, res) => {
     try {
         const {orderId} = req.params;
-        const {productCode, productName, category, price, quantity} = req.body;
+        const {productCode, productName, category, refillPrice, quantity} = req.body;
 
-        if(!productCode || !productName || !category || !price || !quantity){
+        if(!productCode || !productName || !category || !refillPrice || !quantity){
             return res.json({
                 error: 'Please provide all required fields'
             });
@@ -285,7 +285,7 @@ const updateOrderRefillStaff = async(req, res) => {
         order.productCode = productCode;
         order.productName = productName;
         order.category = category;
-        order.price = price;
+        order.refillPrice = refillPrice;
         order.quantity = quantity;
 
         const updatedOrderWaklin = await order.save();

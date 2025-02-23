@@ -8,6 +8,7 @@ import AdminModalWalkinContentDetailsComponent from '../../components/AdminCompo
 import UseCartHook from '../../hooks/AdminHooks/UseCartHook';
 import { AdminContext } from '../../../contexts/AdminContexts/AdminAuthContext';
 import AdminModalRefillingContentDetailsComponent from '../../components/AdminComponents/AdminPos/modals/AdminModalRefillingContentDetailsComponent';
+import UseCartRefillHook from '../../hooks/AdminHooks/UseCartRefillHook';
 
 function AdminQuickSalesPage() {
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -23,6 +24,7 @@ function AdminQuickSalesPage() {
     const {products, loading, error} = UseFetchProductsHook(selectedCategory);
     const {admin} = useContext(AdminContext);
     const {cartItems, setCartItems, handleAddToCartClick} = UseCartHook(admin);
+    const {cartItemsRefill, setCartItemsRefill, handleAddToCartClickRefill} = UseCartRefillHook(admin);
 
     const handleSizeUnitChange = (e) => {
         setSelectedSizeUnit(e.target.value);
@@ -32,6 +34,14 @@ function AdminQuickSalesPage() {
 
     const handleAddToCart = async (productId) => {
         const success = await handleAddToCartClick(admin?._id, productId, 1);
+        if(success){
+            setSelectedProductId(productId);
+            setIsModalOpen(true);
+        }
+    };
+
+    const handleAddToCartRefill = async (productId) => {
+        const success = await handleAddToCartClickRefill(admin?._id, productId, 1);
         if(success){
             setSelectedProductId(productId);
             setIsModalOpen(true);
@@ -145,9 +155,9 @@ function AdminQuickSalesPage() {
                     />
                 ) : (
                     <AdminDirectOrdersRefillContentComponent
-                    onAddToCart={handleAddToCart}
-                    cartItems={cartItems}
-                    setCartItems={setCartItems}
+                    onAddToCart={handleAddToCartRefill}
+                    cartItems={cartItemsRefill}
+                    setCartItems={setCartItemsRefill}
                     admin={admin}
                     selectedSizeUnit={selectedSizeUnit}
                     selectedProductSize={selectedProductSize}
@@ -169,8 +179,8 @@ function AdminQuickSalesPage() {
                 <AdminModalRefillingContentDetailsComponent
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
-                cartItems={cartItems}
-                setCartItems={setCartItems}
+                cartItems={cartItemsRefill}
+                setCartItems={setCartItemsRefill}
                 adminId={admin?._id}
             />
             )

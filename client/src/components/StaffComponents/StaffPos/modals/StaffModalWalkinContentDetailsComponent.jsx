@@ -130,7 +130,7 @@ function StaffModalWalkinContentDetailsComponent({isOpen, onClose, cartItems, se
             <div className='customer-modal-container'>
                 <div className='customer-modal-header'>
                     <div className='shopping-cart-content'>
-                        <h2>Shopping Cart</h2>
+                        <h2>Shopping Cart Walkin</h2>
                         <div className='customer-modal-header-line'></div>
                     </div>
                     <span className='customer-modal-close' onClick={onClose}>

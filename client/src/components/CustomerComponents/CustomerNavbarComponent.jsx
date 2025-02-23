@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import '../../CSS/CustomerCSS/CustomerNavbar.css';
-import logoDepot from '../../assets/icons/logo-depot.png';
+import logoDepot from '../../assets/icons/logo-depot-3-circle.png';
 import iconCart from '../../assets/icons/icon-cart.png';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import customerDefaultProfilePicture from '../../assets/icons/customer-default-profile-pciture.png';

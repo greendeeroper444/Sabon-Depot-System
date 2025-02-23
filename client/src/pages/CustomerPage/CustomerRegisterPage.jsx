@@ -54,14 +54,51 @@ function CustomerRegisterPage() {
         const fetchRegions = async() => {
             try {
                 const data = await regions();
-                setRegionList(data);
+                //include only the specified mindanao regions
+                const mindanaoRegions = data.filter(region =>
+                    [
+                        'REGION IX (ZAMBOANGA PENINZULA)',
+                        'REGION X (NORTHERN MINDANAO)',
+                        'REGION XI (DAVAO REGION)',
+                        'REGION XII (SOCCSKSARGEN)',
+                        'AUTONOMOUS REGION IN MUSLIM MINDANAO (ARMM)'
+                    ].includes(region.region_name.toUpperCase())
+                );
+    
+                setRegionList(mindanaoRegions);
             } catch (error) {
                 console.error('Error fetching regions:', error);
             }
         };
+    
         fetchRegions();
     }, []);
+    
+    //display davao region automatic selected
+    // useEffect(() => {
+    //     const fetchRegions = async() => {
+    //         try {
+    //             const data = await regions();
+    //             //filter only REGION XI (DAVAO REGION)
+    //             const davaoRegion = data.find(region => region.region_name.toUpperCase() === 'REGION XI (DAVAO REGION)');
+                
+    //             if(davaoRegion){
+    //                 setSelectedRegion(davaoRegion);
+    //                 setData(prevData => ({...prevData, region: davaoRegion.region_name}));
+    
+    //                 //fetch and set provinces for Region XI
+    //                 const provinceData = await provinces(davaoRegion.region_code);
+    //                 setProvinceList(provinceData);
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching region/provinces:', error);
+    //         }
+    //     };
+    
+    //     fetchRegions();
+    // }, []);
 
+    
     //handle region change
     const handleRegionChange = async(e) => {
         const regionCode = e.target.value;
@@ -143,8 +180,8 @@ function CustomerRegisterPage() {
         // setStep(step + 1); 
         //validation for step 1
         if(step === 1){
-            const {firstName, lastName, middleInitial, clientType} = data;
-            if(!firstName || !lastName || !middleInitial || !clientType){
+            const {firstName, lastName, clientType} = data;
+            if(!firstName || !lastName || !clientType){
                 toast.error('Please fill in all required fields.');
                 return;
             }
@@ -155,6 +192,11 @@ function CustomerRegisterPage() {
             const {contactNumber, province, city, barangay, purokStreetSubdivision} = data;
             if(!contactNumber || !province || !city || !barangay || !purokStreetSubdivision){
                 toast.error('Please fill in all required fields.');
+                return;
+            }
+
+            if(!/^\d{11}$/.test(contactNumber)){
+                toast.error('Contact number should only contain 11 digits.');
                 return;
             }
         }
@@ -258,33 +300,44 @@ function CustomerRegisterPage() {
                         animate={{ x: 0 }} 
                         exit={{ x: '100%' }} 
                         transition={{ duration: 0.5 }}>
-                            <div className='first'>
-                                <div className='form-group'>
-                                    <label htmlFor="firstName">First Name</label>
-                                    <input type="text" className='form-input' id='firstName'
-                                    value={data.firstName} onChange={(e) =>setData({...data, firstName: e.target.value})} />
-                                </div>
-                                <div className='form-group'>
-                                    <label htmlFor="lastName">Last Name</label>
-                                    <input type="text" className='form-input' id='lastName'
-                                    value={data.lastName} onChange={(e) =>setData({...data, lastName: e.target.value})} />
-                                </div>
-                                <div className='form-group'>
-                                    <label htmlFor="middleInitial">Middle Name</label>
-                                    <input type="text" className='form-input' id='middleInitial'
-                                    value={data.middleInitial} onChange={(e) =>setData({...data, middleInitial: e.target.value})} />
-                                </div>
+                            <div>
 
-                                <div className='form-group'>
-                                    <label htmlFor="clientType">Client Type</label>
-                                    <select className='form-input' id='clientType' value={data.clientType} 
-                                        onChange={(e) => setData({...data, clientType: e.target.value})}>
-                                        <option value=""> Select Client Type</option>
-                                        <option value="Individual">Individual</option>
-                                        <option value="Wholesaler">Wholesaler</option>
-                                    </select>
-                                </div>
+                               <div className='two-display'>
+                                    <div className='form-group'>
+                                        <label htmlFor="firstName">First Name</label>
+                                        <input type="text" className='form-input' id='firstName'
+                                        value={data.firstName} onChange={(e) =>setData({...data, firstName: e.target.value})} />
+                                    </div>
+
+                                    <div className='form-group'>
+                                        <label htmlFor="lastName">Last Name</label>
+                                        <input type="text" className='form-input' id='lastName'
+                                        value={data.lastName} onChange={(e) =>setData({...data, lastName: e.target.value})} />
+                                    </div>
+                               </div>
+                                
+                               <div className='two-display'>
+                                    
+                                    <div className='form-group'>
+                                        <label htmlFor="middleInitial">Middle Name</label>
+                                        <input type="text" className='form-input' id='middleInitial'
+                                        value={data.middleInitial} onChange={(e) =>setData({...data, middleInitial: e.target.value})} />
+                                    </div>
+                                    <div className='form-group'>
+                                        <label htmlFor="clientType">Client Type</label>
+                                        <select className='form-input' id='clientType' value={data.clientType} 
+                                            onChange={(e) => setData({...data, clientType: e.target.value})}>
+                                            <option value=""> Select Client Type</option>
+                                            <option value="Individual">Individual</option>
+                                            <option value="Wholesaler">Wholesaler</option>
+                                        </select>
+                                    </div>
+                               </div>
                             </div>
+                            <div className='form-group'>
+                                <span>Please click &quot;Next&quot; to proceed to the next step.</span>
+                            </div>
+                           
                             <button type='submit' className='customer-register-button' onClick={handleNextStep}>Next...</button>
                         </motion.span>
                     )
@@ -301,97 +354,104 @@ function CustomerRegisterPage() {
                         exit={{ x: '-100%' }} 
                         transition={{ duration: 0.5 }}
                         >
-                            <div className='second'>
-                                <div className='form-group full-width'>
-                                    <label htmlFor="contactNumber">Contact #</label>
-                                    <input type="number" className='form-input' id='contactNumber'
-                                        value={data.contactNumber} 
-                                        onChange={(e) => setData({ ...data, contactNumber: e.target.value })}
-                                    />
+                            <div>
+
+                                <div className='two-display'>
+                                    <div className='form-group'>
+                                        <label htmlFor="region">Region:</label>
+                                        <select
+                                        id='region'
+                                        value={selectedRegion ? selectedRegion.region_code : ''}
+                                        onChange={handleRegionChange}
+                                        >
+                                        <option value="">Select Region</option>
+                                        {
+                                            regionList.map((region) => (
+                                                <option key={region.region_code} value={region.region_code}>
+                                                {region.region_name}
+                                                </option>
+                                            ))
+                                        }
+                                        </select>
+                                    </div>
+
+                                    <div className='form-group'>
+                                        <label htmlFor="province">Province:</label>
+                                        <select
+                                        id='province'
+                                        value={selectedProvince ? selectedProvince.province_code : ''}
+                                        onChange={handleProvinceChange}
+                                        disabled={!selectedRegion}
+                                        >
+                                        <option value="">Select Province</option>
+                                        {
+                                            provinceList.map((province) => (
+                                                <option key={province.province_code} value={province.province_code}>
+                                                {province.province_name}
+                                                </option>
+                                            ))
+                                        }
+                                        </select>
+                                    </div>
                                 </div>
 
-                                <div className='form-group full-width'>
-                                    <label htmlFor="region">Region:</label>
-                                    <select
-                                    id='region'
-                                    value={selectedRegion ? selectedRegion.region_code : ''}
-                                    onChange={handleRegionChange}
-                                    >
-                                    <option value="">Select Region</option>
-                                    {
-                                        regionList.map((region) => (
-                                            <option key={region.region_code} value={region.region_code}>
-                                            {region.region_name}
-                                            </option>
-                                        ))
-                                    }
-                                    </select>
-                                </div>
-
+                               <div className='two-display'>
                                 <div className='form-group'>
-                                    <label htmlFor="province">Province:</label>
-                                    <select
-                                    id='province'
-                                    value={selectedProvince ? selectedProvince.province_code : ''}
-                                    onChange={handleProvinceChange}
-                                    disabled={!selectedRegion}
-                                    >
-                                    <option value="">Select Province</option>
-                                    {
-                                        provinceList.map((province) => (
-                                            <option key={province.province_code} value={province.province_code}>
-                                            {province.province_name}
-                                            </option>
-                                        ))
-                                    }
-                                    </select>
-                                </div>
+                                        <label htmlFor="city">City:</label>
+                                        <select
+                                        id='city'
+                                        value={selectedCity ? selectedCity.city_code : ''}
+                                        onChange={handleCityChange}
+                                        disabled={!selectedProvince}
+                                        >
+                                        <option value="">Select City</option>
+                                        {
+                                            cityList.map((city) => (
+                                                <option key={city.city_code} value={city.city_code}>
+                                                {city.city_name}
+                                                </option>
+                                            ))
+                                        }
+                                        </select>
+                                    </div>
 
-                                <div className='form-group'>
-                                    <label htmlFor="city">City:</label>
-                                    <select
-                                    id='city'
-                                    value={selectedCity ? selectedCity.city_code : ''}
-                                    onChange={handleCityChange}
-                                    disabled={!selectedProvince}
-                                    >
-                                    <option value="">Select City</option>
-                                    {
-                                        cityList.map((city) => (
-                                            <option key={city.city_code} value={city.city_code}>
-                                            {city.city_name}
-                                            </option>
-                                        ))
-                                    }
-                                    </select>
-                                </div>
-
-                                <div className='form-group'>
-                                    <label htmlFor="barangay">Barangay:</label>
-                                    <select
-                                    id='barangay'
-                                    value={selectedBarangay ? selectedBarangay.brgy_code : ''}
-                                    onChange={handleBarangayChange}
-                                    disabled={!selectedCity}
-                                    >
-                                    <option value="">Select Barangay</option>
-                                    {
-                                        barangayList.map((barangay) => (
-                                            <option key={barangay.brgy_code} value={barangay.brgy_code}>
-                                            {barangay.brgy_name}
-                                            </option>
-                                        ))
-                                    }
-                                    </select>
-                                </div>
+                                    <div className='form-group'>
+                                        <label htmlFor="barangay">Barangay:</label>
+                                        <select
+                                        id='barangay'
+                                        value={selectedBarangay ? selectedBarangay.brgy_code : ''}
+                                        onChange={handleBarangayChange}
+                                        disabled={!selectedCity}
+                                        >
+                                        <option value="">Select Barangay</option>
+                                        {
+                                            barangayList.map((barangay) => (
+                                                <option key={barangay.brgy_code} value={barangay.brgy_code}>
+                                                {barangay.brgy_name}
+                                                </option>
+                                            ))
+                                        }
+                                        </select>
+                                    </div>
+                               </div>
                                 
-                                <div className='form-group full-width'>
-                                    <label htmlFor="purokStreetSubdivision">Purok/Street/Subd.</label>
-                                    <input type="text" className='form-input' id='purokStreetSubdivision'
-                                        value={data.purokStreetSubdivision} 
-                                        onChange={(e) => setData({ ...data, purokStreetSubdivision: e.target.value })}
-                                    />
-                                </div>
+                               <div className='two-display'>
+                                    
+                                    <div className='form-group'>
+                                        <label htmlFor="purokStreetSubdivision">Purok/Street/Subd.</label>
+                                        <input type="text" className='form-input' id='purokStreetSubdivision'
+                                            value={data.purokStreetSubdivision} 
+                                            onChange={(e) => setData({...data, purokStreetSubdivision: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className='form-group'>
+                                        <label htmlFor="contactNumber">Contact #</label>
+                                        <input type="number" className='form-input' id='contactNumber'
+                                            value={data.contactNumber} 
+                                            onChange={(e) => setData({...data, contactNumber: e.target.value})}
+                                        />
+                                    </div>
+                               </div>
                             </div>
 
                             <button type='submit' className='customer-register-button' onClick={handleNextStep}>Next...</button>
@@ -452,7 +512,7 @@ function CustomerRegisterPage() {
                             </div>
 
                             <div className='form-group'>
-                                <span>By continuing, you agree to our <Link className='terms-of-service'>terms of service.</Link></span>
+                                <span>By continuing, you agree to our <Link to='/terms-and-conditions' className='terms-of-service'>terms of service.</Link></span>
                             </div>
                            
                             <button type='submit' className='customer-register-button'>Sign up</button>

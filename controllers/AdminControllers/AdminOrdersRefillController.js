@@ -1,6 +1,6 @@
 const AdminAuthModel = require("../../models/AdminModels/AdminAuthModel");
 const jwt = require('jsonwebtoken');
-const StaffCartModel = require("../../models/StaffModels/StaffCartModel");
+const StaffCartRefillModel = require("../../models/StaffModels/StaffCartRefillModel");
 const ProductModel = require("../../models/ProductModel");
 const { BestSellingModel, TotalSaleModel } = require("../../models/SalesOverviewModel");
 const ProductionReportModel = require("../../models/ProductionReportModel");
@@ -26,7 +26,7 @@ const addOrderRefillAdmin = async(req, res) => {
                 });
             }
 
-            const cartItems = await StaffCartModel.find().populate('productId');
+            const cartItems = await StaffCartRefillModel.find().populate('productId');
     
             if(cartItems.length === 0){
                 return res.status(400).json({
@@ -36,11 +36,11 @@ const addOrderRefillAdmin = async(req, res) => {
     
             //calculate total amount for the order
             // const totalAmount = cartItems.reduce((acc, item) => {
-            //     return acc + item.productId.price * item.quantity;
+            //     return acc + item.productId.refillPrice * item.quantity;
             // }, 0);
             //calculate raw total amount
             const rawTotalAmount = cartItems.reduce((acc, item) => {
-                return acc + item.productId.price * item.quantity;
+                return acc + item.productId.refillPrice * item.quantity;
             }, 0);
 
             //apply discount logic
@@ -130,7 +130,7 @@ const addOrderRefillAdmin = async(req, res) => {
                         {
                             $inc: {
                                 totalProduct: 1,
-                                totalSales: item.productId.price * item.quantity,
+                                totalSales: item.productId.refillPrice * item.quantity,
                                 quantitySold: item.quantity,
                             },
                         }
@@ -140,7 +140,7 @@ const addOrderRefillAdmin = async(req, res) => {
                     await TotalSaleModel.create({
                         productName: item.productId.productName,
                         totalProduct: 1,
-                        totalSales: item.productId.price * item.quantity,
+                        totalSales: item.productId.refillPrice * item.quantity,
                         quantitySold: item.quantity,
                         day: today,
                     });
@@ -152,7 +152,7 @@ const addOrderRefillAdmin = async(req, res) => {
                 if(bestSellingRecord){
                     //update existing record
                     bestSellingRecord.totalProduct += 1;
-                    bestSellingRecord.totalSales += item.finalPrice * item.quantity;
+                    bestSellingRecord.totalSales += item.refillPrice * item.quantity;
                     bestSellingRecord.quantitySold += item.quantity;
                     bestSellingRecord.lastSoldAt = Date.now();
                     await bestSellingRecord.save();
@@ -161,7 +161,7 @@ const addOrderRefillAdmin = async(req, res) => {
                     await BestSellingModel.create({
                         productId: item.productId._id,
                         productName: item.productId.productName,
-                        totalSales: item.finalPrice * item.quantity,
+                        totalSales: item.refillPrice * item.quantity,
                         quantitySold: item.quantity,
                         sizeUnit: item.productId.sizeUnit,
                         productSize: item.productId.productSize,
@@ -186,14 +186,14 @@ const addOrderRefillAdmin = async(req, res) => {
                     item.productId.sizeUnit,
                     // item.productId.productSize,
                     item.productId.category,
-                    item.productId.price,
+                    item.productId.refillPrice,
                     item.quantity,
                     true
                 );
 
             }));
     
-            await StaffCartModel.deleteMany();
+            await StaffCartRefillModel.deleteMany();
     
             res.status(201).json({
                 message: 'Order created successfully',
@@ -259,9 +259,9 @@ const getAllOrderRefillAdmin = async(req, res) => {
 const updateOrderRefillAdmin = async(req, res) => {
     try {
         const {orderId} = req.params;
-        const {productCode, productName, category, price, quantity} = req.body;
+        const {productCode, productName, category, refillPrice, quantity} = req.body;
 
-        if(!productCode || !productName || !category || !price || !quantity){
+        if(!productCode || !productName || !category || !refillPrice || !quantity){
             return res.json({
                 error: 'Please provide all required fields'
             });
@@ -278,7 +278,7 @@ const updateOrderRefillAdmin = async(req, res) => {
         order.productCode = productCode;
         order.productName = productName;
         order.category = category;
-        order.price = price;
+        order.refillPrice = refillPrice;
         order.quantity = quantity;
 
         const updatedOrderWaklin = await order.save();

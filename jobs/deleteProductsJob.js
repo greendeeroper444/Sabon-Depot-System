@@ -38,6 +38,7 @@ const AdminNotificationModel = require('../models/AdminModels/AdminNotificationM
 const CartModel = require('../models/CartModel');
 const StaffCartModel = require('../models/StaffModels/StaffCartModel');
 const AdminNotificationOrderModel = require('../models/AdminModels/AdminNotificationOrderModel');
+const StaffCartRefillModel = require('../models/StaffModels/StaffCartRefillModel');
 
 schedule.scheduleJob('0 0 * * *', async() => {
     try {
@@ -84,6 +85,7 @@ schedule.scheduleJob('0 0 * * *', async() => {
 
                 await CartModel.deleteMany({productId: product._id});
                 await StaffCartModel.deleteMany({productId: product._id});
+                await StaffCartRefillModel.deleteMany({productId: product._id});
                 await AdminNotificationOrderModel.deleteMany({productId: product._id});
 
                 console.log(`Removed product from carts: ${product.productName}`);

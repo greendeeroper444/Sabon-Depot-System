@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import logoDepot from '../../assets/icons/logo-depot.png';
+import logoDepot from '../../assets/icons/logo-depot-3-circle.png';
 import '../../CSS/StaffCSS/StaffNavbar.css';
 import searchIcon from '../../assets/staff/stafficons/staff-navbar-search-icon.png'
 import notificationIcon from '../../assets/admin/adminicons/admin-navbar-notification-icon.png';

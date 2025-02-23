@@ -12,7 +12,7 @@ const CustomerOtpScheme = new mongoose.Schema({
     },
     middleInitial: {
         type: String,
-        required: true
+        default: ''
     },
     contactNumber: {
         type: String,

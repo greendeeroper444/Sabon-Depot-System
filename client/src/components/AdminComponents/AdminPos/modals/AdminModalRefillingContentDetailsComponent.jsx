@@ -19,7 +19,7 @@ function AdminModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
         if(newQuantity < 1) return;
 
         try {
-            const response = await axios.put('/adminCart/updateProductQuantityAdmin', {
+            const response = await axios.put('/adminCartRefill/updateProductQuantityRefillAdmin', {
                 cartItemId,
                 quantity: newQuantity,
             });
@@ -81,7 +81,7 @@ function AdminModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
     //delete function
     const handleCartItemDelete = async(cartItemId) => {
         try {
-            const response = await axios.delete(`/adminCart/removeProductFromCartAdmin/${cartItemId}`);
+            const response = await axios.delete(`/adminCartRefill/removeProductFromCartRefillAdmin/${cartItemId}`);
             if(response.data.success){
                 // toast.success(response.data.message);
                 fetchCartItems();
@@ -95,7 +95,7 @@ function AdminModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
 
     const fetchCartItems = async() => {
         try {
-            const response = await axios.get(`/adminCart/getProductCartAdmin${adminId}`);
+            const response = await axios.get(`/adminCartRefill/getProductCartRefillAdmin/${adminId}`);
             setCartItems(response.data);
         } catch (error) {
             console.error(error);
@@ -129,7 +129,7 @@ function AdminModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
             <div className='customer-modal-container'>
                 <div className='customer-modal-header'>
                     <div className='shopping-cart-content'>
-                        <h2>Shopping Cart</h2>
+                        <h2>Shopping Cart Refill</h2>
                         <div className='customer-modal-header-line'></div>
                     </div>
                     <span className='customer-modal-close' onClick={onClose}>

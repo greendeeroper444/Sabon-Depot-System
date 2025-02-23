@@ -5,10 +5,10 @@ import UseFetchCategoriesHook from '../../hooks/StaffHooks/UseFetchCategoriesHoo
 import UseFetchProductsHook from '../../hooks/StaffHooks/UseFetchProductsHook';
 import IsDiscountValidUtils from '../../utils/IsDiscountValidUtils';
 import { StaffContext } from '../../../contexts/StaffContexts/StaffAuthContext';
-import UseCartHook from '../../hooks/StaffHooks/UseCartHook';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import StaffModalRefillingContentDetailsComponent from '../../components/StaffComponents/StaffPos/modals/StaffModalRefillingContentDetailsComponent';
+import UseCartRefillHook from '../../hooks/StaffHooks/UseCartRefillHook';
 
 function StaffRefillingPage() {
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -21,7 +21,7 @@ function StaffRefillingPage() {
 
     const categories = UseFetchCategoriesHook();
     const {products, loading: productsLoading, error: productsError} = UseFetchProductsHook(selectedCategory);
-    const {cartItems, setCartItems, handleAddToCartClick} = UseCartHook(staff);
+    const {cartItems, setCartItems, handleAddToCartClick} = UseCartRefillHook(staff);
 
     //display/get orders walk-in data
     const fetchOrderWalkins = async () => {

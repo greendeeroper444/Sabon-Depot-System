@@ -17,29 +17,29 @@ export default function CalculateFinalPriceUtils(customer, product) {
 
     return {
         shouldShowDiscount,
-        finalPrice: finalPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        finalPrice: finalPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
     };
 }
 
 
 
 export function calculateFinalPriceModal(cartItem) {
-    const price = cartItem.finalPrice 
-    ? cartItem.finalPrice 
-    : cartItem.productId.price;
+    const price = cartItem.finalPrice && !isNaN(cartItem.finalPrice) 
+        ? Number(cartItem.finalPrice) 
+        : Number(cartItem.productId.price);
 
     return price;
 }
 
-
 export function calculateSubtotalModalCustomer(cartItems, customer) {
     const subtotal = cartItems.reduce((acc, cartItem) => {
-        const price = calculateFinalPriceModal(cartItem, customer);
+        const price = calculateFinalPriceModal(cartItem);
         return acc + (price * cartItem.quantity);
     }, 0);
 
     return subtotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 }
+
 
 
 export function calculateSubtotalModal(cartItems, customer) {

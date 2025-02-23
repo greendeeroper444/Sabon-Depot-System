@@ -19,7 +19,7 @@ function StaffModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
         if(newQuantity < 1) return;
 
         try {
-            const response = await axios.put('/staffCart/updateProductQuantityStaff', {
+            const response = await axios.put('/staffCartRefill/updateProductQuantityRefillStaff', {
                 cartItemId,
                 quantity: newQuantity,
             });
@@ -53,7 +53,7 @@ function StaffModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
                     productId: item.productId._id,
                     productName: item.productId.productName,
                     quantity: item.quantity,
-                    finalPrice: calculateFinalRefillPriceModalStaff(item),
+                    refillPrice: item.refillPrice,
                 })),
                 // totalAmount: calculateSubtotalModalAdmin(cartItems),
                 totalAmount: parseFloat(finalSubtotal.replace(/,/g, '')),
@@ -82,7 +82,7 @@ function StaffModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
     //delete function
     const handleCartItemDelete = async(cartItemId) => {
         try {
-            const response = await axios.delete(`/staffCart/removeProductFromCartStaff/${cartItemId}`);
+            const response = await axios.delete(`/staffCartRefill/removeProductFromCartRefillStaff/${cartItemId}`);
             if(response.data.success){
                 // toast.success(response.data.message);
                 fetchCartItems();
@@ -96,7 +96,7 @@ function StaffModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
 
     const fetchCartItems = async() => {
         try {
-            const response = await axios.get(`/staffCart/getProductCartStaff/${staffId}`);
+            const response = await axios.get(`/staffCartRefill/getProductCartRefillStaff/${staffId}`);
             setCartItems(response.data);
         } catch (error) {
             console.error(error);
@@ -130,7 +130,7 @@ function StaffModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
             <div className='customer-modal-container'>
                 <div className='customer-modal-header'>
                     <div className='shopping-cart-content'>
-                        <h2>Shopping Cart</h2>
+                        <h2>Shopping Cart Refill</h2>
                         <div className='customer-modal-header-line'></div>
                     </div>
                     <span className='customer-modal-close' onClick={onClose}>
@@ -165,7 +165,7 @@ function StaffModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
                                                     className='input-quantity-update'
                                                 />
                                                 <span>X</span>
-                                                <span>{`₱ ${calculateFinalRefillPriceModalStaff(cartItem)}`}</span>
+                                                <span>{`₱ ${cartItem.refillPrice}`}</span>
                                             </p>
                                         </div>
                                         <span
@@ -184,7 +184,8 @@ function StaffModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
                 <div className='customer-modal-footer'>
                     <div className='products-subtotal'>
                         <span>Subtotal:</span>
-                        <span>₱ {calculateSubtotalModalStaff(cartItems).rawSubtotal}</span>
+                        <span>₱ {Array.isArray(cartItems) ? cartItems.reduce((total, cartItem) => total + (cartItem.quantity * cartItem.refillPrice), 0) : 0}</span>
+
                     </div>
                     {
                         calculateSubtotalModalStaff(cartItems).discountRate > 0 && (
@@ -233,7 +234,7 @@ StaffModalRefillingContentDetailsComponent.propTypes = {
         PropTypes.shape({
             _id: PropTypes.string.isRequired,
             productId: PropTypes.shape({
-                finalPrice: PropTypes.number,
+                refillPrice: PropTypes.number,
                 price: PropTypes.number.isRequired,
                 imageUrl: PropTypes.string.isRequired,
                 productName: PropTypes.string.isRequired,
@@ -241,7 +242,7 @@ StaffModalRefillingContentDetailsComponent.propTypes = {
                 productSize: PropTypes.string.isRequired,
             }).isRequired,
             quantity: PropTypes.number.isRequired,
-            finalPrice: PropTypes.number,
+            refillPrice: PropTypes.number,
         })
     ).isRequired,
     setCartItems: PropTypes.func.isRequired,

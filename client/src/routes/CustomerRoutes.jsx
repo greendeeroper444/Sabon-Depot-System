@@ -20,6 +20,7 @@ import CustomerPlaceOrderPage from '../pages/CustomerPage/CustomerPlaceOrderPage
 import CustomerPayablePage from '../pages/CustomerPage/CustomerPayablePage'
 import CustomerDirectCheckOutPage from '../pages/CustomerPage/CustomerDirectCheckOutPage'
 import CustomerShopProductPage from '../pages/CustomerPage/CustomerShopProductPage'
+import CustomerTermsConditions from '../pages/CustomerPage/CustomerTermsConditions'
 
 function CustomerRoutes({customerToggleSidebar, customerCloseSidebar, customerSidebarVisible}) {
   return (
@@ -47,6 +48,7 @@ function CustomerRoutes({customerToggleSidebar, customerCloseSidebar, customerSi
                 <Route path='/direct-checkout/:customerId' element={<CustomerDirectCheckOutPage />} />
                 <Route path='/place-order/:customerId/:orderId' element={<CustomerPlaceOrderPage />} />
                 <Route path='/payable/:customerId' element={<CustomerPayablePage />} />
+                <Route path='/terms-and-conditions' element={<CustomerTermsConditions />} />
             </Routes>
         </div>
     </CustomerContextProvider>

@@ -8,6 +8,7 @@ import StaffModalWalkinContentDetailsComponent from '../../components/StaffCompo
 import { StaffContext } from '../../../contexts/StaffContexts/StaffAuthContext';
 import UseCartHook from '../../hooks/StaffHooks/UseCartHook';
 import StaffModalRefillingContentDetailsComponent from '../../components/StaffComponents/StaffPos/modals/StaffModalRefillingContentDetailsComponent';
+import UseCartRefillHook from '../../hooks/StaffHooks/UseCartRefillHook';
 
 function StaffDirectOrdersPage() {
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -23,6 +24,7 @@ function StaffDirectOrdersPage() {
     const {products, loading, error} = UseFetchProductsHook(selectedCategory);
     const {staff} = useContext(StaffContext);
     const {cartItems, setCartItems, handleAddToCartClick} = UseCartHook(staff);
+    const {cartItemsRefill, setCartItemsRefill, handleAddToCartClickRefill} = UseCartRefillHook(staff);
 
     const handleSizeUnitChange = (e) => {
         setSelectedSizeUnit(e.target.value);
@@ -32,6 +34,14 @@ function StaffDirectOrdersPage() {
 
     const handleAddToCart = async (productId) => {
         const success = await handleAddToCartClick(staff?._id, productId, 1);
+        if(success){
+            setSelectedProductId(productId);
+            setIsModalOpen(true);
+        }
+    };
+
+    const handleAddToCartRefill = async (productId) => {
+        const success = await handleAddToCartClickRefill(staff?._id, productId, 1);
         if(success){
             setSelectedProductId(productId);
             setIsModalOpen(true);
@@ -145,9 +155,9 @@ function StaffDirectOrdersPage() {
                     />
                 ) : (
                     <StaffDirectOrdersRefillContentComponent
-                    onAddToCart={handleAddToCart}
-                    cartItems={cartItems}
-                    setCartItems={setCartItems}
+                    onAddToCart={handleAddToCartRefill}
+                    cartItems={cartItemsRefill}
+                    setCartItems={setCartItemsRefill}
                     staff={staff}
                     selectedSizeUnit={selectedSizeUnit}
                     selectedProductSize={selectedProductSize}
@@ -157,7 +167,7 @@ function StaffDirectOrdersPage() {
         </div>
     </div>
         {
-            orderType === 'Walkin' && (
+            orderType === 'Walkin' ? (
                 <StaffModalWalkinContentDetailsComponent
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
@@ -165,16 +175,12 @@ function StaffDirectOrdersPage() {
                     setCartItems={setCartItems}
                     staffId={staff?._id}
                 />
-            )
-        }
-
-        {
-            orderType === 'Refilling' && (
+            ) : (
                 <StaffModalRefillingContentDetailsComponent
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
-                    cartItems={cartItems}
-                    setCartItems={setCartItems}
+                    cartItems={cartItemsRefill}
+                    setCartItems={setCartItemsRefill}
                     staffId={staff?._id}
                 />
             )
