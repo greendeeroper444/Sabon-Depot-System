@@ -43,36 +43,38 @@ function AdminDirectOrdersWalkinContentComponent({
 
   return (
     <div className='shop-products-content'>
-        <ul>
-            {
-                paginatedProducts.map((product, index) => {
-                    const shouldShowDiscount = IsDiscountValidUtils(admin) && product.discountPercentage > 0;
-                    const finalPrice = shouldShowDiscount ? product.discountedPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : product.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        <div className='shop-products-contents'>
+            <ul>
+                {
+                    paginatedProducts.map((product, index) => {
+                        const shouldShowDiscount = IsDiscountValidUtils(admin) && product.discountPercentage > 0;
+                        const finalPrice = shouldShowDiscount ? product.discountedPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : product.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-                    return (
-                        <li key={product._id}>
-                            <div>
-                                <div className='product-image-container'>
-                                    <img src={`${product.imageUrl}`} alt={product.productName} />
-                                    {index === products.length - 1 && <div className='new-badge'>New</div>}
-                                    {shouldShowDiscount && <div className='discount-badge'>{product.discountPercentage}% OFF</div>}
+                        return (
+                            <li key={product._id}>
+                                <div>
+                                    <div className='product-image-admin-container'>
+                                        <img src={`${product.imageUrl}`} alt={product.productName} />
+                                        {index === products.length - 1 && <div className='new-badge'>New</div>}
+                                        {shouldShowDiscount && <div className='discount-badge'>{product.discountPercentage}% OFF</div>}
+                                    </div>
+                                    <div className='details-list'>
+                                        <h5>{product.productName} ({product.productSize})</h5>
+                                        <span>{product.category}</span>
+                                        <br />
+                                        <span>{product.quantity.toLocaleString('en-US')}</span> quantity
+                                        <h6>{`₱ ${finalPrice}`}</h6>
+                                    </div>
                                 </div>
-                                <div className='details-list'>
-                                    <h5>{product.productName} ({product.productSize})</h5>
-                                    <span>{product.category}</span>
-                                    <br />
-                                    <span>{product.quantity.toLocaleString('en-US')}</span> quantity
-                                    <h6>{`₱ ${finalPrice}`}</h6>
+                                <div className='view-details'>
+                                    <Link onClick={() => onAddToCart(product._id)}>Add To Cart</Link>
                                 </div>
-                            </div>
-                            <div className='view-details'>
-                                <Link onClick={() => onAddToCart(product._id)}>Add To Cart</Link>
-                            </div>
-                        </li>
-                    );
-                })
-            }
-        </ul>
+                            </li>
+                        );
+                    })
+                }
+            </ul>
+        </div>
 
         <div className='customer-shop-content-pagination'>
             <button
