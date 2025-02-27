@@ -20,6 +20,7 @@ const getNotificationsOrderAdmin = async(req, res) => {
                 path: 'orderId', //populating the orderId reference
                 select: 'paymentMethod', //only include the paymentMethod field
             })
+            .sort({createdAt: -1})
             .exec();
 
         res.status(200).json(notifications);
