@@ -42,8 +42,8 @@ function AdminOrdersPickupDetailsPage() {
     const handleInputChange = (itemId, field, value) => {
         setInputFields((prev) => ({
             ...prev,
-            [itemId]: {
-                ...prev[itemId],
+            [orderId]: {
+                ...prev[orderId],
                 [field]: value,
             },
         }));
@@ -52,8 +52,8 @@ function AdminOrdersPickupDetailsPage() {
     const resetInputField = (itemId) => {
         setInputFields((prev) => ({
             ...prev,
-            [itemId]: {
-                ...prev[itemId],
+            [orderId]: {
+                ...prev[orderId],
                 receipt: '',
             },
         }));
@@ -66,7 +66,7 @@ function AdminOrdersPickupDetailsPage() {
     
             //initialize inputFields with existing receipt values for each item
             const initialInputFields = response.data.items.reduce((acc, item) => {
-                acc[item._id] = {receipt: item.receipt || ''};
+                acc[orderId] = {receipt: item.receipt || ''};
                 return acc;
             }, {});
     
@@ -252,35 +252,35 @@ function AdminOrdersPickupDetailsPage() {
             <div className='items-ordered'>
                 <h3>Items Ordered</h3>
                 {
-                    order?.items?.map((item) => (
-                        <div className='input-with-icons' key={item._id}>
+                    order && (
+                        <div className='input-with-icons' key={orderId}>
                             <input
                                 type="text"
                                 className='input-line'
-                                value={inputFields[item._id]?.receipt || ''}
+                                value={inputFields[orderId]?.receipt || ''}
                                 onChange={(e) =>
-                                    handleInputChange(item._id, 'receipt', e.target.value)
+                                    handleInputChange(orderId, 'receipt', e.target.value)
                                 }
-                                onFocus={() => setActiveInput({id: item._id, field: 'receipt'})}
+                                onFocus={() => setActiveInput({ id: orderId, field: 'receipt' })}
                                 onBlur={() =>
-                                    inputFields[item._id]?.receipt?.trim()
-                                        ? null
-                                        : setActiveInput(null)
+                                inputFields[orderId]?.receipt?.trim()
+                                ? null
+                                : setActiveInput(null)
                                 }
                                 placeholder='Enter receipt'
                             />
                             {
-                                inputFields[item._id]?.receipt && (
+                                inputFields[orderId]?.receipt && (
                                     <>
                                         <span
                                             className='icon check-icon'
-                                            onClick={() => handleUpdateOrderReceipt(item._id)}
+                                            onClick={() => handleUpdateOrderReceipt(orderId)}
                                         >
                                             ✔️
                                         </span>
                                         <span
                                             className='icon times-icon'
-                                            onClick={() => resetInputField(item._id)}
+                                            onClick={() => resetInputField(orderId)}
                                         >
                                             ❌
                                         </span>
@@ -288,8 +288,9 @@ function AdminOrdersPickupDetailsPage() {
                                 )
                             }
                         </div>
-                    ))
+                    )
                 }
+
             </div>
             <p><strong>Receipt:</strong> {order.receipt}</p>
             <table>
@@ -306,7 +307,7 @@ function AdminOrdersPickupDetailsPage() {
                 <tbody>
                     {
                         order.items.map(item => (
-                            <tr key={item._id}>
+                            <tr key={orderId}>
                                 <td style={{ display: 'flex', alignItems: 'center' }}><img src={`${item.imageUrl}`} alt='' />{item.productName}</td>
                                 {/* <td>{item.sku}</td>
                                 <td>{item.location}</td> */}
