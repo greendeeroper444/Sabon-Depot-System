@@ -68,7 +68,7 @@ function StaffInvoiceModal({isOpen, onClose, order}) {
         let y = 60;
         doc.text(`Invoice ID: #${order.orderNumber}`, 14, y);
         y += 5;
-        doc.text(`Due Date: ${new Date().toLocaleDateString()}`, 14, y);
+        doc.text(`Due Date: ${new Date(order.createdAt).toLocaleString()}`, 14, y);
         y += 5;
         doc.text(`Processed by: ${order.whoProcessed}`, 14, y);
         y += 10;
@@ -119,7 +119,7 @@ function StaffInvoiceModal({isOpen, onClose, order}) {
             <div className='divider-line'></div>
             <div className='invoice-details'>
                 <div className='details-left'>
-                    <p>Due Date: {new Date().toLocaleDateString()}</p>
+                    <p>Due Date: {new Date(order.createdAt).toLocaleString()}</p>
                     <p>Processed by: {order.whoProcessed}</p>
                 </div>
             </div>
