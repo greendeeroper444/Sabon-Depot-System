@@ -155,7 +155,11 @@ function StaffOrdersPickupDetailsPage() {
 
         <div className='order-header'>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <h1>Order # {order.orderNumber}</h1>
+                <h1>
+                    <span>Order # {order.orderNumber}</span>
+                    <br />
+                    <small>Date to Pick up: {orderDate(order.pickupDate)} at {order.pickupTime}</small>
+                </h1>
                 <div className='order-status'>
                 {
                     order.isPickedUp ? (
@@ -166,23 +170,23 @@ function StaffOrdersPickupDetailsPage() {
                 }
                 </div>
             </div>
-           <div className='order-actions'>
-            <button
-            className={`order-actions-button ready ${getStatusClass('isReady', order) === 'isReady' ? 'active' : ''}`}
-            onClick={() => handleStatusUpdate('isReady')}
-            disabled={order.orderStatus === 'Picked Up'}
-            >
-            Ready To Pick Up
-            </button>
+            <div className='order-actions'>
+                <button
+                className={`order-actions-button ready ${getStatusClass('isReady', order) === 'isReady' ? 'active' : ''}`}
+                onClick={() => handleStatusUpdate('isReady')}
+                disabled={order.orderStatus === 'Picked Up'}
+                >
+                Ready To Pick Up
+                </button>
 
-            <button
-            className={`order-actions-button pickedup ${getStatusClass('isPickedUp', order) === 'isPickedUp' ? 'active' : ''}`}
-            onClick={() => handleStatusUpdate('isPickedUp')}
-            disabled={order.orderStatus === 'Picked Up' || order.orderStatus === 'Pending'}
-            >
-            Picked Up
-            </button>
-        </div>
+                <button
+                className={`order-actions-button pickedup ${getStatusClass('isPickedUp', order) === 'isPickedUp' ? 'active' : ''}`}
+                onClick={() => handleStatusUpdate('isPickedUp')}
+                disabled={order.orderStatus === 'Picked Up' || order.orderStatus === 'Pending'}
+                >
+                Picked Up
+                </button>
+            </div>
         </div>
 
 
