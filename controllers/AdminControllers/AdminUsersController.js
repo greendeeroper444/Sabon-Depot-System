@@ -61,51 +61,108 @@ const addUserAccount = async(req, res) => {
 };
 
 //update user account
-const updateUserAccount = async(req, res) => {
+// const updateUserAccount = async(req, res) => {
+//     try {
+//         const {id} = req.params;
+//         const {userType, fullName, firstName, lastName, middleInitial, emailAddress, contactNumber, clientType, gender, address, province, city, barangay, purokStreetSubdivision} = req.body;
+
+//         if(!userType || !['Staff', 'Admin', 'Customer'].includes(userType)){
+//             return res.status(400).json({ message: 'Invalid user type' });
+//         }
+
+//         let updateData;
+
+//         if(userType === 'Staff'){
+//             updateData = {fullName, emailAddress, contactNumber, gender, address};
+//         } else if(userType === 'Admin'){
+//             updateData = {fullName, emailAddress, contactNumber, gender, address};
+//         } else if(userType === 'Customer'){
+//             if(!clientType || !['Individual', 'Wholesaler'].includes(clientType)){
+//                 return res.status(400).json({ 
+//                     message: 'Invalid client type for customer'
+//                 });
+//             }
+//             updateData = {
+//                 firstName,
+//                 lastName,
+//                 middleInitial,
+//                 emailAddress,
+//                 contactNumber,
+//                 clientType,
+//                 gender,
+//                 province,
+//                 city,
+//                 barangay,
+//                 purokStreetSubdivision,
+//             };
+//         }
+
+//         const model = userType === 'Staff' ? StaffAuthModel : userType === 'Admin' ? AdminAuthModel : CustomerAuthModel;
+//         await model.findByIdAndUpdate(id, updateData);
+//         res.status(200).json({ 
+//             message: `${userType} account updated successfully` 
+//         });
+//     } catch (error) {
+//         res.status(500).json({ 
+//             message: 'Error updating user account', 
+//             error 
+//         });
+//     }
+// };
+const updateUserAccount = async (req, res) => {
     try {
         const {id} = req.params;
-        const {userType, fullName, firstName, lastName, middleInitial, emailAddress, contactNumber, clientType, gender, address, province, city, barangay, purokStreetSubdivision} = req.body;
+        const { 
+            userType, fullName, firstName, lastName, middleInitial, emailAddress, 
+            contactNumber, clientType, gender, address, province, city, barangay, 
+            purokStreetSubdivision, password 
+        } = req.body;
 
         if(!userType || !['Staff', 'Admin', 'Customer'].includes(userType)){
-            return res.status(400).json({ message: 'Invalid user type' });
+            return res.status(400).json({ 
+                message: 'Invalid user type' 
+            });
         }
 
-        let updateData;
+        let updateData = {};
 
-        if(userType === 'Staff'){
-            updateData = {fullName, emailAddress, contactNumber, gender, address};
-        } else if(userType === 'Admin'){
-            updateData = {fullName, emailAddress, contactNumber, gender, address};
+        if(userType === 'Staff' || userType === 'Admin'){
+            updateData = { fullName, emailAddress, contactNumber, gender, address };
         } else if(userType === 'Customer'){
             if(!clientType || !['Individual', 'Wholesaler'].includes(clientType)){
                 return res.status(400).json({ 
-                    message: 'Invalid client type for customer'
+                    message: 'Invalid client type for customer' 
                 });
             }
             updateData = {
-                firstName,
-                lastName,
-                middleInitial,
-                emailAddress,
-                contactNumber,
-                clientType,
-                gender,
-                province,
-                city,
-                barangay,
-                purokStreetSubdivision,
+                firstName, lastName, middleInitial, emailAddress, contactNumber,
+                clientType, gender, province, city, barangay, purokStreetSubdivision
             };
         }
 
-        const model = userType === 'Staff' ? StaffAuthModel : userType === 'Admin' ? AdminAuthModel : CustomerAuthModel;
-        await model.findByIdAndUpdate(id, updateData);
+        //if a new password is provided, hash it and add it to updateData
+        if(password && password.trim() !== ''){
+            updateData.password = await hashPassword(password);
+        }
+
+        //select the correct model based on userType
+        const model = userType === 'Staff' ? StaffAuthModel : 
+        userType === 'Admin' ? AdminAuthModel : CustomerAuthModel;
+
+        const updatedUser = await model.findByIdAndUpdate(id, updateData, {new: true});
+
+        if(!updatedUser){
+            return res.status(404).json({ 
+                message: `${userType} account not found` 
+            });
+        }
+
         res.status(200).json({ 
             message: `${userType} account updated successfully` 
         });
     } catch (error) {
         res.status(500).json({ 
-            message: 'Error updating user account', 
-            error 
+            message: 'Error updating user account', error: error.message 
         });
     }
 };
