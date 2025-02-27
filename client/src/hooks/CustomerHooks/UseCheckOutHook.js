@@ -16,8 +16,10 @@ export default function UseCheckOutHook(customerId, selectedItems = [], navigate
         emailAddress: '',
         clientType: '',
     });
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [selectedTime, setSelectedTime] = useState(null);
+    // const [selectedDate, setSelectedDate] = useState(null);
+    // const [selectedTime, setSelectedTime] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(localStorage.getItem('selectedDate') || null);
+    const [selectedTime, setSelectedTime] = useState(localStorage.getItem('selectedTime') || null);
     const [paymentMethod, setPaymentMethod] = useState('');
     const [total, setTotal] = useState(0);
     const [showCashOnDeliveryModal, setShowCashOnDeliveryModal] = useState(false);
@@ -66,6 +68,17 @@ export default function UseCheckOutHook(customerId, selectedItems = [], navigate
         }
     }, [customerId]);
 
+    useEffect(() => {
+        const storedDate = localStorage.getItem('selectedDate');
+        const storedTime = localStorage.getItem('selectedTime');
+    
+        if (storedDate && storedTime) {
+            setSelectedDate(storedDate);
+            setSelectedTime(storedTime);
+            setPaymentMethod('Pick Up');
+        }
+    }, []);
+    
     const handleInputChange = (e) => {
         const {name, value} = e.target;
         setBillingDetails({ ...billingDetails, [name]: value });
