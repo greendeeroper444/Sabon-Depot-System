@@ -372,7 +372,7 @@ const editProductAdmin = async(req, res) => {
             product.category = category;
             product.price = price;
             product.discountedPrice = discountedPrice;
-            product.quantity = quantity;
+            product.quantity = !isNaN(quantity) ? Number(quantity) : 0;
             product.stockLevel = stockLevel;
             product.discountPercentage = discountPercentage;
             product.sizeUnit = sizeUnit;
