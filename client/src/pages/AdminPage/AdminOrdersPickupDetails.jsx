@@ -157,7 +157,11 @@ function AdminOrdersPickupDetailsPage() {
  
         <div className='order-header'>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <h1>Order # {order.orderNumber}</h1>
+                <h1>
+                    <span>Order # {order.orderNumber}</span>
+                    <br />
+                    <small>Date to Pick up: {orderDate(order.pickupDate)} at {order.pickupTime}</small>
+                </h1>
                 <div className='order-status'>
                     {
                         order.isPickedUp ? (
