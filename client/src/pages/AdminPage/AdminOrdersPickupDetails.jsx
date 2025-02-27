@@ -15,17 +15,78 @@ function AdminOrdersPickupDetailsPage() {
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isInvoiceModalOpen, setInvoiceModalOpen] = useState(false);
+    const [activeInput, setActiveInput] = React.useState(null);
+    const [inputFields, setInputFields] = useState({});
 
+    const handleUpdateOrderReceipt = async(itemId) => {
+        try {
+            const receipt = inputFields[itemId]?.receipt;
+            if(!receipt){
+                toast.error('Please provide a receipt.');
+                return;
+            }
+    
+            const response = await axios.put(
+                `/adminOrders/updateOrderReceiptAdmin/${orderId}`,
+                {receipt}
+            );
+    
+            toast.success(response.data.message);
+            fetchOrderDetails();
+        } catch (error) {
+            console.error(error);
+            toast.error('Error updating receipt.');
+        }
+    };
+    
+    const handleInputChange = (itemId, field, value) => {
+        setInputFields((prev) => ({
+            ...prev,
+            [itemId]: {
+                ...prev[itemId],
+                [field]: value,
+            },
+        }));
+    };
+    
+    const resetInputField = (itemId) => {
+        setInputFields((prev) => ({
+            ...prev,
+            [itemId]: {
+                ...prev[itemId],
+                receipt: '',
+            },
+        }));
+    };
+    
     const fetchOrderDetails = async() => {
         try {
-            const response = await axios.get(`/staffOrders/getOrderDetailsStaff/${orderId}`);
+            const response = await axios.get(`/adminOrders/getOrderDetailsAdmin/${orderId}`);
             setOrder(response.data);
+    
+            //initialize inputFields with existing receipt values for each item
+            const initialInputFields = response.data.items.reduce((acc, item) => {
+                acc[item._id] = {receipt: item.receipt || ''};
+                return acc;
+            }, {});
+    
+            setInputFields(initialInputFields);
         } catch (error) {
             setError(error.message);
-        } finally {
+        } finally{
             setLoading(false);
         }
     };
+    
+    
+    useEffect(() => {
+        if(orderId){
+            fetchOrderDetails();
+        }
+    }, [orderId]); 
+    
+
+    
 
     const handleStatusUpdate = async(status) => {
         if(status === 'isPickedUp'){
@@ -33,9 +94,9 @@ function AdminOrdersPickupDetailsPage() {
             return; 
         }
         //other statuses
-        // await axios.put(`/staffOrders/updateOrderStatusStaff/${orderId}`, {status});
+        // await axios.put(`/adminOrders/updateOrderStatusStaff/${orderId}`, {status});
         try {
-            const response = await axios.put(`/staffOrders/updateOrderStatusStaff/${orderId}`, {status});
+            const response = await axios.put(`/adminOrders/updateOrderStatusAdmin/${orderId}`, {status});
             setOrder(response.data);
             toast.success(`Order status updated to ${status === 'isReady' ? 'Ready to Pick Up' : 'Picked Up'}`);
         } catch (error) {
@@ -46,7 +107,7 @@ function AdminOrdersPickupDetailsPage() {
     
     const handleApprove = async(cashReceived, changeTotal) => {
         try {
-            const response = await axios.put(`/staffOrders/updateOrderStatusStaff/${orderId}`, {
+            const response = await axios.put(`/adminOrders/updateOrderStatusAdmin/${orderId}`, {
                 status: 'isPickedUp',
                 cashReceived,
                 changeTotal,
@@ -119,31 +180,11 @@ function AdminOrdersPickupDetailsPage() {
                 <button
                 className={`order-actions-button pickedup ${getStatusClass('isPickedUp', order) === 'isPickedUp' ? 'active' : ''}`}
                 onClick={() => handleStatusUpdate('isPickedUp')}
-                disabled={order.orderStatus === 'Picked Up'}
+                disabled={order.orderStatus === 'Picked Up' || order.orderStatus === 'Pending'}
                 >
                 Picked Up
                 </button>
             </div>
-        </div>
-
-        <div className='order-dates'>
-            {/* <p><strong>Placed on:</strong> {orderDate(order.createdAt)}</p> */}
-            {/* <p><strong>Updated:</strong> {new Date(order.updatedAt).toLocaleDateString()}</p> */}
-            {/* {
-                order.readyDate && (
-                    <p><strong>Ready on:</strong> {orderDate(new Date(order.readyDate).toLocaleDateString())}</p>
-                )
-            }
-            {
-                order.pickedUpDate && (
-                    <p><strong>Paid on:</strong> {orderDate(new Date(order.pickedUpDate).toLocaleDateString())}</p>
-                )
-            }
-            {
-                !order.pickedUpDate && (
-                    <p><strong>Status:</strong> Not paid yet</p>
-                )
-            } */}
         </div>
 
         <div className='order-info'>
@@ -154,7 +195,7 @@ function AdminOrdersPickupDetailsPage() {
                 </h3>
                 <p>
                     <strong>Name:</strong>
-                    {' '}{order.billingDetails.firstName} {' '}
+                    {' '}{order.billingDetails?.firstName} {' '}
                     {order.billingDetails.middleInitial} {' '}
                     {order.billingDetails.lastName} 
                 </p>
@@ -172,14 +213,14 @@ function AdminOrdersPickupDetailsPage() {
                     <strong>Change:</strong> ₱
                     {order.changeTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                 </p>
-                {/* <p><strong>Delivery method:</strong> {order.paymentMethod}</p> */}
+                <p><strong>Approved by:</strong> {order.whoApproved}</p>
             </div>
             <div className='order-section'>
                 <h3 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span>Status</span> 
                     {/* <img src={editIcon} alt='Edit Icon' className='edit-icon' /> */}
                 </h3>
-                <p style={{ fontSize: '16px' }}><strong>Order Status:</strong> {order.orderStatus}</p>
+                <p style={{ fontSize: '16px' }}><strong>Order Status:</strong> {order.orderStatus === 'Ready' ? 'Ready To Pick Up' : order.orderStatus}</p>
                 {/* {
                     !order.pickedUpDate && (
                         <p><strong>Status:</strong> Not paid yet</p>
@@ -208,7 +249,49 @@ function AdminOrdersPickupDetailsPage() {
         </div>
 
         <div className='order-items'>
-            <h3>Items Ordered</h3>
+            <div className='items-ordered'>
+                <h3>Items Ordered</h3>
+                {
+                    order?.items?.map((item) => (
+                        <div className='input-with-icons' key={item._id}>
+                            <input
+                                type="text"
+                                className='input-line'
+                                value={inputFields[item._id]?.receipt || ''}
+                                onChange={(e) =>
+                                    handleInputChange(item._id, 'receipt', e.target.value)
+                                }
+                                onFocus={() => setActiveInput({id: item._id, field: 'receipt'})}
+                                onBlur={() =>
+                                    inputFields[item._id]?.receipt?.trim()
+                                        ? null
+                                        : setActiveInput(null)
+                                }
+                                placeholder='Enter receipt'
+                            />
+                            {
+                                inputFields[item._id]?.receipt && (
+                                    <>
+                                        <span
+                                            className='icon check-icon'
+                                            onClick={() => handleUpdateOrderReceipt(item._id)}
+                                        >
+                                            ✔️
+                                        </span>
+                                        <span
+                                            className='icon times-icon'
+                                            onClick={() => resetInputField(item._id)}
+                                        >
+                                            ❌
+                                        </span>
+                                    </>
+                                )
+                            }
+                        </div>
+                    ))
+                }
+            </div>
+            <p><strong>Receipt:</strong> {order.receipt}</p>
             <table>
                 <thead>
                     <tr>

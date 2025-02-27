@@ -27,7 +27,7 @@ function StaffPaymentMethodModal({isOpen, onClose, handleApprove, order}) {
     <div className='staff-payment-container-overlay'>
         <div className='staff-payment-container-content'>
             <h2>Complete Payment</h2>
-            <h2>{order.totalAmount || ''}</h2>
+            <h2>{`₱${ order.totalAmount || '' }`}</h2>
             <label>
                 Given Total:
                 <input

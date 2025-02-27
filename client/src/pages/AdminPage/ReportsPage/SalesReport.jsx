@@ -183,12 +183,12 @@ function SalesReportPage() {
                 report.productCode,
                 report.sizeUnit,
                 report.category,
-                `Php${report.price.toLocaleString('en-US', {
+                `Php ${report.price.toLocaleString('en-US', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                 })}`,
                 report.unitsSold,
-                `Php${report.totalRevenue.toLocaleString('en-US', {
+                `Php ${report.totalRevenue.toLocaleString('en-US', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                 })}`,
@@ -308,10 +308,10 @@ function SalesReportPage() {
                                                         <td>{report.productCode}</td>
                                                         <td>{report.sizeUnit}</td>
                                                         <td>{report.category}</td>
-                                                        <td>{`Php${report.price}`}</td>
+                                                        <td>{`Php ${report.price}`}</td>
                                                         <td>{report.unitsSold}</td>
                                                         <td>
-                                                            {`Php${
+                                                            {`Php ${
                                                                 report.totalRevenue.toLocaleString('en-US', {
                                                                     minimumFractionDigits: 2,
                                                                     maximumFractionDigits: 2,

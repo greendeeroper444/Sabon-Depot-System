@@ -1,5 +1,7 @@
 const OrderModel = require("../../models/OrderModel");
 const NotificationModel = require("../../models/NotificationModel");
+const jwt = require('jsonwebtoken');
+const StaffAuthModel = require("../../models/StaffModels/StaffAuthModel");
 
 
 const getAllOrdersStaff = async(req, res) => {
@@ -174,101 +176,126 @@ const approveOrderStaff = async(req, res) => {
 const updateOrderStatusStaff = async(req, res) => {
     try {
         const {orderId} = req.params;
-        const {status, cashReceived} = req.body; //`cashReceived` is passed in the request body
-    
-        //validate status
-        if(!['isReady', 'isPickedUp', 'isShipped', 'isOutForDelivery', 'isDelivered'].includes(status)){
+        const {status, cashReceived} = req.body;
+        const token = req.cookies.token;
+
+        if(!token){
             return res.status(400).json({
-            message: 'Invalid status',
+            message: 'Unauthorized - Missing token',
             });
         }
-    
-        const updateFields = {
-            isReady: status === 'isReady',
-            isPickedUp: status === 'isPickedUp',
-            isShipped: status === 'isShipped',
-            isOutForDelivery: status === 'isOutForDelivery',
-            isDelivered: status === 'isDelivered',
-        };
-    
-        //fetch the order from the database before proceeding
-        const order = await OrderModel.findById(orderId);
-        if(!order){
-            return res.status(404).json({
-            message: 'Order not found',
-            });
-        }
-    
-        //calculate changeTotal if status is `isPickedUp`
-        let changeTotal = 0;
-        if(status === 'isPickedUp'){
-            if(cashReceived === undefined || cashReceived < order.totalAmount){
+          
+        jwt.verify(token, process.env.JWT_SECRET, {}, async(err, decodedToken) => {
+            if(err){
                 return res.status(400).json({
-                    message: 'Given total must be provided and should be at least the total amount.',
+                    message: 'Unauthorized - Invalid token',
                 });
             }
-            changeTotal = cashReceived - order.totalAmount;
-    
-            updateFields.cashReceived = cashReceived;
-            updateFields.changeTotal = changeTotal;
-            updateFields.pickedUpDate = Date.now();
-            updateFields.orderStatus = 'Picked Up';
-            updateFields.overallPaid = order.totalAmount;
-            updateFields.paymentStatus = 'Paid';
-            updateFields.isFullPaidAmount = true;
-            updateFields.isPending = true;
-    
-            await NotificationModel.create({
+
+            const staffId = decodedToken.id;
+            const staffExists = await StaffAuthModel.findById(staffId);
+            if(!staffExists){
+                return res.json({ 
+                    error: 'Staff does not exist' 
+                });
+            }
+
+
+            //validate status
+            if(!['isReady', 'isPickedUp', 'isShipped', 'isOutForDelivery', 'isDelivered'].includes(status)){
+                return res.status(400).json({
+                message: 'Invalid status',
+                });
+            }
+        
+            const updateFields = {
+                isReady: status === 'isReady',
+                isPickedUp: status === 'isPickedUp',
+                isShipped: status === 'isShipped',
+                isOutForDelivery: status === 'isOutForDelivery',
+                isDelivered: status === 'isDelivered'
+            };
+        
+            //fetch the order from the database before proceeding
+            const order = await OrderModel.findById(orderId);
+            if(!order){
+                return res.status(404).json({
+                message: 'Order not found',
+                });
+            }
+        
+            //calculate changeTotal if status is `isPickedUp`
+            let changeTotal = 0;
+            if(status === 'isPickedUp'){
+                if(cashReceived === undefined || cashReceived < order.totalAmount){
+                    return res.status(400).json({
+                        message: 'Given total must be provided and should be at least the total amount.',
+                    });
+                }
+                changeTotal = cashReceived - order.totalAmount;
+        
+                updateFields.whoApproved = staffExists.fullName;
+                updateFields.cashReceived = cashReceived;
+                updateFields.changeTotal = changeTotal;
+                updateFields.pickedUpDate = Date.now();
+                updateFields.orderStatus = 'Picked Up';
+                updateFields.overallPaid = order.totalAmount;
+                updateFields.paymentStatus = 'Paid';
+                updateFields.isFullPaidAmount = true;
+                updateFields.isPending = true;
+        
+                await NotificationModel.create({
+                    customerId: order.customerId,
+                    orderId: order._id,
+                    message: `Your order ${order._id} has been picked up.`,
+                });
+            }
+        
+            //handle other statuses
+            if(status === 'isReady'){
+                updateFields.readyDate = Date.now();
+                updateFields.orderStatus = 'Ready';
+                await NotificationModel.create({
                 customerId: order.customerId,
                 orderId: order._id,
-                message: `Your order ${order._id} has been picked up.`,
-            });
-        }
-    
-        //handle other statuses
-        if(status === 'isReady'){
-            updateFields.readyDate = Date.now();
-            updateFields.orderStatus = 'Ready';
-            await NotificationModel.create({
-            customerId: order.customerId,
-            orderId: order._id,
-            message: `Your order ${order._id} is ready.`,
-            });
-        }else if(status === 'isShipped'){
-            updateFields.shippedDate = Date.now();
-            updateFields.orderStatus = 'Shipped';
-            await NotificationModel.create({
-            customerId: order.customerId,
-            orderId: order._id,
-            message: `Your order ${order._id} has been shipped.`,
-            });
-        } else if(status === 'isOutForDelivery'){
-            updateFields.outForDeliveryDate = Date.now();
-            updateFields.orderStatus = 'Out For Delivery';
-            await NotificationModel.create({
-            customerId: order.customerId,
-            orderId: order._id,
-            message: `Your order ${order._id} is out for delivery.`,
-            });
-        } else if(status === 'isDelivered'){
-            updateFields.deliveredDate = Date.now();
-            updateFields.orderStatus = 'Delivered';
-            updateFields.overallPaid = order.totalAmount;
-            updateFields.paymentStatus = 'Paid';
-            updateFields.isFullPaidAmount = true;
-            updateFields.isPending = true;
-    
-            await NotificationModel.create({
-            customerId: order.customerId,
-            orderId: order._id,
-            message: `Your order ${order._id} has been delivered.`,
-            });
-        }
-    
+                message: `Your order ${order._id} is ready.`,
+                });
+            }else if(status === 'isShipped'){
+                updateFields.shippedDate = Date.now();
+                updateFields.orderStatus = 'Shipped';
+                await NotificationModel.create({
+                customerId: order.customerId,
+                orderId: order._id,
+                message: `Your order ${order._id} has been shipped.`,
+                });
+            } else if(status === 'isOutForDelivery'){
+                updateFields.outForDeliveryDate = Date.now();
+                updateFields.orderStatus = 'Out For Delivery';
+                await NotificationModel.create({
+                customerId: order.customerId,
+                orderId: order._id,
+                message: `Your order ${order._id} is out for delivery.`,
+                });
+            } else if(status === 'isDelivered'){
+                updateFields.deliveredDate = Date.now();
+                updateFields.orderStatus = 'Delivered';
+                updateFields.overallPaid = order.totalAmount;
+                updateFields.paymentStatus = 'Paid';
+                updateFields.isFullPaidAmount = true;
+                updateFields.isPending = true;
+        
+                await NotificationModel.create({
+                customerId: order.customerId,
+                orderId: order._id,
+                message: `Your order ${order._id} has been delivered.`,
+                });
+            }
+
         //update the order with the new status
         const updatedOrder = await OrderModel.findByIdAndUpdate(orderId, updateFields, {new: true});
     
         res.json(updatedOrder);
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({
@@ -357,9 +384,47 @@ const declineOrderStaff = async(req, res) => {
     }
 };
 
-const addPaymentOrdersStaff = async(req, res) => {
-    
-}
+const updateOrderReceiptStaff = async(req, res) => {
+    try {
+        const {orderId} = req.params;
+        const {receipt} = req.body;
+
+        if(!receipt){
+            return res.status(400).json({ 
+                message: 'No receipt provided' 
+            });
+        }
+
+        if(!orderId || orderId.length !== 24) {
+            return res.status(400).json({ 
+                message: 'Invalid orderId format' 
+            });
+        }
+
+        const order = await OrderModel.findById(orderId);
+        if(!order){
+            return res.status(404).json({ 
+                message: 'Order not found' 
+            });
+        }
+
+        // if(order.orderStatus === 'Picked Up'){
+        //     order.orderStatus = 'Picked Up';
+        // }
+
+        order.receipt = receipt;
+        await order.save();
+
+        return res.json({ 
+            message: 'Order receipt added/updated successfully' 
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ 
+            message: 'Server error' 
+        });
+    }
+};
 
 module.exports = {
     getAllOrdersStaff,
@@ -367,7 +432,6 @@ module.exports = {
     approveOrderStaff,
     updateOrderStatusStaff,
     getCompleteOrderTransactionStaff,
-    declineOrderStaff
-    // createOrderStaff,
-    // getPosOrdersStaff
+    declineOrderStaff,
+    updateOrderReceiptStaff
 }

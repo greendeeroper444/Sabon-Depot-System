@@ -19,7 +19,7 @@ function AdminOrdersDetailsPage() {
     //update order status function
     const handleStatusUpdate = async(status) => {
         try {
-            const response = await axios.put(`/staffOrders/updateOrderStatusStaff/${orderId}`, {status});
+            const response = await axios.put(`/adminOrders/updateOrderStatusAdmin/${orderId}`, {status});
             setOrder(response.data);
         } catch (error) {
             setError(error.message);
@@ -29,7 +29,7 @@ function AdminOrdersDetailsPage() {
     //approve order fucntion
     const handleApprove = async() => {
         try {
-            const response = await axios.put(`/staffOrders/approveOrderStaff/${orderId}`);
+            const response = await axios.put(`/adminOrders/approveOrderAdmin/${orderId}`);
             setOrder(response.data);
             setIsModalOpen(false);
 
@@ -41,7 +41,7 @@ function AdminOrdersDetailsPage() {
 
     const fetchOrderDetails = async() => {
         try {
-            const response = await axios.get(`/staffOrders/getOrderDetailsStaff/${orderId}`);
+            const response = await axios.get(`/adminOrders/getOrderDetailsAdmin/${orderId}`);
             setOrder(response.data);
         } catch (error) {
             setError(error.message);

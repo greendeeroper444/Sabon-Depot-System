@@ -23,8 +23,9 @@ mongoose.connect(process.env.MONGO_URL)
 // .catch((error) => console.error('Database connection error:', error));
 
 
-require('./jobs/resetDiscountsJob');
-require('./jobs/deleteProductsJob');
+require('./jobs/resetDiscountsJob.js');
+require('./jobs/deleteProductsJob.js');
+require('./jobs/checkExpiredOrdersJob.js');
 
 //customer routes
 app.use('/customerAuth', require('./routers/CustomerRouters/CustomerAuthRouter'));
@@ -64,6 +65,7 @@ app.use('/adminProductCategory', require('./routers/AdminRouters/AdminProductCat
 app.use('/adminProductSize', require('./routers/AdminRouters/AdminProductSizeRouter'));
 app.use('/adminUsers', require('./routers/AdminRouters/AdminUsersRouter'));
 app.use('/adminNotifications', require('./routers/AdminRouters/AdminNotificationRouter'));
+app.use('/adminRefillProduct', require('./routers/AdminRouters/AdminRefillProductRouter'));
 
 //use client app
 app.use(express.static(path.join(__dirname, '/client/dist')));

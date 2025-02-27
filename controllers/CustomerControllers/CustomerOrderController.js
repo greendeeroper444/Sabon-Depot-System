@@ -301,6 +301,17 @@ const createOrderCustomer = async(req, res) => {
             customerId,
         });
 
+        //create notifications
+        const notifications = order.items.map((item) => ({
+            customerId,
+            orderId: order._id,
+            productId: item.productId,
+            productName: item.productName,
+            message: `${parsedBillingDetails.firstName} ${parsedBillingDetails.lastName} placed an order for ${item.productName}.`,
+        }));
+
+        await AdminNotificationOrderModel.insertMany(notifications);
+        
         res.status(201).json({
             message: 'Order created successfully',
             orderId: order._id,

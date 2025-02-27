@@ -148,6 +148,14 @@ const OrderSchema = new mongoose.Schema({
     receivedDate: {
         type: Date
     },
+    whoApproved: {
+        type: String,
+        default: ''
+    },
+    receipt: {
+        type: String,
+        default: ''
+    },
     createdAt: {
         type: Date,
         default: Date.now,

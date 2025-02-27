@@ -63,6 +63,9 @@ const StaffOrderWalkinSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    whoProcessed: {
+        type: String
+    },
     createdAt: {
         type: Date,
         default: Date.now,

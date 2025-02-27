@@ -26,9 +26,15 @@ const addOrderWalkinAdmin = async(req, res) => {
                     message: 'Unauthorized - Invalid token',
                 });
             }
+            const adminId = decodedToken.id;
+            const adminExists = await AdminAuthModel.findById(adminId);
+            if(!adminExists){
+                return res.json({ 
+                    error: 'Admin does not exist' 
+                });
+            }
 
             const cartItems = await StaffCartModel.find().populate('productId');
-    
             if(cartItems.length === 0){
                 return res.status(400).json({
                     message: 'No items in the cart',
@@ -80,6 +86,7 @@ const addOrderWalkinAdmin = async(req, res) => {
                 totalAmount,
                 cashReceived,
                 changeTotal,
+                whoProcessed: adminExists.fullName,
             });
     
             await order.save();

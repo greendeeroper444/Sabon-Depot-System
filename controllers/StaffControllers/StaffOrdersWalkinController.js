@@ -27,12 +27,13 @@ const addOrderWalkinStaff = async(req, res) => {
                 });
             }
     
-            // const staffExists = await StaffAuthModel.findById(staffId);
-            // if(!staffExists){
-            //     return res.status(400).json({
-            //         message: 'Staff does not exist',
-            //     });
-            // }
+            const staffId = decodedToken.id;
+            const staffExists = await StaffAuthModel.findById(staffId);
+            if(!staffExists){
+                return res.status(400).json({
+                    message: 'Staff does not exist',
+                });
+            }
     
             //fetch all items in the staff's cart
             const cartItems = await StaffCartModel.find().populate('productId');
@@ -88,6 +89,7 @@ const addOrderWalkinStaff = async(req, res) => {
                 totalAmount,
                 cashReceived,
                 changeTotal,
+                whoProcessed: staffExists.fullName
             });
     
             await order.save();

@@ -97,12 +97,6 @@
     font-size: 13px;
 }
   
-.staff-order-details-container .order-items h3{
-    margin-top: 0;
-    font-weight: bold;
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 10px;
-}
   
 .staff-order-details-container .order-items table{
     width: 100%;
@@ -125,3 +119,51 @@
     margin-right: 10px;
 }
   
+.staff-order-details-container .order-items h3{
+    
+}
+
+.staff-order-details-container .items-ordered{
+    display: flex;
+    flex-direction: column;
+    margin-top: 0;
+    font-weight: bold;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+/* .staff-order-details-container .input-with-icons{
+    position: relative;
+    display: flex;
+    align-items: center;
+} */
+
+/* .staff-order-details-container .input-line{
+    width: 100%;
+    padding-right: 60px;
+} */
+
+/* .staff-order-details-container .icon{
+    position: absolute;
+    right: 0;
+    margin-right: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #007bff;
+    transition: color 0.3s;
+    margin-top: 10px;
+} */
+
+.staff-order-details-container .check-icon{
+    right: 32px;
+    cursor: pointer;
+}
+
+.staff-order-details-container .times-icon{
+    right: 8px;
+    cursor: pointer;
+}
+
+.staff-order-details-container .icon:hover{
+    color: #0056b3;
+}

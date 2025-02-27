@@ -77,6 +77,8 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
         doc.text(order.billingDetails.emailAddress, 14, y);
         y += 5;
         doc.text(`Payment Type: ${order.paymentMethod}`, 150, y);
+        y += 5;
+        doc.text(`Approved by: ${order.whoApproved}`, 150, y);
         y += 10;
 
         //table Header
@@ -86,8 +88,8 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
             body: order.items.map(item => [
                 item.productName,
                 item.quantity,
-                `Php${item.finalPrice.toLocaleString('en-US', {minimumFractionDigits: 2})}`,
-                `Php${(item.finalPrice * item.quantity).toLocaleString('en-US', {minimumFractionDigits: 2})}`
+                `Php ${item.finalPrice.toLocaleString('en-US', {minimumFractionDigits: 2})}`,
+                `Php ${(item.finalPrice * item.quantity).toLocaleString('en-US', {minimumFractionDigits: 2})}`
             ]),
             theme: 'grid',
             styles: {fontSize: 10},
@@ -97,11 +99,11 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
         let finalY = doc.lastAutoTable.finalY + 10;
 
         //summary
-        doc.text(`Subtotal: Php${subtotal.toLocaleString('en-US', {minimumFractionDigits: 2})}`, 14, finalY);
+        doc.text(`Subtotal: Php ${subtotal.toLocaleString('en-US', {minimumFractionDigits: 2})}`, 14, finalY);
         finalY += 5;
-        doc.text(`Shipping: Php${shippingCost.toLocaleString('en-US', {minimumFractionDigits: 2})}`, 14, finalY);
+        doc.text(`Shipping: Php ${shippingCost.toLocaleString('en-US', {minimumFractionDigits: 2})}`, 14, finalY);
         finalY += 5;
-        doc.text(`Total: Php${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`, 14, finalY);
+        doc.text(`Total: Php ${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`, 14, finalY);
 
         //save PDF
         doc.save(`Invoice_${order.orderNumber}.pdf`);
@@ -136,6 +138,7 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
                 </div>
                 <div className='details-right'>
                     <p>Payment Type: {order.paymentMethod}</p>
+                    <p>Approved by: {order.whoApproved}</p>
                 </div>
             </div>
             <table className='invoice-table'>
@@ -153,8 +156,8 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
                             <tr key={item._id}>
                                 <td>{item.productName}</td>
                                 <td>{item.quantity}</td>
-                                <td>Php{item.finalPrice.toFixed(2)}</td>
-                                <td>Php{(item.finalPrice * item.quantity).toFixed(2)}</td>
+                                <td>Php {item.finalPrice.toFixed(2)}</td>
+                                <td>Php {(item.finalPrice * item.quantity).toFixed(2)}</td>
                             </tr>
                         ))
                     }

@@ -15,36 +15,90 @@ function StaffOrdersPickupDetailsPage() {
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isInvoiceModalOpen, setInvoiceModalOpen] = useState(false);
+    const [activeInput, setActiveInput] = React.useState(null);
+        const [inputFields, setInputFields] = useState({});
 
-    // //update order status function
-    // const handleStatusUpdate = async(status) => {
-    //     try {
-    //         const response = await axios.put(`/staffOrders/updateOrderStatusStaff/${orderId}`, {status});
-    //         setOrder(response.data);
-    //     } catch (error) {
-    //         setError(error.message);
-    //     }
-    // };
+    const handleUpdateOrderReceipt = async(itemId) => {
+        try {
+            const receipt = inputFields[itemId]?.receipt;
+            if(!receipt){
+                toast.error('Please provide a receipt.');
+                return;
+            }
+    
+            const response = await axios.put(
+                `/staffOrders/updateOrderReceiptStaff/${orderId}`,
+                {receipt}
+            );
+    
+            toast.success(response.data.message);
+            fetchOrderDetails();
+        } catch (error) {
+            console.error(error);
+            toast.error('Error updating receipt.');
+        }
+    };
+    
+    const handleInputChange = (itemId, field, value) => {
+        setInputFields((prev) => ({
+            ...prev,
+            [itemId]: {
+                ...prev[itemId],
+                [field]: value,
+            },
+        }));
+    };
+    
+    const resetInputField = (itemId) => {
+        setInputFields((prev) => ({
+            ...prev,
+            [itemId]: {
+                ...prev[itemId],
+                receipt: '',
+            },
+        }));
+    };
+    
+    const fetchOrderDetails = async() => {
+        try {
+            const response = await axios.get(`/staffOrders/getOrderDetailsStaff/${orderId}`);
+            setOrder(response.data);
+    
+            //initialize inputFields with existing receipt values for each item
+            const initialInputFields = response.data.items.reduce((acc, item) => {
+                acc[item._id] = {receipt: item.receipt || ''};
+                return acc;
+            }, {});
+    
+            setInputFields(initialInputFields);
+        } catch (error) {
+            setError(error.message);
+        } finally{
+            setLoading(false);
+        }
+    };
+    
+    
+    useEffect(() => {
+        if(orderId){
+            fetchOrderDetails();
+        }
+    }, [orderId]); 
+    
 
-    // //approve order fucntion
-    // const handleApprove = async() => {
-    //     try {
-    //         const response = await axios.put(`/staffOrders/approveOrderStaff/${orderId}`);
-    //         setOrder(response.data);
-    //         setIsModalOpen(false);
-
-    //         toast.success('Your order has been confirmed.');
-    //     } catch (error) {
-    //         setError(error.message);
-    //     }
-    // };
     const handleStatusUpdate = async(status) => {
         if(status === 'isPickedUp'){
             setIsModalOpen(true);
             return; 
         }
-        //other statuses
-        await axios.put(`/staffOrders/updateOrderStatusStaff/${orderId}`, {status});
+        try {
+            const response = await axios.put(`/staffOrders/updateOrderStatusStaff/${orderId}`, {status});
+            setOrder(response.data);
+            toast.success(`Order status updated to ${status === 'isReady' ? 'Ready to Pick Up' : 'Picked Up'}`);
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to update order status.');
+        }
     };
     
     const handleApprove = async(cashReceived, changeTotal) => {
@@ -63,17 +117,7 @@ function StaffOrdersPickupDetailsPage() {
         }
     };
 
-    const fetchOrderDetails = async() => {
-        try {
-            const response = await axios.get(`/staffOrders/getOrderDetailsStaff/${orderId}`);
-            setOrder(response.data);
-        } catch (error) {
-            setError(error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
+    
     useEffect(() => {
         fetchOrderDetails();
     }, [order?.orderStatus]);
@@ -122,65 +166,23 @@ function StaffOrdersPickupDetailsPage() {
                 }
                 </div>
             </div>
-            <div className='order-actions'>
-                {/* {
-                    order.paymentMethod === 'Pick Up' && (
-                        <>
-                            <button
-                            className={`order-actions-button ready ${getStatusClass('isReady', order) === 'isReady' ? 'active' : ''}`}
-                            onClick={() => handleStatusUpdate('isReady')}
-                            >
-                                Ready
-                            </button>
-                            <button
-                            className={`order-actions-button pickedup ${getStatusClass('isPickedUp', order) === 'isPickedUp' ? 'active' : ''}`}
-                            onClick={() => handleStatusUpdate('isPickedUp')}
-                            >
-                                Picked Up
-                            </button>
-                        </>
-                    )
-                }
-                {
-                    order.paymentMethod !== 'Pick Up' && (
-                        <>
-                            <button
-                            className={`order-actions-button shipped ${getStatusClass('isShipped', order) === 'isShipped' ? 'active' : ''}`}
-                            onClick={() => handleStatusUpdate('isShipped')}
-                            >
-                                Shipped
-                            </button>
-                            <button
-                            className={`order-actions-button outForDelivery ${getStatusClass('isOutForDelivery', order) === 'isOutForDelivery' ? 'active' : ''}`}
-                            onClick={() => handleStatusUpdate('isOutForDelivery')}
-                            >
-                                Out For Delivery
-                            </button>
-                            <button
-                            className={`order-actions-button delivered ${getStatusClass('isDelivered', order) === 'isDelivered' ? 'active' : ''}`}
-                            onClick={() => handleStatusUpdate('isDelivered')}
-                            >
-                                Delivered
-                            </button>
-                        </>
-                    )
-                } */}
-                <button
-                className={`order-actions-button ready ${getStatusClass('isReady', order) === 'isReady' ? 'active' : ''}`}
-                onClick={() => handleStatusUpdate('isReady')}
-                disabled={order.orderStatus === 'Picked Up'}
-                >
-                Ready To Pick Up
-                </button>
+           <div className='order-actions'>
+            <button
+            className={`order-actions-button ready ${getStatusClass('isReady', order) === 'isReady' ? 'active' : ''}`}
+            onClick={() => handleStatusUpdate('isReady')}
+            disabled={order.orderStatus === 'Picked Up'}
+            >
+            Ready To Pick Up
+            </button>
 
-                <button
-                className={`order-actions-button pickedup ${getStatusClass('isPickedUp', order) === 'isPickedUp' ? 'active' : ''}`}
-                onClick={() => handleStatusUpdate('isPickedUp')}
-                disabled={order.orderStatus === 'Picked Up'}
-                >
-                Picked Up
-                </button>
-            </div>
+            <button
+            className={`order-actions-button pickedup ${getStatusClass('isPickedUp', order) === 'isPickedUp' ? 'active' : ''}`}
+            onClick={() => handleStatusUpdate('isPickedUp')}
+            disabled={order.orderStatus === 'Picked Up' || order.orderStatus === 'Pending'}
+            >
+            Picked Up
+            </button>
+        </div>
         </div>
 
 
@@ -210,14 +212,14 @@ function StaffOrdersPickupDetailsPage() {
                     <strong>Change:</strong> ₱
                     {order.changeTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                 </p>
-                {/* <p><strong>Delivery method:</strong> {order.paymentMethod}</p> */}
+                <p><strong>Approved by:</strong> {order.whoApproved}</p>
             </div>
             <div className='order-section'>
                 <h3 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span>Status</span> 
                     {/* <img src={editIcon} alt='Edit Icon' className='edit-icon' /> */}
                 </h3>
-                <p style={{ fontSize: '16px' }}><strong>Order Status:</strong> {order.orderStatus}</p>
+                <p style={{ fontSize: '16px' }}><strong>Order Status:</strong> {order.orderStatus === 'Ready' ? 'Ready To Pick Up' : order.orderStatus}</p>
                 {/* {
                     !order.pickedUpDate && (
                         <p><strong>Status:</strong> Not paid yet</p>
@@ -251,7 +253,49 @@ function StaffOrdersPickupDetailsPage() {
         </div>
 
         <div className='order-items'>
-            <h3>Items Ordered</h3>
+        <div className='items-ordered'>
+                <h3>Items Ordered</h3>
+                {
+                    order?.items?.map((item) => (
+                        <div className='input-with-icons' key={item._id}>
+                            <input
+                            type="text"
+                            className='input-line'
+                            value={inputFields[item._id]?.receipt || ''}
+                            onChange={(e) =>
+                                handleInputChange(item._id, 'receipt', e.target.value)
+                            }
+                            onFocus={() => setActiveInput({id: item._id, field: 'receipt'})}
+                            onBlur={() =>
+                                inputFields[item._id]?.receipt?.trim()
+                                    ? null
+                                    : setActiveInput(null)
+                            }
+                            placeholder='Enter receipt'
+                            />
+                            {
+                                inputFields[item._id]?.receipt && (
+                                    <>
+                                        <span
+                                            className='icon check-icon'
+                                            onClick={() => handleUpdateOrderReceipt(item._id)}
+                                        >
+                                            ✔️
+                                        </span>
+                                        <span
+                                            className='icon times-icon'
+                                            onClick={() => resetInputField(item._id)}
+                                        >
+                                            ❌
+                                        </span>
+                                    </>
+                                )
+                            }
+                        </div>
+                    ))
+                }
+            </div>
+            <p><strong>Receipt:</strong> {order.receipt}</p>
             <table>
                 <thead>
                     <tr>

@@ -148,6 +148,13 @@ const CustomerPickUpPaymentMethod = ({
                 )
             }
 
+            <div className='disclaimer'>
+                <p>
+                    <strong>Disclaimer:</strong> If your order is not picked up on the selected date and time, 
+                    it will be automatically canceled.
+                </p>
+            </div>
+
             <div className='modal-buttons'>
                 <button className='cancel-button' onClick={handleCancel}>
                     Cancel
