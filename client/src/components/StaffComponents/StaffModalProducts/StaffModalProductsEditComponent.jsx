@@ -22,7 +22,7 @@ function StaffModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
         description: '',
         refillPrice: ''
     });
-    const [inputValue, setInputValue] = useState(0); 
+    const [inputValue, setInputValue] = useState(''); 
     const [categories, setCategories] = useState([]);
     const [sizeUnits, setSizeUnits] = useState([]);
 
@@ -75,7 +75,9 @@ function StaffModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
     const handleEditProductStaff = async(e) => {
         e.preventDefault();
 
-        const updatedQuantity = parseInt(dataInput.quantity) + parseInt(inputValue);
+        const updatedQuantity = 
+        (!isNaN(parseInt(dataInput.quantity)) ? parseInt(dataInput.quantity) : 0) +
+        (!isNaN(parseInt(inputValue)) ? parseInt(inputValue) : 0);
 
         const formData = new FormData();
         formData.append('productCode', dataInput.productCode);
@@ -288,18 +290,34 @@ function StaffModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
             <div className='label-text'>
                 <label>UPDATE QUANTITY:</label>
                 <div>
-                    <input
+                    {/* <input
                         type="number"
                         value={inputValue}
                         onChange={(e) => {
                             const newValue = Number(e.target.value);
                             setInputValue(newValue);
                         }}
+                    /> */}
+                    <input
+                    type="number"
+                    value={inputValue}
+                    onChange={(e) => {
+                        const newValue = e.target.value;
+                        if(newValue === ''){
+                            setInputValue('');
+                        } else{
+                            setInputValue(newValue);
+                        }
+                    }}
                     />
                 </div>
-                <span>
+                {/* <span>
                     = {dataInput.quantity + inputValue}
+                </span> */}
+                <span>
+                    = {dataInput.quantity + (inputValue ? Number(inputValue) : 0)}
                 </span>
+
             </div>
             <div className='label-text'>
                 <label>UPDATE STOCK LEVEL:</label>
