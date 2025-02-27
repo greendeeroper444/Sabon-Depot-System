@@ -70,7 +70,7 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
         let y = 60;
         doc.text(`Invoice ID: #${order.orderNumber}`, 14, y);
         y += 5;
-        doc.text(`Due Date: ${new Date().toLocaleDateString()}`, 14, y);
+        doc.text(`Due Date: ${new Date(order.createdAt).toLocaleString()}`, 14, y);
         y += 5;
         doc.text(`Billed to: ${order.billingDetails.firstName} ${order.billingDetails.lastName}`, 14, y);
         y += 5;
@@ -131,7 +131,7 @@ function InvoiceModal({isOpen, onClose, order, subtotal, shippingCost}) {
             <div className='divider-line'></div>
             <div className='invoice-details'>
                 <div className='details-left'>
-                    <p>Due Date: {new Date().toLocaleDateString()}</p>
+                    <p>Due Date: {new Date(order.createdAt).toLocaleString()}</p>
                     <p>Billed to: {order.billingDetails.firstName} {order.billingDetails.lastName} <br />
                         {order.billingDetails.emailAddress}
                     </p>
