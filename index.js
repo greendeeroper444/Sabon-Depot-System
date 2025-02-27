@@ -65,7 +65,6 @@ app.use('/adminProductCategory', require('./routers/AdminRouters/AdminProductCat
 app.use('/adminProductSize', require('./routers/AdminRouters/AdminProductSizeRouter'));
 app.use('/adminUsers', require('./routers/AdminRouters/AdminUsersRouter'));
 app.use('/adminNotifications', require('./routers/AdminRouters/AdminNotificationRouter'));
-app.use('/adminRefillProduct', require('./routers/AdminRouters/AdminRefillProductRouter'));
 
 //use client app
 app.use(express.static(path.join(__dirname, '/client/dist')));
