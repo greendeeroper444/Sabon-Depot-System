@@ -22,7 +22,7 @@ function AdminModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
         description: '',
         refillPrice: '',
     });
-    const [inputValue, setInputValue] = useState(0); 
+    const [inputValue, setInputValue] = useState(''); 
     const [categories, setCategories] = useState([]);
     const [sizeUnits, setSizeUnits] = useState([]);
 
