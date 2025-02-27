@@ -162,46 +162,48 @@ function CustomerNavbarComponent({customerToggleSidebar}) {
                                                 <h4>Notifications</h4>
                                                 {
                                                     notifications.length > 0 ? (
-                                                        notifications.map((notification, index) => (
-                                                            <div
-                                                            key={index}
-                                                            className={`notification-item ${notification.isRead ? '' : 'unread'}`}
-                                                            onClick={async () => {
-                                                                try {
-                                                                    //if the notification is unread, mark it as read
-                                                                    if(!notification.isRead){
-                                                                        await axios.put(`/customerNotification/markNotificationAsRead/${notification._id}`);
-                                                                        
-                                                                        //update the state after marking as read
-                                                                        setNotifications((prevNotifications) =>
-                                                                            prevNotifications.map((n) =>
-                                                                                n._id === notification._id ? {...n, isRead: true} : n
-                                                                            )
-                                                                        );
-                                                                    }
-                                                                    
-                                                                    //navigate to the specific URL
+                                                        <>
+                                                            {
+                                                                notifications.map((notification, index) => {
                                                                     const orderId = notification.orderId;
-                                                                    navigate(`/place-order/${customer._id}/${orderId}`);
-                                                                } catch (error) {
-                                                                    console.error('Error processing notification:', error);
-                                                                }
-                                                            }}
-                                                        >
-                                                            <p>{notification.message}</p>
-                                                            <small>{new Date(notification.createdAt).toLocaleString()}</small>
-                                                        </div>
+                                                                    const orderLink = `/place-order/${customer._id}/${orderId}`;
 
-                                                        ))
+                                                                    return (
+                                                                        <div key={index} className='notification-items'>
+                                                                            <Link 
+                                                                                to={orderLink}
+                                                                                className={`notification-item ${notification.isRead ? 'read' : 'unread'}`}
+                                                                                onClick={async () => {
+                                                                                    try {
+                                                                                        if (!notification.isRead) {
+                                                                                            await axios.put(`/customerNotification/markNotificationAsRead/${notification._id}`);
+                                                                                            setNotifications((prevNotifications) =>
+                                                                                                prevNotifications.map((n) =>
+                                                                                                    n._id === notification._id ? { ...n, isRead: true } : n
+                                                                                                )
+                                                                                            );
+                                                                                        }
+                                                                                    } catch (error) {
+                                                                                        console.error('Error processing notification:', error);
+                                                                                    }
+                                                                                }}
+                                                                            >
+                                                                                {notification.message}
+                                                                                <br />
+                                                                                <small>{new Date(notification.createdAt).toLocaleString()}</small>
+                                                                            </Link>
+                                                                        </div>
+                                                                    );
+                                                                })
+                                                            }
+                                                        </>
                                                     ) : (
                                                         <div className='notification-item'>No new notifications</div>
                                                     )
                                                 }
-
                                             </div>
                                         )
                                     }
-
                                 </div>
                             )
                         }
