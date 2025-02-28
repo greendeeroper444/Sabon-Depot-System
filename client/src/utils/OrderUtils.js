@@ -61,6 +61,6 @@ export const getStatusClassCustomer = (statusKey, order) => {
     if(statusKey === 'isDelivered' && order.isDelivered && !order.isOutForDelivery) return 'active';
     if(statusKey === 'isOutForDelivery' && order.isOutForDelivery && !order.isDelivered) return 'active';
     if(statusKey === 'isShipped' && order.isShipped && !order.isOutForDelivery) return 'active';
-    if(statusKey === 'isPending' && !order.isReady) return 'active';
+    if(statusKey === 'isPending' && !order.isReady && !order.isPickedUp) return 'active';
     return '';
 };
