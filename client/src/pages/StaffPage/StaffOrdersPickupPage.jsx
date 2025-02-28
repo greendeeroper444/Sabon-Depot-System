@@ -134,7 +134,7 @@ function StaffOrdersPickupPage() {
                 <li className={activeTab === 'Pending' ? 'active' : ''} onClick={() => handleTabClick('Pending')}>Pending</li>
                 <li className={activeTab === 'Ready' ? 'active' : ''} onClick={() => handleTabClick('Ready')}>Ready</li>
                 <li className={activeTab === 'Picked Up' ? 'active' : ''} onClick={() => handleTabClick('Picked Up')}>Picked Up</li>
-                {/* <li className={activeTab === 'Canceled' ? 'active' : ''} onClick={() => handleTabClick('Canceled')}>Canceled</li> */}
+                <li className={activeTab === 'Cancelled' ? 'active' : ''} onClick={() => handleTabClick('Cancelled')}>Cancelled</li>
             </ul>
         </div>
 
