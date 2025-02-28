@@ -32,9 +32,15 @@ export const getEstimatedDeliveryDate = (orderDate) => {
     return `${formatDate(startDate)} - ${formatDate(endDate)}, ${year}`;
 };
 
-export const orderDate = (dateString) => {
+export const orderDate2 = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
+};
+
+export const orderDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'})} 
+        ${date.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true})}`;
 };
 
 // export const monthDay = (dateString) => {
