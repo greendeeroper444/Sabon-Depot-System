@@ -90,6 +90,17 @@ function CustomSidebarResponsiveComponent({customerCloseSidebar}) {
                     <span>Home</span>
                 </NavLink>
             </li>
+            {
+                customer && (
+                    <li>
+                        <NavLink to={`/orders/${customer._id}`}
+                        className='customer-sidebar-item' 
+                        activeClassName='active' onClick={handleLinkClick} >
+                            <span>Orders</span>
+                        </NavLink>
+                    </li>
+                )
+            }
             <li>
                 <NavLink to='/shop' 
                 className='customer-sidebar-item' 
