@@ -102,8 +102,8 @@ function AdminOrdersPickupPage() {
                 return <StaffReadyOrders orders={displayedOrders.filter(order => order.orderStatus === 'Ready')} handleRowClick={handleRowClick} orderDate={orderDate} />;
             case 'Picked Up':
                 return <StaffPickedupOrders orders={displayedOrders.filter(order => order.orderStatus === 'Picked Up')} handleRowClick={handleRowClick} orderDate={orderDate} />;
-            // case 'Canceled':
-            //     return <StaffCanceledOrders orders={orders.filter(order => order.orderStatus === 'Canceled')} handleRowClick={handleRowClick} orderDate={orderDate} />;
+            case 'Cancelled':
+                return <StaffCanceledOrders orders={orders.filter(order => order.orderStatus === 'Cancelled')} handleRowClick={handleRowClick} orderDate={orderDate} />;
             default:
                 return null;
         }
@@ -134,7 +134,7 @@ function AdminOrdersPickupPage() {
                 <li className={activeTab === 'Pending' ? 'active' : ''} onClick={() => handleTabClick('Pending')}>Pending</li>
                 <li className={activeTab === 'Ready' ? 'active' : ''} onClick={() => handleTabClick('Ready')}>Ready</li>
                 <li className={activeTab === 'Picked Up' ? 'active' : ''} onClick={() => handleTabClick('Picked Up')}>Picked Up</li>
-                {/* <li className={activeTab === 'Canceled' ? 'active' : ''} onClick={() => handleTabClick('Canceled')}>Canceled</li> */}
+                <li className={activeTab === 'Cancelled' ? 'active' : ''} onClick={() => handleTabClick('Cancelled')}>Cancelled</li>
             </ul>
         </div>
 
