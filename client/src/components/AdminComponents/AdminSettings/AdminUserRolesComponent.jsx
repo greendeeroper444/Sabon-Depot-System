@@ -232,7 +232,7 @@ function AdminUserRolesComponent() {
                                 className='user-role-input'
                                 />
                             </label>
-                            {
+                            {/* {
                                 !isEditing && (
                                     <label>
                                         Password:
@@ -244,7 +244,7 @@ function AdminUserRolesComponent() {
                                         />
                                     </label>
                                 )
-                            }
+                            } */}
                             {
                                 userType === 'Customer' && (
                                     <label>
