@@ -4,7 +4,7 @@ import axios from 'axios';
 import '../../CSS/StaffCSS/StaffOrdersDetails.css';
 import editIcon from '../../assets/staff/stafficons/staff-orders-edit-icon.png'
 import StaffPaymentMethodModal from '../../components/StaffComponents/StaffOrdersDetails/StaffPaymentMethodModal';
-import { getStatusClass, orderDate } from '../../utils/OrderUtils';
+import { getStatusClass, orderDate, orderDate2 } from '../../utils/OrderUtils';
 import toast from 'react-hot-toast';
 import InvoiceModal from '../../components/CustomerComponents/InvoiceModal';
 
@@ -160,7 +160,7 @@ function AdminOrdersPickupDetailsPage() {
                 <h1>
                     <span>Order # {order.orderNumber}</span>
                     <br />
-                    <small>Date to Pick up: {orderDate(order.pickupDate)} at {order.pickupTime}</small>
+                    <small>Date to Pick up: {orderDate2(order.pickupDate)} at {order.pickupTime}</small>
                 </h1>
                 <div className='order-status'>
                     {
