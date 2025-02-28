@@ -10,7 +10,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import CustomerLogoutConfimationModalComponent from './CustomerLogoutConfimationModalComponent';
 import notificationIcon from '../../assets/admin/adminicons/admin-navbar-notification-icon-2.png';
-// import iconOrder from '../../assets/icons/icon-order.png';
+import iconOrder from '../../assets/icons/icon-order.png';
 
 function CustomerNavbarComponent({customerToggleSidebar}) {
     const location = useLocation();
@@ -301,13 +301,13 @@ function CustomerNavbarComponent({customerToggleSidebar}) {
                                             >
                                                 Profile
                                             </Link>
-                                            <Link 
+                                            {/* <Link 
                                             to={`/orders/${customer._id}`} 
                                             className='dropdown-item'
                                             onClick={toggleDropdown}
                                             >
                                                 Orders
-                                            </Link>
+                                            </Link> */}
                                             {/* {
                                                 customer && 
                                                 [
