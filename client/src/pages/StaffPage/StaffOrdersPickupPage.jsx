@@ -102,8 +102,8 @@ function StaffOrdersPickupPage() {
                 return <StaffReadyOrders orders={displayedOrders.filter(order => order.orderStatus === 'Ready')} handleRowClick={handleRowClick} orderDate={orderDate} />;
             case 'Picked Up':
                 return <StaffPickedupOrders orders={displayedOrders.filter(order => order.orderStatus === 'Picked Up')} handleRowClick={handleRowClick} orderDate={orderDate} />;
-            // case 'Canceled':
-            //     return <StaffCanceledOrders orders={orders.filter(order => order.orderStatus === 'Canceled')} handleRowClick={handleRowClick} orderDate={orderDate} />;
+            case 'Cancelled':
+                return <StaffCanceledOrders orders={orders.filter(order => order.orderStatus === 'Cancelled')} handleRowClick={handleRowClick} orderDate={orderDate} />;
             default:
                 return null;
         }
