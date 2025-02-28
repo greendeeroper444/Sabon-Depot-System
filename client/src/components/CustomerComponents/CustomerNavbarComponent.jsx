@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import '../../CSS/CustomerCSS/CustomerNavbar.css';
 import logoDepot from '../../assets/icons/logo-depot-3-circle.png';
 import iconCart from '../../assets/icons/icon-cart.png';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import customerDefaultProfilePicture from '../../assets/icons/customer-default-profile-pciture.png';
 import menuIcon from '../../assets/icons/icon-menu-gray.png';
 import { CustomerContext } from '../../../contexts/CustomerContexts/CustomerAuthContext';
@@ -10,6 +10,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import CustomerLogoutConfimationModalComponent from './CustomerLogoutConfimationModalComponent';
 import notificationIcon from '../../assets/admin/adminicons/admin-navbar-notification-icon-2.png';
+import iconOrder from '../../assets/icons/icon-order.png';
 
 function CustomerNavbarComponent({customerToggleSidebar}) {
     const location = useLocation();
@@ -20,6 +21,40 @@ function CustomerNavbarComponent({customerToggleSidebar}) {
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState([]);
     const [notificationDropdownVisible, setNotificationDropdownVisible] = useState(false);
+    const [cartItems, setCartItems] = useState([]);
+    // const [orders, setOrders] = useState([]);
+
+    // useEffect(() => {
+    //     const fetchOrders = async() => {
+    //         try {
+    //             const response = await axios.get(`/customerOrder/getAllOrdersCustomer/${customer?._id}`);
+    
+    //             setOrders(response.data);
+    //         } catch (error) {
+    //             console.error('Error fetching orders:', error);
+    //             alert('Failed to load orders.');
+    //         } 
+    //     };
+
+    //     fetchOrders();
+    // }, [customer?.id]);
+
+    useEffect(() => {
+
+        fetchCartItems();
+    }, [customer?._id]);
+
+    const fetchCartItems = async() => {
+        try {
+            const response = await axios.get(`/customerCart/getProductCartCustomer/${customer?._id}`);
+            setCartItems(response.data);
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    fetchCartItems();
 
     useEffect(() => {
         const fetchNotifications = async() => {
@@ -120,6 +155,14 @@ function CustomerNavbarComponent({customerToggleSidebar}) {
                             Contact
                         </NavLink>
                     </li>
+                    <li>
+                        <NavLink
+                        className={({isActive}) => (isActive ? 'link active' : 'link')}
+                        to={`/orders/${customer?._id}`}
+                        >
+                            Orders
+                        </NavLink>
+                    </li>
                     {
                         !customer && (
                             <li>
@@ -129,17 +172,44 @@ function CustomerNavbarComponent({customerToggleSidebar}) {
                             </li>
                         )
                     }
+                     {/* <li>
+                     {
+                            customer && (
+                                <div className='notification-container'>
+                                    <NavLink
+                                    className={({ isActive }) => (isActive ? 'link active' : 'link')}
+                                    to={`/orders/${customer?._id}`}
+                                    >
+                                        <img src={iconOrder} alt="Order" />
+                                        {
+                                            orders?.length > 0 && (
+                                                <span className='notification-count'>{orders.length}</span>
+                                            )
+                                        }
+                                    </NavLink>
+                                </div>
+                            )
+                        }
+                    </li> */}
                     <li>
                         {
                             customer && (
-                                <NavLink
-                                className={({isActive}) => (isActive ? 'link active' : 'link')}
-                                to={`/cart/${customer?._id}`}
-                                >
-                                    <img src={iconCart} alt="Cart" />
-                                </NavLink>
+                                <div className='notification-container'>
+                                    <NavLink
+                                    className={({ isActive }) => (isActive ? 'link active' : 'link')}
+                                    to={`/cart/${customer?._id}`}
+                                    >
+                                        <img src={iconCart} alt="Cart" />
+                                        {
+                                            cartItems?.length > 0 && (
+                                                <span className='notification-count'>{cartItems.length}</span>
+                                            )
+                                        }
+                                    </NavLink>
+                                </div>
                             )
                         }
+
                     </li>
                     <li>
                         {
@@ -148,7 +218,6 @@ function CustomerNavbarComponent({customerToggleSidebar}) {
                                     <img
                                     src={notificationIcon}
                                     alt="Notifications"
-                                    className='notification-icon'
                                     onClick={toggleNotificationDropdown}
                                     />
                                     {
@@ -275,7 +344,7 @@ function CustomerNavbarComponent({customerToggleSidebar}) {
             handleCancel={handleCancelLogout}
         />
     </>
-  );
+  )
 }
 
 export default CustomerNavbarComponent
