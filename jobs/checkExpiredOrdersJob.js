@@ -1,6 +1,7 @@
 const cron = require('node-cron');
 const moment = require('moment-timezone');
 const OrderModel = require('../models/OrderModel');
+const NotificationModel = require('../models/NotificationModel');
 
 //function to check and cancel expired orders
 // const checkExpiredOrdersJob = async () => {
@@ -72,6 +73,14 @@ const checkExpiredOrdersJob = async() => {
                         orderStatus: 'Cancelled',
                     }
                 );
+
+                await NotificationModel.create({
+                    customerId: order.customerId,
+                    orderId: order._id,
+                    message: `Your order ${order.orderNumber} has been cancelled due to missed pickup time.`,
+                });
+
+                console.log(`Notification sent to customer ${order.customerId} for order ${order.orderNumber}.`);
             }
         }
 
