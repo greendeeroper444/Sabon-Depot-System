@@ -151,7 +151,7 @@ function AdminOrdersRefillPage() {
                     {/* <th><input type='checkbox' onClick={handleCheckboxClick} /></th> */}
                     <th>Orders Id</th>
                     <th>Item</th>
-                    <th>Qty</th>
+                    <th>Volume</th>
                     <th>Size</th>
                     <th>Price</th>
                     <th>Subtotal</th>
@@ -164,14 +164,14 @@ function AdminOrdersRefillPage() {
                     currentOrders.length > 0 ? currentOrders.map(order => (
                         order.items.map(item => (
                             <tr key={item.productId} className='clickable-row'
-                                onClick={() => navigate(`/admin/order-summary/${order._id}`)}>
+                                onClick={() => navigate(`/admin/order-summary-refill/${order._id}`)}>
                                 {/* <td><input type='checkbox' onClick={handleCheckboxClick} /></td> */}
                                 <td>{order.orderNumber}</td>
                                 <td>{item.productName || "N/A"}</td>
-                                <td>{item.quantity || 0}</td>
+                                <td>{item.volume || 0}</td>
                                 <td>{item.productSize}</td>
                                 <td>{`₱${(item.price ?? 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
-                                <td>{`₱${((item.price ?? 0) * (item.quantity ?? 0)).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
+                                <td>{`₱${((item.price ?? 0) * (item.volume ?? 0)).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
                                 <td>{orderDate(order.createdAt)}</td>
                             </tr>
                         ))

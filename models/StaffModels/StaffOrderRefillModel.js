@@ -25,24 +25,18 @@ const StaffOrderRefillSchema = new mongoose.Schema({
         {
             productId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Product',
+                ref: 'RefillProduct',
                 required: true,
             },
-            productCode: String,
             productName: String,
             category: String,
             price: Number,
-            discountPercentage: Number,
-            discountedPrice: Number,
             finalPrice: Number,
-            quantity: Number,
+            volume: Number,
             uploaderId: mongoose.Schema.Types.ObjectId,
             uploaderType: String,
-            imageUrl: String,
             sizeUnit:  String,
             productSize: String,
-            description: String,
-            refillPrice: Number,
             createdProductBy: String,
             createdProductAt: Date,
             updatedProductBy: String,
@@ -60,6 +54,9 @@ const StaffOrderRefillSchema = new mongoose.Schema({
     changeTotal: {
         type: Number,
         default: 0
+    },
+    whoProcessed: {
+        type: String
     },
     createdAt: {
         type: Date,

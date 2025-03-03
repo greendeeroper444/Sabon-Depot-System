@@ -25,9 +25,6 @@ const SalesReportSchema = new mongoose.Schema({
     price: {
         type: Number,
     },
-    refillPrice: {
-        type: Number,
-    },
     inventoryLevel: {
         type: Number,
         required: true

@@ -55,7 +55,7 @@ const approveOrderStaff = async(req, res) => {
         await NotificationModel.create({
             customerId: order.customerId,
             orderId: order._id,
-            message: `Your order ${order._id} has been confirmed.`,
+            message: `Your order ${order.orderNumber} has been confirmed.`,
         });
 
         res.json(order);
@@ -102,7 +102,7 @@ const approveOrderStaff = async(req, res) => {
 //             await NotificationModel.create({
 //                 customerId: order.customerId,
 //                 orderId: order._id,
-//                 message: `Your order ${order._id} has been ready.`,
+//                 message: `Your order ${order.orderNumber} has been ready.`,
 //             });
 //         }if(status === 'isPickedUp'){
 //             updateFields.cashReceived = cashReceived;
@@ -117,7 +117,7 @@ const approveOrderStaff = async(req, res) => {
 //             await NotificationModel.create({
 //                 customerId: order.customerId,
 //                 orderId: order._id,
-//                 message: `Your order ${order._id} has been picked up.`,
+//                 message: `Your order ${order.orderNumber} has been picked up.`,
 //             });
 //         }if(status === 'isShipped'){
 //             updateFields.shippedDate = Date.now();
@@ -125,7 +125,7 @@ const approveOrderStaff = async(req, res) => {
 //             await NotificationModel.create({
 //                 customerId: order.customerId,
 //                 orderId: order._id,
-//                 message: `Your order ${order._id} has been shipped.`,
+//                 message: `Your order ${order.orderNumber} has been shipped.`,
 //             });
 //         } else if(status === 'isOutForDelivery'){
 //             updateFields.outForDeliveryDate = Date.now();
@@ -133,7 +133,7 @@ const approveOrderStaff = async(req, res) => {
 //             await NotificationModel.create({
 //                 customerId: order.customerId,
 //                 orderId: order._id,
-//                 message: `Your order ${order._id} is out for delivery.`,
+//                 message: `Your order ${order.orderNumber} is out for delivery.`,
 //             });
 //         } 
 //         // else if(status === 'isDelivered'){
@@ -142,7 +142,7 @@ const approveOrderStaff = async(req, res) => {
 //         //     await NotificationModel.create({
 //         //         customerId: order.customerId,
 //         //         orderId: order._id,
-//         //         message: `Your order ${order._id} has been delivered.`,
+//         //         message: `Your order ${order.orderNumber} has been delivered.`,
 //         //     });
 //         // }
 //         else if(status === 'isDelivered'){
@@ -157,7 +157,7 @@ const approveOrderStaff = async(req, res) => {
 //             await NotificationModel.create({
 //                 customerId: order.customerId,
 //                 orderId: order._id,
-//                 message: `Your order ${order._id} has been delivered.`,
+//                 message: `Your order ${order.orderNumber} has been delivered.`,
 //             });
 //         }
 
@@ -247,7 +247,7 @@ const updateOrderStatusStaff = async(req, res) => {
                 await NotificationModel.create({
                     customerId: order.customerId,
                     orderId: order._id,
-                    message: `Your order ${order._id} has been picked up.`,
+                    message: `Your order ${order.orderNumber} has been picked up.`,
                 });
             }
         
@@ -258,7 +258,7 @@ const updateOrderStatusStaff = async(req, res) => {
                 await NotificationModel.create({
                 customerId: order.customerId,
                 orderId: order._id,
-                message: `Your order ${order._id} is ready.`,
+                message: `Your order ${order.orderNumber} is ready to pick up.`,
                 });
             }else if(status === 'isShipped'){
                 updateFields.shippedDate = Date.now();
@@ -266,7 +266,7 @@ const updateOrderStatusStaff = async(req, res) => {
                 await NotificationModel.create({
                 customerId: order.customerId,
                 orderId: order._id,
-                message: `Your order ${order._id} has been shipped.`,
+                message: `Your order ${order.orderNumber} has been shipped.`,
                 });
             } else if(status === 'isOutForDelivery'){
                 updateFields.outForDeliveryDate = Date.now();
@@ -274,7 +274,7 @@ const updateOrderStatusStaff = async(req, res) => {
                 await NotificationModel.create({
                 customerId: order.customerId,
                 orderId: order._id,
-                message: `Your order ${order._id} is out for delivery.`,
+                message: `Your order ${order.orderNumber} is out for delivery.`,
                 });
             } else if(status === 'isDelivered'){
                 updateFields.deliveredDate = Date.now();
@@ -287,7 +287,7 @@ const updateOrderStatusStaff = async(req, res) => {
                 await NotificationModel.create({
                 customerId: order.customerId,
                 orderId: order._id,
-                message: `Your order ${order._id} has been delivered.`,
+                message: `Your order ${order.orderNumber} has been delivered.`,
                 });
             }
 
@@ -372,7 +372,7 @@ const declineOrderStaff = async(req, res) => {
         await NotificationModel.create({
             customerId: order.customerId,
             orderId: order._id,
-            message: `Your order ${order._id} has been declined.`,
+            message: `Your order ${order.orderNumber} has been declined.`,
         });
 
         res.json(updatedOrder);

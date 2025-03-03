@@ -8,13 +8,17 @@ export const adminRoutes = [
     '/admin/walkins',
     '/admin/refills',
     '/admin/inventory/finished-product',
+    '/admin/inventory/refill-product',
     '/admin/inventory/workin-progress',
+    '/admin/quicksales/sales-walkin',
+    '/admin/quicksales/sales-refill',
     '/admin/accounts',
     '/admin/reports/inventory-report',
     '/admin/reports/sales-report',
     '/admin/accounts/:id',
     '/admin/quick-sales',
     '/admin/order-summary/:orderId',
+    '/admin/order-summary-refill/:orderId',
     '/admin/settings/:adminId'
 ];
   
@@ -32,11 +36,12 @@ export const isAdminRoute = (path) => {
 export const staffRoutes = [
     '/staff/dashboard',
     // '/staff/home',
-    '/staff/products',
+    '/staff/inventory/finished-product',
+    '/staff/inventory/refill-product',
     '/staff/direct-orders',
     '/staff/direct-orders/details/:productId',
-    '/staff/walkin',
-    '/staff/refill',
+    '/staff/walkins',
+    '/staff/refills',
     '/staff/payment',
     '/staff/orders',
     '/staff/orders-pickup',
@@ -44,7 +49,10 @@ export const staffRoutes = [
     '/staff/orders-pickup/details/:orderId',
     '/staff/settings/:staffId',
     '/staff/order-summary/:orderId',
+    '/staff/order-summary-refill/:orderId',
     '/staff/accounts',
+    '/staff/quicksales/sales-walkin',
+    '/staff/quicksales/sales-refill',
 ];
   
 export const isStaffRoute = (path) => {

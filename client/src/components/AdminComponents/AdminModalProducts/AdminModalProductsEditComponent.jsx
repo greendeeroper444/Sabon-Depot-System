@@ -20,9 +20,8 @@ function AdminModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
         expirationDate: '',
         updatedAt: '',
         description: '',
-        refillPrice: '',
     });
-    const [inputValue, setInputValue] = useState(0); 
+    const [inputValue, setInputValue] = useState(''); 
     const [categories, setCategories] = useState([]);
     const [sizeUnits, setSizeUnits] = useState([]);
 
@@ -75,7 +74,10 @@ function AdminModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
     const handleEditProductAdmin = async(e) => {
         e.preventDefault();
 
-        const updatedQuantity = parseInt(dataInput.quantity) + parseInt(inputValue);
+        const updatedQuantity = 
+        (!isNaN(parseInt(dataInput.quantity)) ? parseInt(dataInput.quantity) : 0) +
+        (!isNaN(parseInt(inputValue)) ? parseInt(inputValue) : 0);
+
 
         const formData = new FormData();
         formData.append('productCode', dataInput.productCode);
@@ -91,7 +93,6 @@ function AdminModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
         formData.append('expirationDate', dataInput.expirationDate);
         formData.append('updatedAt', dataInput.updatedAt);
         formData.append('description', dataInput.description);
-        formData.append('refillPrice', dataInput.refillPrice);
         if(selectedImage && typeof selectedImage !== 'string'){
             formData.append('image', selectedImage);
         }
@@ -113,7 +114,7 @@ function AdminModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
 
     useEffect(() => {
         if(selectedProduct){
-            const {productCode, productName, category, price, quantity, stockLevel, imageUrl, discountPercentage, discountedDate, productSize, sizeUnit, expirationDate, updatedAt, description, refillPrice} = selectedProduct;
+            const {productCode, productName, category, price, quantity, stockLevel, imageUrl, discountPercentage, discountedDate, productSize, sizeUnit, expirationDate, updatedAt, description} = selectedProduct;
             setDataInput({
                 productCode: productCode || '',
                 productName: productName || '',
@@ -128,7 +129,6 @@ function AdminModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
                 expirationDate: expirationDate ? new Date(expirationDate).toISOString().split('T')[0] : '',
                 updatedAt: updatedAt ? new Date(updatedAt).toISOString().split('T')[0] : '',
                 description: description || '',
-                refillPrice: refillPrice || ''
             });
             setSelectedImage(imageUrl || null);
         }
@@ -208,157 +208,166 @@ function AdminModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
                     </div>
                 </div>
             </div>
-            <div className='label-text'>
-                <label>PRODUCT CODE:</label>
-                <div>
-                    <input type="text"
-                    value={dataInput.productCode}
-                    onChange={(e) => setDataInput({...dataInput, productCode: e.target.value})}
-                    />
+            <div className='admin-modal-products-edit-inputs'>
+                <div className='label-text'>
+                    <div>
+                        <label>PRODUCT CODE:</label>
+                        <input type="text"
+                        value={dataInput.productCode}
+                        onChange={(e) => setDataInput({...dataInput, productCode: e.target.value})}
+                        />
+                    </div>
                 </div>
-            </div>
-            <div className='label-text'>
-                <label>PRODUCT NAME:</label>
-                <div>
-                    <input type="text"
-                    value={dataInput.productName}
-                    onChange={(e) => setDataInput({...dataInput, productName: e.target.value})}
-                    />
+                <div className='label-text'>
+                    <div>
+                        <label>PRODUCT NAME:</label>
+                        <input type="text"
+                        value={dataInput.productName}
+                        onChange={(e) => setDataInput({...dataInput, productName: e.target.value})}
+                        />
+                    </div>
                 </div>
-            </div>
-            <div className='label-text'>
-                <label>CATEGORY:</label>
-                <div>
-                    <select
-                    value={dataInput.category}
-                    onChange={handleCategoryChange}
-                    >
-                        <option value="">Select Category</option>
-                        {
-                            categories && categories.length > 0 ? (
-                                categories.map((category) => (
-                                    <option key={category._id} value={category.categoryName}>
-                                        {category.categoryName}
+                <div className='label-text'>
+                   
+                    <div>
+                        <label>CATEGORY:</label>
+                        <select
+                        value={dataInput.category}
+                        onChange={handleCategoryChange}
+                        >
+                            <option value="">Select Category</option>
+                            {
+                                categories && categories.length > 0 ? (
+                                    categories.map((category) => (
+                                        <option key={category._id} value={category.categoryName}>
+                                            {category.categoryName}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option value="">No categories available</option>
+                                )
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div className='label-text'>
+                    <div>
+                        <label>SIZE UNIT:</label>
+                        <select
+                        value={dataInput.sizeUnit}
+                        onChange={handleSizeUnitChange}
+                        >
+                            <option value="">Select size unit</option>
+                            {
+                                sizeUnits.map((unit, index) => (
+                                    <option key={index} value={unit.sizeUnit}>
+                                        {unit.sizeUnit}
                                     </option>
                                 ))
-                            ) : (
-                                <option value="">No categories available</option>
-                            )
-                        }
-                    </select>
-                </div>
-            </div>
-            <div className='label-text'>
-                <label>SIZE UNIT:</label>
-                <div>
-                    <select
-                    value={dataInput.sizeUnit}
-                    onChange={handleSizeUnitChange}
-                    >
-                        <option value="">Select size unit</option>
-                        {
-                            sizeUnits.map((unit, index) => (
-                                <option key={index} value={unit.sizeUnit}>
-                                    {unit.sizeUnit}
-                                </option>
-                            ))
-                        }
-                    </select>
-                </div>
-            </div>
-            {
-                dataInput.sizeUnit && (
-                    <div className='label-text'>
-                        <label>PRODUCT SIZE:</label>
-                        <div>
-                            {renderSizeInputOptions()}
-                        </div>
+                            }
+                        </select>
                     </div>
-                )
-            }
-            <div className='label-text'>
-                <label>PRICE:</label>
-                <div>
-                    <input type="number"
-                    value={dataInput.price}
-                    onChange={(e) => setDataInput({...dataInput, price: e.target.value})}
-                    />
                 </div>
             </div>
-            <div className='label-text'>
-                <label>UPDATE QUANTITY:</label>
-                <div>
-                    <input
+
+
+            <div className='admin-modal-products-edit-inputs'>
+                {
+                    dataInput.sizeUnit && (
+                        <div className='label-text'>
+                            <div>
+                                <label>PRODUCT SIZE:</label>
+                                {renderSizeInputOptions()}
+                            </div>
+                        </div>
+                    )
+                }
+                <div className='label-text'>
+                    <div>
+                        <label>PRICE:</label>
+                        <input type="number"
+                        value={dataInput.price}
+                        onChange={(e) => setDataInput({...dataInput, price: e.target.value})}
+                        />
+                    </div>
+                </div>
+                <div className='label-text'>
+                    <div>
+                        <label>UPDATE QUANTITY:</label>
+                        <input
                         type="number"
                         value={inputValue}
                         onChange={(e) => {
-                            const newValue = Number(e.target.value);
-                            setInputValue(newValue);
+                            const newValue = e.target.value;
+                            if(newValue === ''){
+                                setInputValue('');
+                            } else{
+                                setInputValue(newValue);
+                            }
                         }}
-                    />
+                        />
+                    </div>
+                    {/* <span>
+                        = {dataInput.quantity + inputValue}
+                    </span> */}
+                    <span>
+                        = {dataInput.quantity + (inputValue ? Number(inputValue) : 0)}
+                    </span>
+
                 </div>
-                <span>
-                    = {dataInput.quantity + inputValue}
-                </span>
+                <div className='label-text'>
+                    <div>
+                        <label>UPDATE STOCK LEVEL:</label>
+                        <input type="number"
+                        value={dataInput.stockLevel} 
+                        onChange={(e) => setDataInput({...dataInput, stockLevel: e.target.value})}
+                        />
+                    </div>
+                </div>
             </div>
+
+           <div className='admin-modal-products-edit-inputs'>
             <div className='label-text'>
-                <label>UPDATE STOCK LEVEL:</label>
-                <div>
-                    <input type="number"
-                    value={dataInput.stockLevel} 
-                    onChange={(e) => setDataInput({...dataInput, stockLevel: e.target.value})}
-                    />
+                    <div>
+                        <label>DISCOUNT PERCENTAGE:</label>
+                        <input
+                            type="number"
+                            value={dataInput.discountPercentage}
+                            onChange={(e) => setDataInput({...dataInput, discountPercentage: e.target.value})}
+                        />
+                    </div>
                 </div>
-            </div>
-            <div className='label-text'>
-                <label>DISCOUNT PERCENTAGE:</label>
-                <div>
-                    <input
-                        type="number"
-                        value={dataInput.discountPercentage}
-                        onChange={(e) => setDataInput({...dataInput, discountPercentage: e.target.value})}
-                    />
+                <div className='label-text'>
+                    <div>
+                        <label>DISCOUNT END:</label>
+                        <input
+                        type="date"
+                        value={dataInput.discountedDate}
+                        onChange={(e) => setDataInput({...dataInput, discountedDate: e.target.value})}
+                        />
+                    </div>
                 </div>
-            </div>
-            <div className='label-text'>
-                <label>DISCOUNT END:</label>
-                <div>
-                    <input
-                    type="date"
-                    value={dataInput.discountedDate}
-                    onChange={(e) => setDataInput({...dataInput, discountedDate: e.target.value})}
-                    />
+                <div className='label-text'>
+                    <div>
+                        <label>EXPIRATION DATE:</label>
+                        <input
+                        type="date"
+                        value={dataInput.expirationDate}
+                        onChange={(e) => setDataInput({...dataInput, expirationDate: e.target.value})}
+                        />
+                    </div>
                 </div>
-            </div>
-            <div className='label-text'>
-                <label>EXPIRATION DATE:</label>
-                <div>
-                    <input
-                    type="date"
-                    value={dataInput.expirationDate}
-                    onChange={(e) => setDataInput({...dataInput, expirationDate: e.target.value})}
-                    />
+                <div className='label-text'>
+                    <div>
+                        <label>UPLOADED DATE:</label>
+                        <input
+                        type="date"
+                        value={dataInput.updatedAt}
+                        onChange={(e) => setDataInput({...dataInput, updatedAt: e.target.value})}
+                        />
+                    </div>
                 </div>
-            </div>
-            <div className='label-text'>
-                <label>UPLOADED DATE:</label>
-                <div>
-                    <input
-                    type="date"
-                    value={dataInput.updatedAt}
-                    onChange={(e) => setDataInput({...dataInput, updatedAt: e.target.value})}
-                    />
-                </div>
-            </div>
-            <div className='label-text'>
-                <label>REFILL PRICE:</label>
-                <div>
-                    <input type="number"
-                    value={dataInput.refillPrice} 
-                    onChange={(e) => setDataInput({...dataInput, refillPrice: e.target.value})} 
-                    />
-                </div>
-            </div>
+           </div>
             <div className='label-text'>
                 <label>DESCRIPTION:</label>
                 <div>

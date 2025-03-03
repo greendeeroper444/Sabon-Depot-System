@@ -7,10 +7,10 @@ export default function UseCartRefillHook(staff) {
     const [cartItemsRefill, setCartItemsRefill] = useState([]);
     const navigate = useNavigate();
 
-    const handleAddToCartClickRefill = async(staffId, productId, quantity) => {
+    const handleAddToCartClickRefill = async(staffId, productId, volume) => {
         if(!staff){
             toast.error('Please login first before adding a product to the cart');
-            navigate('/admin-staff-login');
+            navigate('/staff-staff-login');
             return;
         }
 
@@ -18,7 +18,7 @@ export default function UseCartRefillHook(staff) {
             const response = await axios.post('/staffCartRefill/addProductToCartRefillStaff', {
                 staffId,
                 productId,
-                quantity,
+                volume,
             });
             if(response.status === 200){
                 setCartItemsRefill(response.data);

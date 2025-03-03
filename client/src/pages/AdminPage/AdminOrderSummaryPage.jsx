@@ -19,22 +19,15 @@ function AdminOrderSummaryPage() {
             let response;
     
             if(orderId){
-                response = await axios.get(`/adminOrderWalkin/getOrderWalkinAdmin/${orderId}`)
-                .catch(async () => {
-                    return await axios.get(`/adminOrderRefill/getOrderRefillAdmin/${orderId}`);
-                });
-            } else {
-                response = await axios.get(`/adminOrderWalkin/getOrderWalkinAdmin`)
-                .catch(async () => {
-                    
-                    return await axios.get(`/adminOrderRefill/getOrderRefillAdmin`);
-                });
+                response = await axios.get(`/adminOrderWalkin/getOrderWalkinAdmin/${orderId}`);
+            } else{
+                response = await axios.get(`/adminOrderWalkin/getOrderWalkinAdmin`);
             }
     
             setOrders(orderId ? [response.data.order] : response.data.orders);
         } catch (error) {
             console.error(error);
-            toast.error('Failed to fetch orders.');
+            toast.error('Failed to fetch walkin orders.');
         }
     };
     

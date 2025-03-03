@@ -10,19 +10,22 @@ function AdminDirectOrdersWalkinContentComponent({
     setCartItems, 
     admin,
     selectedSizeUnit, 
-    selectedProductSize
+    selectedProductSize,
+    categories,
+    selectedCategory
 }) {
-    const {products, loading, error} = UseFetchProductsHook();
+    const {products, loading, error} = UseFetchProductsHook(selectedCategory);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
     //filter products based on selected sizeUnit and productSize
     const filteredProducts = products.filter(product => {
-        //apply sizeUnit and productSize filter if selected
+        const categoryMatches = selectedCategory ? product.category === selectedCategory : true;
         const sizeUnitMatches = selectedSizeUnit ? product.sizeUnit === selectedSizeUnit : true;
         const productSizeMatches = selectedProductSize ? product.productSize === selectedProductSize : true;
-        return sizeUnitMatches && productSizeMatches;
+        return categoryMatches && sizeUnitMatches && productSizeMatches;
     });
+    
 
 
     const totalItems = filteredProducts.length;
@@ -63,7 +66,7 @@ function AdminDirectOrdersWalkinContentComponent({
                                         <span>{product.category}</span>
                                         <br />
                                         <span>{product.quantity.toLocaleString('en-US')}</span> quantity
-                                        <h6>{`₱ ${finalPrice}`}</h6>
+                                        <h6>{`₱${finalPrice}`}</h6>
                                     </div>
                                 </div>
                                 <div className='view-details'>

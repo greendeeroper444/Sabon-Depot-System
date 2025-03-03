@@ -78,6 +78,10 @@ import AdminQuickSalesPage from '../pages/AdminPage/AdminQuickSalesPage'
 import AdminOrderSummaryPage from '../pages/AdminPage/AdminOrderSummaryPage'
 import AdminSettingsPage from '../pages/AdminPage/AdminSettingsPage'
 import AdminOrdersPickupDetailsPage from '../pages/AdminPage/AdminOrdersPickupDetails'
+import AdminRefillProductPage from '../pages/AdminPage/InventoryPage/AdminRefillProductPage'
+import AdminQuickSalesWalkinPage from '../pages/AdminPage/QuickSalesPage/AdminQuickSalesWalkinPage'
+import AdminQuickSalesRefillPage from '../pages/AdminPage/QuickSalesPage/AdminQuickSalesRefillPage'
+import AdminOrderSummaryRefillPage from '../pages/AdminPage/AdminOrderSummaryRefillPage'
 
 function AdminRoutes({adminToggleSidebar, adminCloseSidebar, adminSidebarVisible}) {
     const location = useLocation()
@@ -116,12 +120,16 @@ function AdminRoutes({adminToggleSidebar, adminCloseSidebar, adminSidebarVisible
                 <Route path='/admin/refills' element={<AdminOrdersRefillPage />} />
                 <Route path='/admin/inventory/finished-product' element={<AdminFinishedProductPage />} />
                 <Route path='/admin/inventory/workin-progress' element={<AdminWorkinProgressPage />} />
+                <Route path='/admin/inventory/refill-product' element={<AdminRefillProductPage />} />
+                <Route path='/admin/quicksales/sales-walkin' element={<AdminQuickSalesWalkinPage />} />
+                <Route path='/admin/quicksales/sales-refill' element={<AdminQuickSalesRefillPage />} />
                 <Route path='/admin/accounts' element={<AdminAccountsPage />} />
                 <Route path='/admin/reports/inventory-report' element={<InventoryReport />} />
                 <Route path='/admin/reports/sales-report' element={<SalesReport />} />
                 <Route path='/admin/accounts/:id' element={<AdminAccountDetails />} />
                 <Route path='/admin/quick-sales' element={<AdminQuickSalesPage />} />
                 <Route path='/admin/order-summary/:orderId' element={<AdminOrderSummaryPage />} />
+                <Route path='/admin/order-summary-refill/:orderId' element={<AdminOrderSummaryRefillPage />} />
                 <Route path='/admin/settings/:adminId' element={<AdminSettingsPage />} />
             </Routes>
         </div>

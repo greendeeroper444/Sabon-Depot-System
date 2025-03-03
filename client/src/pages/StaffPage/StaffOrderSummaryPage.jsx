@@ -19,24 +19,18 @@ function StaffOrderSummaryPage() {
             let response;
     
             if(orderId){
-                response = await axios.get(`/staffOrderWalkin/getOrderWalkinStaff/${orderId}`)
-                .catch(async () => {
-                    return await axios.get(`/staffOrderRefill/getOrderRefillStaff/${orderId}`);
-                });
-            } else {
-                response = await axios.get(`/staffOrderWalkin/getOrderWalkinStaff`)
-                .catch(async () => {
-                    
-                    return await axios.get(`/staffOrderRefill/getOrderRefillStaff`);
-                });
+                response = await axios.get(`/staffOrderWalkin/getOrderWalkinStaff/${orderId}`);
+            } else{
+                response = await axios.get(`/staffOrderWalkin/getOrderWalkinStaff`);
             }
     
             setOrders(orderId ? [response.data.order] : response.data.orders);
         } catch (error) {
             console.error(error);
-            toast.error('Failed to fetch orders.');
+            toast.error('Failed to fetch walkin orders.');
         }
     };
+    
     
     useEffect(() => {
         if(orderId){

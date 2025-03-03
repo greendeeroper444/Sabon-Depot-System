@@ -1,85 +1,99 @@
-const ProductModel = require("../../models/ProductModel");
 const StaffAuthModel = require("../../models/StaffModels/StaffAuthModel");
 const StaffCartRefillModel = require("../../models/StaffModels/StaffCartRefillModel");
 const jwt = require('jsonwebtoken');
-const WorkinProgressProductModel = require("../../models/WorkinProgressProductModel");
+const RefillProductModel = require("../../models/RefillProductModel");
+const mongoose = require('mongoose')
 
 const addProductToCartRefillStaff = async(req, res) => {
-    const {productId, quantity} = req.body;
+    const {productId, volume, sizeUnit} = req.body;
     const token = req.cookies.token;
 
     if(!token){
-        return res.json({
-            error: 'Unauthorized - Missing token',
+        return res.json({ 
+            error: 'Unauthorized - Missing token' 
         });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, {}, async(err, decodedToken) => {
         if(err){
-            return res.json({
-                error: 'Unauthorized - Invalid token',
+            return res.json({ 
+                error: 'Unauthorized - Invalid token' 
             });
         }
 
         const staffId = decodedToken.id;
-
         const staffExists = await StaffAuthModel.findById(staffId);
         if(!staffExists){
-            return res.json({
-                error: 'Staff does not exist',
+            return res.json({ 
+                error: 'Staff does not exist' 
             });
         }
 
         try {
-            let product = await ProductModel.findById(productId);
-            let productModel = 'Product';
-
+            const product = await RefillProductModel.findById(productId);
             if(!product){
-                product = await WorkinProgressProductModel.findById(productId);
-                productModel = 'WorkinProgressProduct';
-            }
-
-            if(!product){
-                return res.json({
-                    error: 'Product does not exist in both ProductModel and WorkinProgressProductModel',
+                return res.json({ 
+                    error: 'Product does not exist' 
                 });
             }
 
-            // const refillPrice = product.discountedPrice || product.refillPrice;
-            const refillPrice = product.refillPrice;
+            //convert volume based on selected unit
+            let convertedVolume = volume;
+            if(sizeUnit === 'Milliliter'){
+                convertedVolume = volume / 1000; //convert ml to L
+            } else if(sizeUnit === 'Gallon'){
+                convertedVolume = volume * 3.785; //convert Gallon to L
+            }
 
-            let existingCartItem = await StaffCartRefillModel.findOne({
-                staffId,
-                productId,
-                productModel,
-            });
+            //check stock availability
+            if(product.volume < convertedVolume){
+                return res.status(400).json({ 
+                    error: 'Not enough stock available' 
+                });
+            }
 
+            const price = product.price;
+            let existingCartItem = await StaffCartRefillModel.findOne({staffId, productId});
+
+            let unit = sizeUnit || 'Liter';
+            let productSize = `${volume}${unit === 'Liter' ? 'L' : unit === 'Milliliter' ? 'ml' : 'Gal'}`;
+            
             if(existingCartItem){
-                //if item exists, update the quantity and refillPrice
-                existingCartItem.quantity += quantity;
-                existingCartItem.refillPrice = refillPrice;
+                //ensure stock is enough for new total volume
+                if(product.volume < convertedVolume + existingCartItem.volume){
+                    return res.status(400).json({ 
+                        error: 'Not enough stock available' 
+                    });
+                }
+
+                //update existing cart item
+                existingCartItem.volume += convertedVolume;
+                existingCartItem.productSize = `${existingCartItem.volume}${sizeUnit === 'Liter' ? 'L' : sizeUnit === 'Milliliter' ? 'ml' : 'Gal'}`;
                 existingCartItem.updatedAt = Date.now();
                 await existingCartItem.save();
-            } else{
+            } else {
                 await new StaffCartRefillModel({
                     staffId,
                     productId,
-                    productModel,
-                    quantity,
-                    refillPrice,
+                    volume: convertedVolume,
+                    price,
                     productName: product.productName,
-                    sizeUnit: product.sizeUnit,
-                    productSize: product.productSize,
+                    productSizeLiter: product.volume,
+                    sizeUnit: sizeUnit,
+                    productSize: productSize, 
                 }).save();
             }
 
-            const updatedCart = await StaffCartRefillModel.find({staffId}).populate('productId');
+            //deduct volume from product stock
+            product.volume -= convertedVolume;
+            await product.save();
 
+            const updatedCart = await StaffCartRefillModel.find({staffId}).populate('productId');
             res.json(updatedCart);
         } catch (error) {
             console.log(error);
-            return res.status(500).json({
-                message: 'Server error',
+            return res.status(500).json({ 
+                message: 'Server error' 
             });
         }
     });
@@ -87,41 +101,132 @@ const addProductToCartRefillStaff = async(req, res) => {
 
 
 
-// const getProductCartRefillStaff = async(req, res) => {
-//     const staffId = req.params.staffId;
-//     const token = req.cookies.token;
 
-//     if(!token){
-//         return res.json({ 
-//             error: 'Unauthorized - Missing token' 
-//         });
-//     }
 
-//     jwt.verify(token, process.env.JWT_SECRET, {}, async(err, decodedToken) => {
-//         if(err){
-//             return res.json({ 
-//                 error: 'Unauthorized - Invalid token' 
-//             });
-//         }
+const updateProductVolumeRefillStaff = async(req, res) => {
+    const {cartItemId, volume, sizeUnit} = req.body;
 
-//         if(decodedToken.id !== staffId){
-//             return res.json({ 
-//                 error: 'Unauthorized - Invalid customer ID'
-//             });
-//         }
+    if(!cartItemId || !mongoose.Types.ObjectId.isValid(cartItemId)){
+        return res.status(400).json({ 
+            success: false, message: 'Invalid cart item ID' 
+        });
+    }
 
-//         try {
-//             //fetch cart items for the customer
-//             const cartItems = await StaffCartRefillModel.find({staffId}).populate('productId');
-//             res.json(cartItems);
-//         } catch (error) {
-//             console.log(error);
-//             return res.status(500).json({ 
-//                 message: 'Server error' 
-//             });
-//         }
-//     });
-// };
+    if(!volume || volume < 1){
+        return res.status(400).json({ 
+            success: false,
+             message: 'Volume must be at least 1' 
+            });
+    }
+
+    try {
+        console.log('Update Request:', req.body);
+
+        const cartItem = await StaffCartRefillModel.findById(cartItemId);
+        if(!cartItem){
+            return res.status(404).json({ 
+                success: false, message: 'Cart item not found' 
+            });
+        }
+
+        const product = await RefillProductModel.findById(cartItem.productId);
+        if(!product){
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Product not found' 
+            });
+        }
+
+        //convert volume based on sizeUnit
+        let convertedVolume = volume;
+        let productSize = `${volume}${sizeUnit === 'Mililiter' ? 'ml' : sizeUnit === 'Gallon' ? 'gal' : 'L'}`;
+
+        if(sizeUnit === 'Mililiter'){
+            convertedVolume = volume / 1000;
+        } else if(sizeUnit === 'Gallon'){
+            convertedVolume = volume * 3.785;
+        }
+
+        const previousVolume = cartItem.volume || 0;
+        const volumeDifference = convertedVolume - previousVolume;
+
+        //check if enough stock is available
+        if(volumeDifference > product.volume){
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Not enough stock available' 
+            });
+        }
+
+        //update product stock
+        product.volume -= volumeDifference;
+        await product.save();
+
+        //update cart item
+        cartItem.volume = convertedVolume;
+        cartItem.productSize = productSize;
+        cartItem.sizeUnit = sizeUnit;
+        cartItem.updatedAt = new Date();
+        await cartItem.save();
+
+        res.json({ 
+            success: true, 
+            message: 'Volume updated successfully', 
+            item: cartItem 
+        });
+    } catch (error) {
+        console.error('Error updating volume:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Internal server error' 
+        });
+    }
+};
+
+const updateProductPriceRefillStaff = async(req, res) => {
+    const {cartItemId, price} = req.body;
+
+    if(!cartItemId || !mongoose.Types.ObjectId.isValid(cartItemId)){
+        return res.status(400).json({ 
+            success: false, message: 'Invalid cart item ID' 
+        });
+    }
+
+    if(!price || price < 1){
+        return res.status(400).json({ 
+            success: false, message: 'Price must be at least 1' 
+        });
+    }
+
+    try {
+        const cartItem = await StaffCartRefillModel.findById(cartItemId);
+        if(!cartItem){
+            return res.status(404).json({ 
+                success: false, message: 'Cart item not found' 
+            });
+        }
+
+        //update cart item price
+        cartItem.price = price;
+        cartItem.updatedAt = new Date();
+        await cartItem.save();
+
+        res.json({ 
+            success: true, 
+            message: 'Price updated successfully', 
+            item: cartItem 
+        });
+    } catch (error) {
+        console.error('Error updating price:', error);
+        res.status(500).json({ 
+            success: false, message: 'Internal server error' 
+        });
+    }
+};
+
+
+
+
 const getProductCartRefillStaff = async(req, res) => {
     const staffId = req.params.staffId;
     const token = req.cookies.token;
@@ -162,28 +267,38 @@ const getProductCartRefillStaff = async(req, res) => {
     });
 };
 
-const removeProductFromCartRefillStaff= async(req, res) => {
+const removeProductFromCartRefillStaff = async(req, res) => {
     const {cartItemId} = req.params;
     const token = req.cookies.token;
 
     if(!token){
-        return res.json({ 
-            error: 'Unauthorized - Missing token' 
-        });
+        return res.json({ error: 'Unauthorized - Missing token' });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, {}, async(err, decodedToken) => {
         if(err){
-            return res.json({ 
-                error: 'Unauthorized - Invalid token' 
-            });
+            return res.json({error: 'Unauthorized - Invalid token'});
         }
 
         try {
+            const cartItem = await StaffCartRefillModel.findById(cartItemId);
+            if(!cartItem){
+                return res.status(404).json({ 
+                    success: false, message: 'Cart item not found' 
+                });
+            }
+
+            const product = await RefillProductModel.findById(cartItem.productId);
+            if(product){
+                product.volume += cartItem.volume;
+                await product.save();
+            }
+
             await StaffCartRefillModel.findByIdAndDelete(cartItemId);
+
             res.json({ 
-                success: true,
-                message: 'Product removed from cart' 
+                success: true, 
+                message: 'Product removed from cart, stock restored' 
             });
         } catch (error) {
             console.log(error);
@@ -197,38 +312,6 @@ const removeProductFromCartRefillStaff= async(req, res) => {
 
 
 
-const updateProductQuantityRefillStaff = async(req, res) => {
-    const {cartItemId, quantity} = req.body;
-
-    try {
-        //find the cart item and update the quantity
-        const updatedItem = await StaffCartRefillModel.findByIdAndUpdate(
-            cartItemId,
-            {quantity},
-            {new: true}
-        );
-
-        if(!updatedItem){
-            return res.status(404).json({ 
-                success: false,
-                message: 'Cart item not found'
-            });
-        }
-
-        res.json({ 
-            success: true, 
-            message: 'Quantity updated successfully', 
-            item: updatedItem 
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ 
-            success: false, 
-            message: 'Internal server error' 
-        });
-    }
-};
-
 
 // const updateProductSizeUnitAndProductSizeStaff 
 
@@ -236,5 +319,6 @@ module.exports = {
     addProductToCartRefillStaff,
     getProductCartRefillStaff,
     removeProductFromCartRefillStaff,
-    updateProductQuantityRefillStaff
+    updateProductVolumeRefillStaff,
+    updateProductPriceRefillStaff
 }

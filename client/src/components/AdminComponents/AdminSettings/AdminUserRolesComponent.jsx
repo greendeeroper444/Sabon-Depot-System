@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import '../../../CSS/AdminCSS/AdminSettings/AdminUserRolesComponent.css';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 function AdminUserRolesComponent() {
     const [isUserModalOpen, setIsUserModalOpen] = useState(false);
@@ -64,20 +65,22 @@ function AdminUserRolesComponent() {
     const handleUserSubmit = async() => {
         try {
             const userData = userType === 'Customer' 
-                ? {firstName, middleInitial, lastName, emailAddress, contactNumber, clientType}
-                : {fullName, emailAddress, contactNumber};
+                ? {firstName, middleInitial, lastName, emailAddress, contactNumber, clientType, password}
+                : {fullName, emailAddress, contactNumber, password};
 
             if(isEditing){
                 await axios.put(`/adminUsers/updateUserAccount/${editingUserId}`, {
                     userType,
                     ...userData,
                 });
+                toast.success(`${userType} account updated successfully`);
             } else{
                 await axios.post('/adminUsers/addUserAccount', {
                     userType,
                     password,
                     ...userData,
                 });
+                toast.success(`${userType} account created successfully`);
             }
             fetchAccounts(userType);
             setIsUserModalOpen(false);
@@ -91,6 +94,7 @@ function AdminUserRolesComponent() {
             await axios.delete(`/adminUsers/deleteUserAccount/${id}`, {
                 data: {userType},
             });
+            toast.success(`${userType} account deleted successfully`);
             fetchAccounts(userType);
         } catch (error) {
             console.error('Error deleting user:', error);
@@ -219,7 +223,16 @@ function AdminUserRolesComponent() {
                                 className='user-role-input'
                                 />
                             </label>
-                            {
+                            <label>
+                                Password:
+                                <input
+                                type="text"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className='user-role-input'
+                                />
+                            </label>
+                            {/* {
                                 !isEditing && (
                                     <label>
                                         Password:
@@ -231,7 +244,7 @@ function AdminUserRolesComponent() {
                                         />
                                     </label>
                                 )
-                            }
+                            } */}
                             {
                                 userType === 'Customer' && (
                                     <label>

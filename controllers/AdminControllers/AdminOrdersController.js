@@ -56,7 +56,7 @@ const approveOrderAdmin = async(req, res) => {
         await NotificationModel.create({
             customerId: order.customerId,
             orderId: order._id,
-            message: `Your order ${order._id} has been confirmed.`,
+            message: `Your order ${order.orderNumber} has been confirmed.`,
         });
 
         res.json(order);
@@ -142,7 +142,7 @@ const updateOrderStatusAdmin = async(req, res) => {
                 await NotificationModel.create({
                     customerId: order.customerId,
                     orderId: order._id,
-                    message: `Your order ${order._id} has been picked up.`,
+                    message: `Your order ${order.orderNumber} has been picked up.`,
                 });
             }
         
@@ -153,7 +153,7 @@ const updateOrderStatusAdmin = async(req, res) => {
                 await NotificationModel.create({
                 customerId: order.customerId,
                 orderId: order._id,
-                message: `Your order ${order._id} is ready.`,
+                message: `Your order ${order.orderNumber} is ready to pick up.`,
                 });
             }else if(status === 'isShipped'){
                 updateFields.shippedDate = Date.now();
@@ -161,7 +161,7 @@ const updateOrderStatusAdmin = async(req, res) => {
                 await NotificationModel.create({
                 customerId: order.customerId,
                 orderId: order._id,
-                message: `Your order ${order._id} has been shipped.`,
+                message: `Your order ${order.orderNumber} has been shipped.`,
                 });
             } else if(status === 'isOutForDelivery'){
                 updateFields.outForDeliveryDate = Date.now();
@@ -169,7 +169,7 @@ const updateOrderStatusAdmin = async(req, res) => {
                 await NotificationModel.create({
                 customerId: order.customerId,
                 orderId: order._id,
-                message: `Your order ${order._id} is out for delivery.`,
+                message: `Your order ${order.orderNumber} is out for delivery.`,
                 });
             } else if(status === 'isDelivered'){
                 updateFields.deliveredDate = Date.now();
@@ -182,7 +182,7 @@ const updateOrderStatusAdmin = async(req, res) => {
                 await NotificationModel.create({
                 customerId: order.customerId,
                 orderId: order._id,
-                message: `Your order ${order._id} has been delivered.`,
+                message: `Your order ${order.orderNumber} has been delivered.`,
                 });
             }
 
@@ -254,7 +254,7 @@ const declineOrderAdmin = async(req, res) => {
         await NotificationModel.create({
             customerId: order.customerId,
             orderId: order._id,
-            message: `Your order ${order._id} has been declined.`,
+            message: `Your order ${order.orderNumber} has been declined.`,
         });
 
         res.json(updatedOrder);

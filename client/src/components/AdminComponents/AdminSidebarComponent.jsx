@@ -22,6 +22,7 @@ function AdminSidebarComponent() {
     const [isDropdownOpenInventory, setIsDropdownOpenInventory] = useState(false);
     const [isDropdownOpenReports, setIsDropdownOpenReports] = useState(false);
     const [isDropdownTransaction, setIsDropdownTransaction] = useState(false);
+    const [isDropdownOpenQuickSales, setIsDropdownOpenQuickSales] = useState(false);
 
     const toggleDropdownTransaction = () => {
         setIsDropdownTransaction(!isDropdownTransaction);
@@ -33,6 +34,10 @@ function AdminSidebarComponent() {
     const toggleDropdownReports = () => {
         setIsDropdownOpenReports(!isDropdownOpenReports);
     };
+    const toggleDropdownQuickSales = () => {
+        setIsDropdownOpenQuickSales(!isDropdownOpenQuickSales);
+    };
+
   return (
     <div className='admin-sidebar original-admin-sidebar'>
         <div className='admin-sidebar-header'>
@@ -79,7 +84,7 @@ function AdminSidebarComponent() {
                     <span>Orders</span>
                 </NavLink>
             </li> */}
-            {/* <li>
+            <li>
                 <div className='admin-sidebar-item' onClick={toggleDropdownInventory}>
                     <img src={inventoryIcon} alt="Inventory" className='sidebar-icon' />
                     <span>Inventory</span>
@@ -91,26 +96,45 @@ function AdminSidebarComponent() {
                             <NavLink to='/admin/inventory/finished-product' className='admin-sidebar-item' activeClassName='active'>
                                 <span>Finished Goods</span>
                             </NavLink>
-                            <NavLink to='/admin/inventory/workin-progress' className='admin-sidebar-item' activeClassName='active'>
-                                <span>Initial Products</span>
+                            <NavLink to='/admin/inventory/refill-product' className='admin-sidebar-item' activeClassName='active'>
+                                <span>Refill Products</span>
                             </NavLink>
                         </div>
                     )
                 }
-            </li> */}
-            <li>
+            </li>
+            {/* <li>
                 <NavLink to='/admin/inventory/finished-product' className='admin-sidebar-item' activeClassName='active'>
                     <img src={inventoryIcon} alt="Inventory" className='sidebar-icon' />
                     <img src={inventoryIcon} alt="Inventory" className='sidebar-icon-active' />
                     <span>Inventory</span>
                 </NavLink>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
                 <NavLink to='/admin/quick-sales' className='admin-sidebar-item' activeClassName='active'>
                     <img src={quickSalesIcon} alt="Accounts" className='sidebar-icon' />
                     <img src={quickSalesIconWhite} alt="Acounts" className='sidebar-icon-active' />
                     <span>Quick Sales</span>
                 </NavLink>
+            </li> */}
+             <li>
+                <div className='admin-sidebar-item' onClick={toggleDropdownQuickSales}>
+                    <img src={quickSalesIcon} alt="Inventory" className='sidebar-icon' />
+                    <span>Sales</span>
+                    <FontAwesomeIcon icon={isDropdownOpenQuickSales ? faAngleUp : faAngleDown} />
+                </div>
+                {
+                    isDropdownOpenQuickSales && (
+                        <div className='admin-sidebar-item-dropdown'>
+                            <NavLink to='/admin/quicksales/sales-walkin' className='admin-sidebar-item' activeClassName='active'>
+                                <span>Sales Walkin</span>
+                            </NavLink>
+                            <NavLink to='/admin/quicksales/sales-refill' className='admin-sidebar-item' activeClassName='active'>
+                                <span>Sales Refill</span>
+                            </NavLink>
+                        </div>
+                    )
+                }
             </li>
             <li>
                 <NavLink to='/admin/accounts' className='admin-sidebar-item' activeClassName='active'>

@@ -168,6 +168,8 @@ function AdminNavbarComponent({adminToggleSidebar}) {
                                                                 onClick={() => handleNotificationClick(index, 'order')}
                                                                 >
                                                                     {notification.message}
+                                                                    <br />
+                                                                    <small>{new Date(notification.createdAt).toLocaleString()}</small>
                                                                 </Link>
                                                             </div>
                                                         );

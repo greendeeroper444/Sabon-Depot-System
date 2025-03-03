@@ -4,34 +4,34 @@ import IsDiscountValidUtils from "./IsDiscountValidUtils";
 
 export default function CalculateFinalRefillPriceUtils(customer, product) {
     const shouldShowDiscount = IsDiscountValidUtils(customer) && product.discountPercentage > 0;
-    const refillPrice = shouldShowDiscount ? product.discountedPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : product.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    const price = shouldShowDiscount ? product.discountedPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : product.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-    return {shouldShowDiscount, refillPrice};
+    return {shouldShowDiscount, price};
 }
 
 
 
 export function calculateFinalRefillPriceModal(cartItem) {
-    const refillPrice = cartItem.refillPrice 
-    ? cartItem.refillPrice 
-    : cartItem.productId.refillPrice;
+    const price = cartItem.price 
+    ? cartItem.price 
+    : cartItem.productId.price;
 
-    return refillPrice;
+    return price;
 }
 
 export function calculateFinalRefillPriceModalStaff(cartItem) {
-    const refillPrice = cartItem.refillPrice 
-    ? cartItem.refillPrice 
-    : cartItem.productId.refillPrice;
+    const price = cartItem.price 
+    ? cartItem.price 
+    : cartItem.productId.price;
 
-    return refillPrice;
+    return price;
 }
 
 
 export function calculateSubtotalModalCustomer(cartItems) {
     const subtotal = cartItems.reduce((acc, cartItem) => {
-        const refillPrice = calculateFinalRefillPriceModal(cartItem);
-        return acc + (refillPrice * cartItem.quantity);
+        const price = calculateFinalRefillPriceModal(cartItem);
+        return acc + (price * cartItem.quantity);
     }, 0);
 
     return subtotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -39,8 +39,8 @@ export function calculateSubtotalModalCustomer(cartItems) {
 
 export function calculateSubtotalModal(cartItems) {
     const rawSubtotal = cartItems.reduce((acc, cartItem) => {
-        const refillPrice = calculateFinalRefillPriceModal(cartItem);
-        return acc + refillPrice * cartItem.quantity;
+        const price = calculateFinalRefillPriceModal(cartItem);
+        return acc + price * cartItem.quantity;
     }, 0);
 
     //initialize discount rate
@@ -125,8 +125,8 @@ export function calculateSubtotalModalStaff(cartItems){
     }
 
     const rawSubtotal = cartItems.reduce((acc, cartItem) => {
-        const refillPrice = calculateFinalRefillPriceModalStaff(cartItem);
-        return acc + refillPrice * cartItem.quantity;
+        const price = calculateFinalRefillPriceModalStaff(cartItem);
+        return acc + price * cartItem.quantity;
     }, 0);
 
     let discountRate = 0;

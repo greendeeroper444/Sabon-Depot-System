@@ -54,7 +54,7 @@ const uploadProductAdmin = async(req, res) => {
             const {
                 productCode, productName, category, price, quantity, stockLevel,
                 discountPercentage = 0, discountedDate, sizeUnit, productSize,
-                expirationDate, description, refillPrice
+                expirationDate, description
             } = req.body;
 
             const imageUrl = req.file ? req.file.path : '';
@@ -125,7 +125,6 @@ const uploadProductAdmin = async(req, res) => {
                     uploaderType: 'Admin',
                     expirationDate,
                     description,
-                    refillPrice,
                     createdBy: adminExists.fullName,
                     batch,
                 });
@@ -323,8 +322,7 @@ const editProductAdmin = async(req, res) => {
                 sizeUnit, 
                 productSize, 
                 expirationDate,
-                description,
-                refillPrice
+                description
             } = req.body;
             const imageUrl = req.file ? req.file.path : '';
 
@@ -372,7 +370,7 @@ const editProductAdmin = async(req, res) => {
             product.category = category;
             product.price = price;
             product.discountedPrice = discountedPrice;
-            product.quantity = quantity;
+            product.quantity = !isNaN(quantity) ? Number(quantity) : 0;
             product.stockLevel = stockLevel;
             product.discountPercentage = discountPercentage;
             product.sizeUnit = sizeUnit;
@@ -380,7 +378,6 @@ const editProductAdmin = async(req, res) => {
             product.expirationDate = expirationDate;
             product.discountedDate = discountedDate;
             product.description = description;
-            product.refillPrice = refillPrice;
             product.batch = batch;
             if(imageUrl){
                 product.imageUrl = imageUrl;

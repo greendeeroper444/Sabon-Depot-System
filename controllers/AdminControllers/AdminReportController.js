@@ -146,7 +146,6 @@ const getSalesReport = async(
             //update the existing sales report for today
             salesReport.unitsSold += unitsSold;
             salesReport.totalRevenue += product.price * unitsSold;
-            salesReport.totalRevenue += product.refillPrice * unitsSold;
             salesReport.inventoryLevel = product.quantity;
         } else{
             //create a new sales report entry for today
@@ -161,7 +160,6 @@ const getSalesReport = async(
                 unitsSold,
                 totalRevenue: product.price * unitsSold,
                 initialQuantity: product.quantity + unitsSold,
-                refillPrice: product.refillPrice,
                 reportDate: today,
             });
         }

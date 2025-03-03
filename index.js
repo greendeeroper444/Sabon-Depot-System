@@ -47,6 +47,7 @@ app.use('/staffCartRefill', require('./routers/StaffRouters/StaffCartRefillRoute
 app.use('/staffOrderOverview', require('./routers/StaffRouters/StaffOrderOverviewRouter'));
 app.use('/staffAccounts', require('./routers/StaffRouters/StaffAccountsRouter'));
 app.use('/staffNotifications', require('./routers/StaffRouters/StaffNotificationRouter'));
+app.use('/staffRefillProduct', require('./routers/StaffRouters/StaffRefillProductRouter'));
 
 //admin routes
 app.use('/adminAuth', require('./routers/AdminRouters/AdminAuthRouter'));

@@ -1,0 +1,83 @@
+.admin-refill-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+  
+.admin-refill-container .controls{
+    display: flex;
+    gap: 10px;
+}
+  
+.admin-refill-container .dropdown,
+.admin-refill-container .deducted-btn{
+    padding: 5px 10px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+  
+.admin-refill-container .product-grid{
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.product-display{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+.cylinder{
+    width: 80px;
+    height: 120px;
+    background: lightgray;
+    border-radius: 50% / 10%;
+    position: relative;
+    border: 1px solid black;
+    overflow: hidden;
+    align-items: flex-end;
+    justify-content: center;
+    background: #f0f0f0;
+    margin: 0 auto;
+}
+.cylinder::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: lightgray;
+    border-radius: 50%;
+    border: 1px solid black;
+    z-index: 2;
+}
+.water{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 0% 0% 0 0;
+}
+  
+
+.product-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.product-table th, .product-table td{
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center !important;
+}
+
+.product-table th{
+    background-color: #f9f9f9;
+    padding: 10px;
+    text-align: center;
+    font-weight: 600;
+}

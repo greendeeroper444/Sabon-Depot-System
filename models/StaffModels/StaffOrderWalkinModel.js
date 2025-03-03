@@ -44,7 +44,6 @@ const StaffOrderWalkinSchema = new mongoose.Schema({
             sizeUnit:  String,
             productSize: String,
             description: String,
-            refillPrice: Number,
             createdProductBy: String,
             createdProductAt: Date,
             updatedProductBy: String,

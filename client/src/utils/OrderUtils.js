@@ -32,9 +32,15 @@ export const getEstimatedDeliveryDate = (orderDate) => {
     return `${formatDate(startDate)} - ${formatDate(endDate)}, ${year}`;
 };
 
-export const orderDate = (dateString) => {
+export const orderDate2 = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'});
+};
+
+export const orderDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'})} 
+        ${date.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true})}`;
 };
 
 // export const monthDay = (dateString) => {
@@ -61,6 +67,6 @@ export const getStatusClassCustomer = (statusKey, order) => {
     if(statusKey === 'isDelivered' && order.isDelivered && !order.isOutForDelivery) return 'active';
     if(statusKey === 'isOutForDelivery' && order.isOutForDelivery && !order.isDelivered) return 'active';
     if(statusKey === 'isShipped' && order.isShipped && !order.isOutForDelivery) return 'active';
-    if(statusKey === 'isPending' && !order.isReady) return 'active';
+    if(statusKey === 'isPending' && !order.isReady && !order.isPickedUp) return 'active';
     return '';
 };

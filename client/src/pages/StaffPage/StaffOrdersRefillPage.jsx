@@ -87,7 +87,7 @@ function StaffOrdersRefillPage() {
     const aggregateOrders = (orders) => {
         return orders.map(order => {
             const aggregatedItems = order.items.map(item => item.productName).join(', ');
-            const totalQuantity = order.items.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            const totalQuantity = order.items.reduce((sum, item) => sum + (item.volume || 0), 0);
             const totalPrice = order.items.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 0)), 0);
             return {
                 ...order,
@@ -149,7 +149,7 @@ function StaffOrdersRefillPage() {
                     {/* <th><input type='checkbox' onClick={handleCheckboxClick} /></th> */}
                     <th>Orders Id</th>
                     <th>Item</th>
-                    <th>Qty</th>
+                    <th>Volume</th>
                     <th>Size</th>
                     <th>Price</th>
                     <th>Subtotal</th>
@@ -162,14 +162,14 @@ function StaffOrdersRefillPage() {
                     currentOrders.length > 0 ? currentOrders.map(order => (
                         order.items.map(item => (
                             <tr key={item.productId} className='clickable-row'
-                                onClick={() => navigate(`/staff/order-summary/${order._id}`)}>
+                                onClick={() => navigate(`/staff/order-summary-refill/${order._id}`)}>
                                 {/* <td><input type='checkbox' onClick={handleCheckboxClick} /></td> */}
                                 <td>{order.orderNumber}</td>
                                 <td>{item.productName || "N/A"}</td>
-                                <td>{item.quantity || 0}</td>
+                                <td>{item.volume || 0}</td>
                                 <td>{item.productSize}</td>
                                 <td>{`₱${(item.price ?? 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
-                                <td>{`₱${((item.price ?? 0) * (item.quantity ?? 0)).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
+                                <td>{`₱${((item.price ?? 0) * (item.volume ?? 0)).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</td>
                                 <td>{orderDate(order.createdAt)}</td>
                             </tr>
                         ))

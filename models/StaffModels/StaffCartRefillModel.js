@@ -13,34 +13,23 @@ const StaffCartRefillSchema = new mongoose.Schema({
     productId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        refPath: 'productModel',
-    },
-    productModel: {
-        type: String,
-        required: true,
-        enum: ['Product', 'WorkinProgressProduct'],
+        ref: 'RefillProduct',
     },
     productName: {type: String}, 
-    quantity: {
+    volume: {
         type: Number,
     },
-    refillPrice: { 
+    price: { 
         type: Number 
     },
     sizeUnit: {
-        type: String, //example: 'Milliliters (mL)', 'Liters (L)', 'Gallons (gal)'
+        type: String, //Mililiter, Liter, Gallon
+        default: 'Liter'
     },
     productSize: {
-        type: String, //example: '500 mL', '1 L', etc.
+        type: String, //like 200ml, 2l, 1gal
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date
-    }
-});
+}, {timestamps: true});
 
 
 const StaffCartRefillModel = mongoose.model('StaffCartRefill', StaffCartRefillSchema);

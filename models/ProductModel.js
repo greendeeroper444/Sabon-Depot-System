@@ -76,9 +76,6 @@ const ProductSchema = new mongoose.Schema({
     description: {
         type: String,
     },
-    refillPrice: {
-        type: Number
-    },
     createdBy: {
         type: String,
         required: true,

@@ -1,157 +1,158 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import '../../CSS/StaffCSS/StaffSidebar.css';
-import homeIcon from '../../assets/staff/stafficons/staff-sidebar-home-icon.png';
-import homeIconColor from '../../assets/staff/stafficons/staff-sidebar-home-icon-color.png';
-import priceIcon from '../../assets/staff/stafficons/staff-sidebar-prices-icon.png';
-import priceIconColor from '../../assets/staff/stafficons/staff-sidebar-prices-icon-color.png';
-import orderIcon from '../../assets/staff/stafficons/staff-sidebar-orders-icon.png';
-import orderIconColor from '../../assets/staff/stafficons/staff-sidebar-orders-icon-color.png';
-import settingIcon from '../../assets/staff/stafficons/staff-sidebar-settings-icon.png';
-import settingIconColor from '../../assets/staff/stafficons/staff-sidebar-settings-icon-color.png'
+import React, { useContext, useState } from 'react'
+import '../../CSS/AdminCSS/AdminSidebar.css';
 import { NavLink } from 'react-router-dom';
-import { StaffContext } from '../../../contexts/StaffContexts/StaffAuthContext';
-import paymentIcon from '../../assets/staff/stafficons/staff-sidebar-payment-icon.png';
-import paymentIconColor from '../../assets/staff/stafficons/staff-sidebar-payment-icon-color.png';
+import logoDepot from '../../assets/icons/logo-depot-3-circle.png';
+import dashboardIcon from '../../assets/admin/adminicons/admin-sidebar-dashboard-icon.png';
+import dashboardIconWhite from '../../assets/admin/adminicons/admin-sidebar-dashboard-icon-white.png';
+import ordersIcon from '../../assets/admin/adminicons/admin-sidebar-orders-icon.png';
+import inventoryIcon from '../../assets/admin/adminicons/admin-sidebar-inventory-report-icon.png';
 import accountsIcon from '../../assets/admin/adminicons/admin-sidebar-accounts-icon.png';
-import accountsIconGreen from '../../assets/admin/adminicons/admin-sidebar-accounts-icon-green.png';
-
+import accountsIconWhite from '../../assets/admin/adminicons/admin-sidebar-accounts-icon-white.png';
+import reportsIcon from '../../assets/admin/adminicons/admin-sidebar-inventory-report-icon.png';
+import quickSalesIcon from '../../assets/admin/adminicons/quick-sales.png';
+import quickSalesIconWhite from '../../assets/admin/adminicons/quick-sales-white.png';
+import settingsIcon from '../../assets/admin/adminicons/settings.png';
+import settingsIconWhite from '../../assets/admin/adminicons/settings-white.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
+import { StaffContext } from '../../../contexts/StaffContexts/StaffAuthContext';
 
 function StaffSidebarComponent() {
     const {staff} = useContext(StaffContext);
-    const [isTransactionOpen, setTransactionOpen] = useState(false);
-    const [activeItem, setActiveItem] = useState('');
-    const menuRef = useRef(null);
+    const [isDropdownOpenInventory, setIsDropdownOpenInventory] = useState(false);
+    const [isDropdownOpenReports, setIsDropdownOpenReports] = useState(false);
+    const [isDropdownTransaction, setIsDropdownTransaction] = useState(false);
+    const [isDropdownOpenQuickSales, setIsDropdownOpenQuickSales] = useState(false);
 
-    //close submenu when the outside clicked
-    const handleClickOutside = (event) => {
-        if(menuRef.current && !menuRef.current.contains(event.target)) {
-            setTransactionOpen(false);
-            setActiveItem('');
-        }
+    const toggleDropdownTransaction = () => {
+        setIsDropdownTransaction(!isDropdownTransaction);
+    };
+    const toggleDropdownInventory = () => {
+        setIsDropdownOpenInventory(!isDropdownOpenInventory);
     };
 
-    useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-
-    const handleItemClick = (item) => {
-        setActiveItem(item);
-        toggleTransactionMenu();
+    const toggleDropdownReports = () => {
+        setIsDropdownOpenReports(!isDropdownOpenReports);
+    };
+    const toggleDropdownQuickSales = () => {
+        setIsDropdownOpenQuickSales(!isDropdownOpenQuickSales);
     };
 
-    const toggleTransactionMenu = () => {
-        setTransactionOpen(prevState => !prevState);
-        setActiveItem(prevState => prevState === 'TRANSACTION' ? '' : 'TRANSACTION');
-    };
-
-    return (
-        <div className='staff-sidebar'>
-            <ul className='staff-sidebar-list' ref={menuRef}>
-                <li>
-                    <NavLink to='/staff/dashboard' className='staff-sidebar-item' activeClassName='active'>
-                        <img src={homeIcon} alt="Home" className='sidebar-icon' />
-                        <img src={homeIconColor} alt="Home" className='sidebar-icon-active' />
-                        <div>Dashboard</div>
-                        <span className='tooltip'>Dashboard</span>
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to='/staff/products' className='staff-sidebar-item' activeClassName='active'>
-                        <img src={priceIcon} alt="Products" className='sidebar-icon' />
-                        <img src={priceIconColor} alt="Products" className='sidebar-icon-active' />
-                        <div>FINISHED GOODS</div>
-                        <span className='tooltip'>FINISHED GOODS</span>
-                    </NavLink>
-                </li>
-
-                <li>
-                    <NavLink to='/staff/direct-orders' className='staff-sidebar-item' activeClassName='active'>
-                        <img src={paymentIcon} alt="Payment" className='sidebar-icon' />
-                        <img src={paymentIconColor} alt="Payment" className='sidebar-icon-active' />
-                        <div>ORDERS</div>
-                        <span className='tooltip'>ORDERS</span>
-                    </NavLink>
-                </li>
-            
-                {/* dropside menu */}
-                <li>
-                    <div
-                    className={`staff-sidebar-item ${activeItem === 'TRANSACTION' ? 'active' : ''}`}
-                    onClick={toggleTransactionMenu}
-                    >
-                        <img src={orderIcon} alt="Orders" className='sidebar-icon' />
-                        <img src={orderIconColor} alt="Orders" className='sidebar-icon-active' />
-                        <div>TRANSACTION</div>
-                    </div>
-                    {
-                        isTransactionOpen && (
-                            <ul className='staff-sidebar-submenu'>
-                                <li>
-                                    <NavLink
-                                    to='/staff/orders'
-                                    className='staff-sidebar-submenu-item'
-                                    activeClassName='active'
-                                    onClick={() => handleItemClick('TRANSACTION')}
-                                    >
-                                        <div>ONLINE</div>
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink
-                                    to='/staff/orders-pickup'
-                                    className='staff-sidebar-submenu-item'
-                                    activeClassName='active'
-                                    onClick={() => handleItemClick('TRANSACTION')}
-                                    >
-                                        <div>PICK UP</div>
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink
-                                    to='/staff/walkin'
-                                    className='staff-sidebar-submenu-item'
-                                    activeClassName='active'
-                                    onClick={() => handleItemClick('TRANSACTION')}
-                                    >
-                                        <div>WALK IN</div>
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink
-                                    to='/staff/refill'
-                                    className='staff-sidebar-submenu-item'
-                                    activeClassName='active'
-                                    onClick={() => handleItemClick('TRANSACTION')}
-                                    >
-                                        <div>REFILL</div>
-                                    </NavLink>
-                                </li>
-                            </ul>
-                        )
-                    }
-                </li>
-                <li>
-                    <NavLink to='/staff/accounts' className='staff-sidebar-item' activeClassName='active'>
-                        <img src={accountsIcon} alt="Accounts" className='sidebar-icon' />
-                        <img src={accountsIconGreen} alt="Acounts" className='sidebar-icon-active' />
-                        <div>ACCOUNTS</div>
-                        <span className='tooltip'>ACCOUNTS</span>
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to={`/staff/settings/${staff?._id}`} className='staff-sidebar-item' activeClassName='active'>
-                        <img src={settingIcon} alt="Settings" className='sidebar-icon' />
-                        <img src={settingIconColor} alt="Orders" className='sidebar-icon-active' />
-                        <div>SETTINGS</div>
-                        <span className='tooltip'>SETTINGS</span>
-                    </NavLink>
-                </li>
-            </ul>
+  return (
+    <div className='admin-sidebar original-admin-sidebar'>
+        <div className='admin-sidebar-header'>
+            <img src={logoDepot} alt="Logo" className='logo' />
+            <h2>Staff</h2>
         </div>
-    )
+        <ul className='admin-sidebar-list'>
+            <li>
+                <NavLink to='/staff/dashboard' className='admin-sidebar-item' activeClassName='active'>
+                    <img src={dashboardIcon} alt="Dashboard" className='sidebar-icon' />
+                    <img src={dashboardIconWhite} alt="Orders" className='sidebar-icon-active' />
+                    <span>Dashboard</span>
+                </NavLink>
+            </li>
+            <li>
+                <div className='admin-sidebar-item' onClick={toggleDropdownTransaction}>
+                    <img src={ordersIcon} alt="Inventory" className='sidebar-icon' />
+                    <span>Transaction</span>
+                    <FontAwesomeIcon icon={isDropdownTransaction ? faAngleUp : faAngleDown} />
+                </div>
+                {
+                    isDropdownTransaction && (
+                        <div className='admin-sidebar-item-dropdown'>
+                            <NavLink to='/staff/orders' className='admin-sidebar-item' activeClassName='active'>
+                                <span>Online</span>
+                            </NavLink>
+                            <NavLink to='/staff/orders-pickup' className='admin-sidebar-item' activeClassName='active'>
+                                <span>Pick Up</span>
+                            </NavLink>
+                            <NavLink to='/staff/walkins' className='admin-sidebar-item' activeClassName='active'>
+                                <span>Walkin</span>
+                            </NavLink>
+                            <NavLink to='/staff/refills' className='admin-sidebar-item' activeClassName='active'>
+                                <span>Refill</span>
+                            </NavLink>
+                        </div>
+                    )
+                }
+            </li>
+            {/* <li>
+                <NavLink to='/admin/orders' className='admin-sidebar-item' activeClassName='active'>
+                    <img src={ordersIcon} alt="Orders" className='sidebar-icon' />
+                    <img src={ordersIconWhite} alt="Orders" className='sidebar-icon-active' />
+                    <span>Orders</span>
+                </NavLink>
+            </li> */}
+            <li>
+                <div className='admin-sidebar-item' onClick={toggleDropdownInventory}>
+                    <img src={inventoryIcon} alt="Inventory" className='sidebar-icon' />
+                    <span>Inventory</span>
+                    <FontAwesomeIcon icon={isDropdownOpenInventory ? faAngleUp : faAngleDown} />
+                </div>
+                {
+                    isDropdownOpenInventory && (
+                        <div className='admin-sidebar-item-dropdown'>
+                            <NavLink to='/staff/inventory/finished-product' className='admin-sidebar-item' activeClassName='active'>
+                                <span>Finished Goods</span>
+                            </NavLink>
+                            <NavLink to='/staff/inventory/refill-product' className='admin-sidebar-item' activeClassName='active'>
+                                <span>Refill Products</span>
+                            </NavLink>
+                        </div>
+                    )
+                }
+            </li>
+            {/* <li>
+                <NavLink to='/admin/inventory/finished-product' className='admin-sidebar-item' activeClassName='active'>
+                    <img src={inventoryIcon} alt="Inventory" className='sidebar-icon' />
+                    <img src={inventoryIcon} alt="Inventory" className='sidebar-icon-active' />
+                    <span>Inventory</span>
+                </NavLink>
+            </li> */}
+            {/* <li>
+                <NavLink to='/admin/quick-sales' className='admin-sidebar-item' activeClassName='active'>
+                    <img src={quickSalesIcon} alt="Accounts" className='sidebar-icon' />
+                    <img src={quickSalesIconWhite} alt="Acounts" className='sidebar-icon-active' />
+                    <span>Quick Sales</span>
+                </NavLink>
+            </li> */}
+             <li>
+                <div className='admin-sidebar-item' onClick={toggleDropdownQuickSales}>
+                    <img src={quickSalesIcon} alt="Inventory" className='sidebar-icon' />
+                    <span>Sales</span>
+                    <FontAwesomeIcon icon={isDropdownOpenQuickSales ? faAngleUp : faAngleDown} />
+                </div>
+                {
+                    isDropdownOpenQuickSales && (
+                        <div className='admin-sidebar-item-dropdown'>
+                            <NavLink to='/staff/quicksales/sales-walkin' className='admin-sidebar-item' activeClassName='active'>
+                                <span>Sales Walkin</span>
+                            </NavLink>
+                            <NavLink to='/staff/quicksales/sales-refill' className='admin-sidebar-item' activeClassName='active'>
+                                <span>Sales Refill</span>
+                            </NavLink>
+                        </div>
+                    )
+                }
+            </li>
+            <li>
+                <NavLink to='/staff/accounts' className='admin-sidebar-item' activeClassName='active'>
+                    <img src={accountsIcon} alt="Accounts" className='sidebar-icon' />
+                    <img src={accountsIconWhite} alt="Acounts" className='sidebar-icon-active' />
+                    <span>Accounts</span>
+                </NavLink>
+            </li>
+            <li>
+                <NavLink to={`/staff/settings/${staff?._id}`} className='admin-sidebar-item' activeClassName='active'>
+                    <img src={settingsIcon} alt="Accounts" className='sidebar-icon' />
+                    <img src={settingsIconWhite} alt="Acounts" className='sidebar-icon-active' />
+                    <span>Settings</span>
+                </NavLink>
+            </li>
+        </ul>
+    </div>
+  )
 }
 
 export default StaffSidebarComponent

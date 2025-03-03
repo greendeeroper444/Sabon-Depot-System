@@ -221,19 +221,20 @@
     cursor: pointer;
 }
 
-.customer-navbar .notification-item.unread{
-    background-color: #f5f5f5;
-    color: #555;
+.notification-item.unread{
+    background-color: #ccc;
 }
+
+.notification-item.read{
+    background-color: white;
+}
+
 
 .customer-navbar .notification-item p{
     margin: 0;
     font-weight: bold;
 }
 
-.customer-navbar .notification-item.unread p{
-    font-weight: normal;
-}
 
 .customer-navbar .notification-item:last-child{
     border-bottom: none;

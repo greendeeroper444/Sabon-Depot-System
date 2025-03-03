@@ -159,8 +159,6 @@ function AdminQuickSalesPage() {
                     cartItems={cartItemsRefill}
                     setCartItems={setCartItemsRefill}
                     admin={admin}
-                    selectedSizeUnit={selectedSizeUnit}
-                    selectedProductSize={selectedProductSize}
                     />
                 )
             }

@@ -11,9 +11,6 @@ const TotalSaleSchema = new mongoose.Schema({
     price: {
         type: Number,
     },
-    refillPrice: {
-        type: Number,
-    },
     totalProduct: {
         type: Number,
         default: 0,
@@ -49,9 +46,6 @@ const BestSellingSchema = new mongoose.Schema({
         required: true,
     },
     price: {
-        type: Number,
-    },
-    refillPrice: {
         type: Number,
     },
     totalProduct: {

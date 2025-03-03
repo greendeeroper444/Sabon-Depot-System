@@ -80,7 +80,6 @@ const addOrderWalkinStaff = async(req, res) => {
                     sizeUnit: item.productId.sizeUnit,
                     productSize: item.productId.productSize,
                     desciption: item.productId.description,
-                    refillPrice: item.productId.refillPrice,
                     createdProductBy: item.productId.createdBy,
                     createdProductAt: item.productId.createdAt,
                     updatedProductBy: item.productId.updatedBy,

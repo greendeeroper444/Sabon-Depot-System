@@ -360,6 +360,34 @@
 }
 
 
+/* refillcss */
+.refill-product-list{
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.refill-product-item{
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    width: 200px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.refill-shop-products-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
 @media (max-width: 768px){
     .customer-shop-content-container .shop-products-content ul{
         grid-template-columns: repeat(1, 1fr);

@@ -7,36 +7,105 @@ import Draggable from 'react-draggable';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { calculateFinalRefillPriceModalStaff, calculateSubtotalModalStaff } from '../../../../utils/StaffCalculateFinalRefillPriceUtils';
+import { calculateFinalRefillPriceModalStaff, calculateSubtotalModalStaff } from '../../../../utils/StaffCalculateVolume';
 
 function StaffModalRefillingContentDetailsComponent({isOpen, onClose, cartItems, setCartItems, staffId}) {
     const navigate = useNavigate();
     const [cashReceived, setCashReceived] = useState('');
     const [changeTotal, setChangeTotal] = useState(0);
+    const [sizeUnits, setSizeUnits] = useState('Liter');
 
-    //handle quantity change
-    const handleQuantityChange = async(cartItemId, newQuantity) => {
-        if(newQuantity < 1) return;
-
+    const handleVolumeChange = (cartItemId, newVolume) => {
+        if(newVolume === '' || newVolume < 1){
+            //allow empty string for backspacing
+            const updatedCartItems = cartItems.map(item =>
+                item._id === cartItemId ? {...item, volume: newVolume} : item
+            );
+            setCartItems(updatedCartItems);
+            return;
+        }
+    
         try {
-            const response = await axios.put('/staffCartRefill/updateProductQuantityRefillStaff', {
+            axios.put('/staffCartRefill/updateProductVolumeRefillStaff', {
                 cartItemId,
-                quantity: newQuantity,
+                volume: parseFloat(newVolume) || 1, //convert when sending to backend
+                sizeUnit: sizeUnits[cartItemId] || 'Liter'
+            }).then(response => {
+                if(response.data.success){
+                    const updatedCartItems = cartItems.map(item =>
+                        item._id === cartItemId
+                            ? {...item, volume: parseFloat(newVolume) || 1}
+                            : item
+                    );
+                    setCartItems(updatedCartItems);
+                } else {
+                    toast.error(response.data.message || 'Failed to update volume.');
+                }
             });
+        } catch (error) {
+            console.error('Error updating volume:', error);
+            toast.error('Failed to update volume. Please try again.');
+        }
+    };
+    
+    const handlePriceChange = (cartItemId, newPrice) => {
+        if(newPrice === '' || newPrice < 1){
+            const updatedCartItems = cartItems.map(item =>
+                item._id === cartItemId ? {...item, price: newPrice} : item
+            );
+            setCartItems(updatedCartItems);
+            return;
+        }
+    
+        try {
+            axios.put('/staffCartRefill/updateProductPriceRefillStaff', {
+                cartItemId,
+                price: parseFloat(newPrice) || 0
+            }).then(response => {
+                if(response.data.success){
+                    const updatedCartItems = cartItems.map(item =>
+                        item._id === cartItemId
+                            ? {...item, price: parseFloat(newPrice) || 0}
+                            : item
+                    );
+                    setCartItems(updatedCartItems);
+                } else {
+                    toast.error(response.data.message || 'Failed to update price.');
+                }
+            });
+        } catch (error) {
+            console.error('Error updating price:', error);
+            toast.error('Failed to update price. Please try again.');
+        }
+    };
+    
 
+    const handleSizeUnitChange = async(cartItemId, newUnit) => {
+        setSizeUnits(prev => ({...prev, [cartItemId]: newUnit}));
+    
+        try {
+            const response = await axios.put('/staffCartRefill/updateProductVolumeRefillStaff', {
+                cartItemId,
+                volume: cartItems.find(item => item._id === cartItemId)?.volume || 1,
+                sizeUnit: newUnit
+            });
+    
             if(response.data.success){
                 const updatedCartItems = cartItems.map(item =>
-                    item._id === cartItemId ? { ...item, quantity: newQuantity } : item
+                    item._id === cartItemId
+                    ? {...item, sizeUnit: newUnit}
+                    : item
                 );
                 setCartItems(updatedCartItems);
             } else {
-                toast.error(response.data.message || 'Failed to update quantity.');
+                toast.error(response.data.message || 'Failed to update size unit.');
             }
         } catch (error) {
-            console.error('Error updating quantity:', error);
-            toast.error('Failed to update quantity. Please try again.');
+            console.error('Error updating size unit:', error);
+            toast.error('Failed to update size unit. Please try again.');
         }
     };
+    
 
     //handle checkout
     const handleCheckout = async() => {
@@ -47,37 +116,43 @@ function StaffModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
 
         try {
             const {finalSubtotal} = calculateSubtotalModalStaff(cartItems);
+            const parsedTotalAmount = parseFloat(finalSubtotal.replace(/,/g, ''));
+
+            if(isNaN(parsedTotalAmount) || parsedTotalAmount <= 0){
+                toast.error('Invalid total amount!');
+                return;
+            }
 
             const orderData = {
                 items: cartItems.map((item) => ({
                     productId: item.productId._id,
                     productName: item.productId.productName,
-                    quantity: item.quantity,
-                    refillPrice: item.refillPrice,
+                    volume: item.volume,
+                    price: item.price,
+                    productSize: item.productSize,
+                    sizeUnit: item.sizeUnit,
                 })),
-                // totalAmount: calculateSubtotalModalAdmin(cartItems),
-                totalAmount: parseFloat(finalSubtotal.replace(/,/g, '')),
-                cashReceived,
-                changeTotal,
+                totalAmount: parsedTotalAmount,
+                cashReceived: Number(cashReceived) || 0,
+                changeTotal: Number(changeTotal) || 0,
             };
 
             const response = await axios.post('/staffOrderRefill/addOrderRefillStaff', orderData);
 
-            if(response.data.success){
+            if(response?.data?.success){
                 const orderId = response.data.orderId;
                 toast.success(`Order created successfully! Order ID: ${orderId}`);
                 setCartItems([]);
                 onClose();
-                navigate(`/staff/order-summary/${orderId}`);
+                navigate(`/staff/order-summary-refill/${orderId}`);
             } else {
-                toast.error(response.data.message || 'Failed to create the order.');
+                toast.error(response?.data?.message || 'Failed to create the order.');
             }
         } catch (error) {
             console.error('Order creation error:', error);
             toast.error('Failed to create the order. Please try again.');
         }
     };
-
 
     //delete function
     const handleCartItemDelete = async(cartItemId) => {
@@ -97,7 +172,11 @@ function StaffModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
     const fetchCartItems = async() => {
         try {
             const response = await axios.get(`/staffCartRefill/getProductCartRefillStaff/${staffId}`);
-            setCartItems(response.data);
+            // setCartItems(response.data);
+            setCartItems(response.data.map(item => ({
+                ...item,
+                price: item.price || 0
+            })));
         } catch (error) {
             console.error(error);
         }
@@ -147,25 +226,45 @@ function StaffModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
                             cartItems.map((cartItem) =>
                                 cartItem.productId ? (
                                     <div key={cartItem._id} className='customer-modal-content-group'>
-                                        <img
-                                            src={`${cartItem.productId.imageUrl}`}
-                                            alt=''
-                                            className='customer-modal-product-items'
-                                        />
+                                        <div className='cylinder'>
+                                            <div
+                                            className='water'
+                                            style={{
+                                            height: `${(cartItem.productId.volume/ cartItem.productId.maximumSizeLiter) * 100}%`,
+                                            background: cartItem.productId.color
+                                            }}
+                                            ></div>
+                                        </div>
+
                                         <div className='customer-modal-product-items-content'>
                                             <span>{cartItem.productId.productName}</span>
-                                            <p style={{ fontSize: '12px' }}>{cartItem.productId.productSize}</p>
-
+                                            {/* <p style={{ fontSize: '12px' }}>{cartItem.productId.productSize} Liter</p> */}
+                                            <p  style={{ fontSize: '12px' }}>{cartItem.productId.volume} Liter</p>
                                             <p>
-                                                <input
-                                                    type='number'
-                                                    value={cartItem.quantity}
-                                                    min='1'
-                                                    onChange={(e) => handleQuantityChange(cartItem._id, parseInt(e.target.value))}
-                                                    className='input-quantity-update'
-                                                />
+                                            <input
+                                            type='text'
+                                            value={cartItem.volume}
+                                            onChange={(e) => handleVolumeChange(cartItem._id, e.target.value)}
+                                            className='input-quantity-update'
+                                            />
+
+                                                {/* select size unit */}
+                                                <select
+                                                    value={sizeUnits[cartItem._id] || 'Liter'}
+                                                    onChange={(e) => handleSizeUnitChange(cartItem._id, e.target.value)}
+                                                >
+                                                    <option value="Liter">Liter</option>
+                                                    <option value="Mililiter">Mililiter</option>
+                                                    <option value="Gallon">Gallon</option>
+                                                </select>
                                                 <span>X</span>
-                                                <span>{`₱ ${cartItem.refillPrice}`}</span>
+                                                <input
+                                                type='text'
+                                                value={cartItem.price || ''} 
+                                                onChange={(e) => handlePriceChange(cartItem._id, e.target.value)}
+                                                className='input-price-display'
+                                                />
+
                                             </p>
                                         </div>
                                         <span
@@ -184,8 +283,7 @@ function StaffModalRefillingContentDetailsComponent({isOpen, onClose, cartItems,
                 <div className='customer-modal-footer'>
                     <div className='products-subtotal'>
                         <span>Subtotal:</span>
-                        <span>₱ {Array.isArray(cartItems) ? cartItems.reduce((total, cartItem) => total + (cartItem.quantity * cartItem.refillPrice), 0) : 0}</span>
-
+                        <span>₱ {calculateSubtotalModalStaff(cartItems).rawSubtotal}</span>
                     </div>
                     {
                         calculateSubtotalModalStaff(cartItems).discountRate > 0 && (
@@ -234,15 +332,16 @@ StaffModalRefillingContentDetailsComponent.propTypes = {
         PropTypes.shape({
             _id: PropTypes.string.isRequired,
             productId: PropTypes.shape({
-                refillPrice: PropTypes.number,
+                finalPrice: PropTypes.number,
                 price: PropTypes.number.isRequired,
                 imageUrl: PropTypes.string.isRequired,
                 productName: PropTypes.string.isRequired,
                 sizeUnit: PropTypes.string.isRequired,
-                productSize: PropTypes.string.isRequired,
+                productSize2: PropTypes.string.isRequired,
+                volume: PropTypes.number.isRequired,
             }).isRequired,
-            quantity: PropTypes.number.isRequired,
-            refillPrice: PropTypes.number,
+            volume: PropTypes.number.isRequired,
+            finalPrice: PropTypes.number,
         })
     ).isRequired,
     setCartItems: PropTypes.func.isRequired,

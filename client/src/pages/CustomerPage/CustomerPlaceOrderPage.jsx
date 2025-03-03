@@ -149,7 +149,7 @@ import '../../CSS/CustomerCSS/CustomerPlaceOrder.css';
 import invoiceIcon from '../../assets/placeorder/placeorder-invoice-icon.png';
 import { useParams } from 'react-router-dom';
 import UseOrderDetailsHook from '../../hooks/CustomerHooks/UseOrderDetailsHook';
-import { formatDate, formatFullDate, getEstimatedDeliveryDate, getStatusClassCustomer, orderDate } from '../../utils/OrderUtils';
+import { formatDate, formatFullDate, getEstimatedDeliveryDate, getStatusClassCustomer, orderDate, orderDate2 } from '../../utils/OrderUtils';
 import InvoiceModal from '../../components/CustomerComponents/InvoiceModal';
 
 function CustomerPlaceOrderPage() {
@@ -205,7 +205,7 @@ function CustomerPlaceOrderPage() {
                     order.paymentMethod === 'Pick Up' ? (
                         <p className='estimated-delivery'>
                             <span role='img' aria-label='calendar'>📅</span>
-                            Pick up on: {orderDate(order.pickupDate)} at {order.pickupTime}
+                            Pick up on: {orderDate2(order.pickupDate)} at {order.pickupTime}
                         </p>
                     ) : (
                         <p className='estimated-delivery'>

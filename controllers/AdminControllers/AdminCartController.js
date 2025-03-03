@@ -45,7 +45,7 @@ const addProductToCartAdmin= async(req, res) => {
                 });
             }
 
-            const finalPrice = product.refillPrice || product.price;
+            const finalPrice = product.price || product.price;
 
             let existingCartItem = await StaffCartModel.findOne({
                 adminId,
