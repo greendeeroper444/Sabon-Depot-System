@@ -269,6 +269,7 @@ function AdminModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
 
 
             <div className='admin-modal-products-edit-inputs'>
@@ -295,6 +296,12 @@ function AdminModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
                     <div>
                         <label>UPDATE QUANTITY:</label>
                         <input
+=======
+            <div className='label-text'>
+                <label>UPDATE QUANTITY:</label>
+                <div>
+                    {/* <input
+>>>>>>> 51d4e74b489c6897a48c84e6cb0fde24353eb508
                         type="number"
                         value={inputValue}
                         onChange={(e) => {
@@ -305,6 +312,7 @@ function AdminModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
                                 setInputValue(newValue);
                             }
                         }}
+<<<<<<< HEAD
                         />
                     </div>
                     {/* <span>
@@ -324,6 +332,29 @@ function AdminModalProductsEditComponent({isOpen, onClose, selectedProduct, fetc
                         />
                     </div>
                 </div>
+=======
+                    /> */}
+                    <input
+                    type="number"
+                    value={inputValue}
+                    onChange={(e) => {
+                        const newValue = e.target.value;
+                        if(newValue === ''){
+                            setInputValue('');
+                        } else{
+                            setInputValue(newValue);
+                        }
+                    }}
+                    />
+                </div>
+                {/* <span>
+                    = {dataInput.quantity + inputValue}
+                </span> */}
+                <span>
+                    = {dataInput.quantity + (inputValue ? Number(inputValue) : 0)}
+                </span>
+
+>>>>>>> 51d4e74b489c6897a48c84e6cb0fde24353eb508
             </div>
 
            <div className='admin-modal-products-edit-inputs'>

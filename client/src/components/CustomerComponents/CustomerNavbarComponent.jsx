@@ -10,7 +10,11 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import CustomerLogoutConfimationModalComponent from './CustomerLogoutConfimationModalComponent';
 import notificationIcon from '../../assets/admin/adminicons/admin-navbar-notification-icon-2.png';
+<<<<<<< HEAD
 import iconOrder from '../../assets/icons/icon-order.png';
+=======
+// import iconOrder from '../../assets/icons/icon-order.png';
+>>>>>>> 51d4e74b489c6897a48c84e6cb0fde24353eb508
 
 function CustomerNavbarComponent({customerToggleSidebar}) {
     const location = useLocation();
@@ -156,6 +160,7 @@ function CustomerNavbarComponent({customerToggleSidebar}) {
                         </NavLink>
                     </li>
                     <li>
+<<<<<<< HEAD
                         {
                             customer && (
                                 <NavLink
@@ -166,6 +171,14 @@ function CustomerNavbarComponent({customerToggleSidebar}) {
                                 </NavLink>
                             )
                         }
+=======
+                        <NavLink
+                        className={({isActive}) => (isActive ? 'link active' : 'link')}
+                        to={`/orders/${customer?._id}`}
+                        >
+                            Orders
+                        </NavLink>
+>>>>>>> 51d4e74b489c6897a48c84e6cb0fde24353eb508
                     </li>
                     {
                         !customer && (
